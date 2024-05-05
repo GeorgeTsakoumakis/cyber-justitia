@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <!-- Custom styles for this template -->
+
+{% endblock %}
+
+<!-- Error/info messages -->
+{% block content %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+                {% endfor %}
+        </ul>
+    {% endif %}
+
+<h1 class="title">Login</h1>
+
+
+<!-- I used an HTML form instead of using the ModelForm by Django as it is simpler and simplifies front-end design -->
+<form method="POST" action="login">
+    {% csrf_token %}
+
+    <label for="username">
+        <input id="username" type="text" name="username" placeholder="Username" required>
+    </label>
+    <br>
+    <label for="password">
+        <input type="password" name="password" placeholder="Password" required>
+    </label>
+    <br>
+    <button type="submit">Login</button>
+</form>
+
+{% endblock %}
