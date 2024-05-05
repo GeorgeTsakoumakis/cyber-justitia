@@ -6,7 +6,7 @@ from .models import CustomUser
 
 # Create your views here.
 def index(request):
-    return render(request, 'main/index.html')
+    return render(request, 'index.html')
 
 
 def register(request):
@@ -50,26 +50,26 @@ def register(request):
             user.save()
             return redirect('login')
 
-    return render(request, 'main/register.html')
+    return render(request, 'register.html')
 
 
 def login(request):
-#     if request.method == 'POST':
-#         username = request.POST['username']
-#         password = request.POST['password']
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            messages.info(request, 'Invalid credentials')
+            return redirect('login')
 #
-#         user = auth.authenticate(username=username, password=password)
-#
-#         if user is not None:
-#             auth.login(request, user)
-#             return redirect('/')
-#         else:
-#             messages.info(request, 'Invalid credentials')
-#             return redirect('login')
-#
-    return render(request, 'main/login.html')
+    return render(request, 'login.html')
 
 
 def logout(request):
-    # auth.logout(request)
+    auth.logout(request)
     return redirect('/')
