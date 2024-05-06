@@ -1,5 +1,6 @@
 python-dotenv
 Django
+psycopg2-binary
 psycopg2
 coverage
 whitenoise
