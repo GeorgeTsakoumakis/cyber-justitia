@@ -2,3 +2,4 @@ python-dotenv
 Django
 psycopg2
 coverage
+whitenoise
