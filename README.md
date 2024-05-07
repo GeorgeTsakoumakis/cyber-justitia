@@ -43,6 +43,7 @@ pip install -r requirements.txt
 6. Create a `.env` file in the root directory of the project and add the following environment variables:
 ```bash
 SECRET_KEY=your_secret_key
+DEBUG=False
 DB_NAME=postgresql_db_name
 DB_USER = postgresql_user
 DB_PASSWORD = postgresql_password
