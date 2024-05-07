@@ -29,5 +29,6 @@ class ProfessionalUser(models.Model):
 
     prof_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    flair = models.CharField(max_length=100, null=False, help_text="Short text that best describes your "
-                                                                  "professional skills")
+    flair = models.CharField(max_length=100,
+                             null=False,
+                             help_text="Short text that best describes your professional skills")
