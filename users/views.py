@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
-from .models import CustomUser
+from .models import CustomUser, ProfessionalUser
 
-# Create your views here.
+
 def index(request):
     return render(request, 'index.html')
 
@@ -17,7 +17,6 @@ def register(request):
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
-        phone = request.POST['phone']
         user_type = request.POST['user_type']
         flair = request.POST['flair']
 
@@ -46,8 +45,15 @@ def register(request):
             return redirect('register')
         else:
             # Save user to database
-            user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, phone=phone, is_professional=is_professional, flair=flair)
+            user = CustomUser.objects.create_user(username=username,
+                                                  password=password,
+                                                  email=email,
+                                                  first_name=first_name,
+                                                  last_name=last_name)
             user.save()
+            if is_professional:
+                prof = ProfessionalUser(user=user, flair=flair)
+                prof.save()
             return redirect('login')
 
     return render(request, 'register.html')
