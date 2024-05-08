@@ -50,13 +50,7 @@ DB_PASSWORD = postgresql_password
 DB_HOST=postgresql_host
 DB_PORT='5432'
 ```
-
-7. Create a PostgreSQL database with the name specified in the `.env` file.
-8. Run the following command to apply the migrations:
-```bash
-python manage.py migrate
-```
-Before that you might need to create a migration:
+7. Run the following command to create a migration:
 ```bash
 python manage.py makemigrations
 ```
@@ -64,8 +58,11 @@ python manage.py makemigrations
 ### Running the Application:
 To run the application, execute the following command:
 ```bash
-python manage.py collectstatic
 python manage.py runserver
+```
+If static assets are not being served, run the following command:
+```bash
+python manage.py collectstatic
 ```
 
 
