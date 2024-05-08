@@ -6,96 +6,98 @@ from .models import CustomUser, ProfessionalUser
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, "index.html")
 
 
 def register(request):
-    if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        password2 = request.POST['password2']
-        user_type = request.POST['user_type']
-        flair = request.POST['flair']
+    if request.method == "POST":
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        password2 = request.POST["password2"]
+        user_type = request.POST["user_type"]
+        flair = request.POST["flair"]
 
         try:
             validate_password(password)
         except Exception as e:
-            messages.info(request, 'Password not strong enough')
-            return redirect('register')
+            messages.info(request, "Password not strong enough")
+            return redirect("register")
 
         if password != password2:
-            messages.info(request, 'Password not matching')
-            return redirect('register')
+            messages.info(request, "Password not matching")
+            return redirect("register")
 
         is_professional = False
-        if user_type == 'standard':
+        if user_type == "standard":
             is_professional = False
             flair = None
-        elif user_type == 'professional':
+        elif user_type == "professional":
             is_professional = True
 
         if CustomUser.objects.filter(username=username).exists():
-            messages.info(request, 'Username already exists')
-            return redirect('register')
+            messages.info(request, "Username already exists")
+            return redirect("register")
         elif CustomUser.objects.filter(email=email).exists():
-            messages.info(request, 'Email already exists')
-            return redirect('register')
+            messages.info(request, "Email already exists")
+            return redirect("register")
         else:
             # Save user to database
-            user = CustomUser.objects.create_user(username=username,
-                                                  password=password,
-                                                  email=email,
-                                                  first_name=first_name,
-                                                  last_name=last_name)
+            user = CustomUser.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+            )
             user.save()
             if is_professional:
                 prof = ProfessionalUser(user=user, flair=flair)
                 prof.save()
-            return redirect('login')
+            return redirect("login")
 
-    return render(request, 'register.html')
+    return render(request, "register.html")
 
 
 def login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
 
         user = auth.authenticate(username=username, password=password)
 
         if user is not None:
             auth.login(request, user)
-            return redirect('/')
+            return redirect("/")
         else:
-            messages.info(request, 'Invalid credentials')
-            return redirect('login')
-#
-    return render(request, 'login.html')
+            messages.info(request, "Invalid credentials")
+            return redirect("login")
+    #
+    return render(request, "login.html")
 
 
 def logout(request):
     auth.logout(request)
-    return redirect('/')
+    return redirect("/")
 
 
 def handler400(request, *args, **argv):
-    return render(request, 'errors/400.html', status=400)
+    return render(request, "errors/400.html", status=400)
 
 
 def handler403(request, *args, **argv):
-    return render(request, 'errors/403.html', status=403)
+    return render(request, "errors/403.html", status=403)
 
 
 def handler404(request, *args, **argv):
-    return render(request, 'errors/404.html', status=404)
+    return render(request, "errors/404.html", status=404)
 
 
 def handler500(request, *args, **argv):
-    return render(request, 'errors/500.html', status=500)
+    return render(request, "errors/500.html", status=500)
 
 
 def handler503(request, *args, **argv):
-    return render(request, 'errors/503.html', status=503)
+    return render(request, "errors/503.html", status=503)

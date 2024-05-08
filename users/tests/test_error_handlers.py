@@ -55,8 +55,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
         Test the 500 error handler.
         """
         response = self.client.get("/500/")
-        self.assertContains(response, "500: Internal "
-                                      "Server Error", status_code=500)
+        self.assertContains(response, "500: Internal " "Server Error", status_code=500)
 
     @staticmethod
     def custom_503_view(request):
@@ -70,5 +69,4 @@ class TestCustomErrorHandlers(SimpleTestCase):
         Test the 503 error handler.
         """
         response = self.client.get("/503/")
-        self.assertContains(response, "503: Service "
-                                      "Unavailable", status_code=503)
+        self.assertContains(response, "503: Service " "Unavailable", status_code=503)

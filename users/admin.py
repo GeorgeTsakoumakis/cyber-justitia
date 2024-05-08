@@ -13,7 +13,18 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
 
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('description', 'flair', 'is_professional', 'is_banned', 'phone')}),
+        (
+            None,
+            {
+                "fields": (
+                    "description",
+                    "flair",
+                    "is_professional",
+                    "is_banned",
+                    "phone",
+                )
+            },
+        ),
     )
 
 
