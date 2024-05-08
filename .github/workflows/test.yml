@@ -28,6 +28,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Load environment variables
+        run: |
+          python -m dotenv
+
       - name: Run tests
         run: |
           python manage.py test
