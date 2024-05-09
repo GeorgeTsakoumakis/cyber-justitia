@@ -1,6 +1,8 @@
 # CSC2033_Team25_23-24
 
 ## Cyber Justitia
+[![Super-Linter](https://github.com/newcastleuniversity-computing/CSC2033_Team25_23-24/actions/workflows/linter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Tests](https://github.com/newcastleuniversity-computing/CSC2033_Team25_23-24/actions/workflows/test.yml/badge.svg)](https://github.com/newcastleuniversity-computing/CSC2033_Team25_23-24/blob/george/.github/workflows/test.yml)
 
 ### Team Members:
 - [Yanhao Bao](https://github.com/YanhaoBao)

@@ -24,7 +24,7 @@ jobs:
           uses: super-linter/super-linter@latest
           env:
             DISABLE_ERRORS: true
-            VALIDATE_PYTHON: true
+            VALIDATE_PYTHON_BLACK: true
             VALIDATE_HTML: false
             VALIDATE_JAVASCRIPT_ES: false
             VALIDATE_JAVASCRIPT_STANDARD: false
