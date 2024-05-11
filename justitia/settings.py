@@ -75,7 +75,7 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR, "templates"),)
 
 WSGI_APPLICATION = "justitia.wsgi.application"
 
-
+ROOT_URLCONF = "justitia.urls"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
