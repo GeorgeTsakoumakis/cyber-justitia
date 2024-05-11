@@ -40,3 +40,9 @@ class ProfessionalUser(models.Model):
         null=False,
         help_text="Short text that best describes your professional skills",
     )
+    reason_banned = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True,
+        help_text="Reason for banning this professional user",
+    )
