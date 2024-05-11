@@ -13,30 +13,37 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      DATABASE_URL: sqlite:////tmp/db.sqlite3
+      CORS_ORIGIN_WHITELIST: "http://localhost,http://127.0.0.1"
+      CSRF_TRUSTED_ORIGINS: "http://localhost"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+            python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: | 
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
       - name: Run tests
-        env:
-            SECRET_KEY: ${{ secrets.SECRET_KEY }}
-            DEBUG: ${{ secrets.DEBUG }}
-            DB_NAME: ${{ secrets.DB_NAME }}
-            DB_USER: ${{ secrets.DB_USER }}
-            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            DB_HOST: ${{ secrets.DB_HOST }}
-            DB_PORT: ${{ secrets.DB_PORT }}
         run: |
           python manage.py test
