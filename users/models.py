@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
 
     first_name = models.CharField(_("first name"), max_length=150, blank=False)
     last_name = models.CharField(_("last name"), max_length=150, blank=False)
-    description = models.TextField(
+    description = models.CharField(
         max_length=256,
         null=True,
         blank=True,
@@ -36,11 +36,13 @@ class ProfessionalUser(models.Model):
     prof_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     flair = models.CharField(
+        _("professional flair"),
         max_length=100,
         null=False,
         help_text="Short text that best describes your professional skills",
     )
     reason_banned = models.CharField(
+        _("reason for getting banned"),
         max_length=150,
         null=True,
         blank=True,
