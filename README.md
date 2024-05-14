@@ -36,7 +36,7 @@ source venv/bin/activate
 ```
 Or on Windows:
 ```bash
-venv\Scripts\activate
+.\venv\Scripts\activate
 ```
 5. Install the project dependencies:
 ```bash
