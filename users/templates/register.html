@@ -1,34 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
+<title>Register - Cyber Justitia</title>
+
 {% block styles %}
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <title>Register - Cyber Justitia</title>
-
-    <!-- Import Bootstrap CSS -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
-    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-
-    <!-- Imports Google Web fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-
-    <!-- Import Bootstrap, JQuery and React JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Imports JQuery for dynamic form uses -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
-
-    <link rel="stylesheet" href="{%  static 'style.css' %}">
-    <script src="{% static 'flair_toggle.js' %}"></script>
-
+    <script src="{% static 'flair_toggle.js'%}"></script>
 {% endblock %}
 
 
@@ -51,49 +29,49 @@
         {% csrf_token %}
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px;"></span>
-            <input type="text" class="form-control" placeholder="First name" aria-label="firstname" aria-describedby="basic-addon1">
+            <input name="first_name" type="text" class="form-control" placeholder="First name" aria-label="firstname" aria-describedby="basic-addon1">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px;"></span>
-            <input type="text" class="form-control" placeholder="Last name" aria-label="lastname" aria-describedby="basic-addon1">
+            <input name="last_name" type="text" class="form-control" placeholder="Last name" aria-label="lastname" aria-describedby="basic-addon1">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; color: #FCD6DD;"><img src="../static/mail.svg"></span>
-            <input type="text" class="form-control" placeholder="Email address" aria-label="email" aria-describedby="basic-addon1">
-        </div>
-
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
-            <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="inputPassword3">
-        </div>
-
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
-            <input type="password" class="form-control" placeholder="Confirm password" aria-label="confirmpassword" aria-describedby="basic-addon1" id="inputPassword3">
+            <input name="email" type="text" class="form-control" placeholder="Email address" aria-label="email" aria-describedby="basic-addon1">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; color: #FCD6DD; display: block;"><img src="../static/user.svg"></span>
-            <input type="text" class="form-control" placeholder="Username" aria-label="username" aria-describedby="basic-addon1">
+            <input name="username" type="text" class="form-control" placeholder="Username" aria-label="username" aria-describedby="basic-addon1">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
+            <input name="password" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="inputPassword3">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
+            <input name="password2" type="password" class="form-control" placeholder="Confirm password" aria-label="confirmpassword" aria-describedby="basic-addon1" id="inputPassword3">
         </div>
 
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+            <input name="user_type" class="form-check-input" type="radio" id="flexRadioDefault1" checked>
             <label class="form-check-label" for="flexRadioDefault1">
               I am a standard user
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+            <input name="user_type" class="form-check-input" type="radio" id="flexRadioDefault2">
             <label class="form-check-label" for="flexRadioDefault2">
               I am a legal professional
             </label>
           </div>
           <div id="headlineFlair"></div>
           <br>
-        <button type="button submit" class="btn btn-primary" style="align-items: center;">Submit</button>
+        <button type="submit" class="btn btn-primary" style="align-items: center;">Submit</button>
         </form>
     </div>
 </div>

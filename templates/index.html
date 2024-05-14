@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 
+<title>Home - Cyber Justitia</title>
+
 {% block content %}
+
+<br>
+<br>
     <div class="row home-header" style="position: relative; padding-bottom: 3%">
         <img src="{% static 'ryan-booth-X4rD2aEVll8-unsplash.png' %}" style="height: auto; border-radius: 2%;">
-        <h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); color: white; text-align: center; z-index: 11; font-size: 4vw;">Seeking quick legal advice for a low cost?</h1>
-        <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, +5%); color: white; text-align: center; z-index: 11; font-size: 1.3vw;"><strong>Cyber Justitia </strong>is here to help! Our chatbot can help you get started on seeking legal help, <i>pro bono.</i></h3>
+        <h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); color: white; text-align: center; z-index: 11; font-size: 3vw;">Seeking quick legal advice for a low cost?</h1>
+        <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, +5%); color: white; text-align: center; z-index: 11; font-size: 1vw;"><strong>Cyber Justitia </strong>is here to help! Our chatbot can help you get started on seeking legal help, <i>pro bono.</i></h3>
     </div>
 
     <div class="row">
@@ -23,14 +28,14 @@
     <div class="row" style="padding-top: 3%; padding-bottom: 4%">
         <div class="col">
             <div class="main-box ms-5" style="display: flex; flex-direction: column; align-items: center;">
-                <h2 style="color: black; font-size: 3vw;">With <span class="text-gradient">CyberJustitia</span>, you can...</h2>
+                <h2 style="color: black; font-size: 2.em;">With <span class="text-gradient">CyberJustitia</span>, you can...</h2>
                 <div style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
                     <div style="margin-right: 20px; text-align: center; padding: 5%">
-                        <img src="{%  static 'bot.svg' %}" style="fill: black; width: 150px; height: auto;">
+                        <img src="{%  static 'bot.svg' %}" style="fill: black; max-width: 90%; height: auto;">
                         <p style="font-family: 'Roboto Condensed'; font-size: 15pt; margin-top: 10px; color: black">Talk to our chatbot to receive crucial legal information, without needing to understand legal jargon or to scour through public records and cases.</p>
                     </div>
                     <div style="margin-left: 20px; text-align: center; padding: 5%">
-                        <img src="{%  static 'contacts.svg' %}" style="fill: black; width: 150px; height: auto;">
+                        <img src="{%  static 'contacts.svg' %}" style="fill: black; max-width: 90%; height: auto;">
                         <p style="font-family: 'Roboto Condensed'; font-size: 15pt; margin-top: 10px; color: black">Connect with legal professionals and people who've had similar experiences on our forums and discuss advice and options for your case, pro bono.</p>
                     </div>
                 </div>

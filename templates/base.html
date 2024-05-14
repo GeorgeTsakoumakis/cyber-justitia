@@ -6,7 +6,6 @@
 <head>
     <title>Cyber Justitia</title>
 
-    {% block styles %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,10 +28,11 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
     <link rel="stylesheet" href="{%  static 'style.css' %}">
+    {% block styles %}
     {% endblock %}
 </head>
+  
 <body>
-    {% block navbar %}
     <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: #C597E2;">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'index' %}">
@@ -59,14 +59,14 @@
                     {% if user.is_authenticated %}
                     <li class="login">
                         <!-- TODO: Set href to dynamically link to own user's profile, once web structure is fully realised -->
-                        <a class="nav-link" href="#">{{ user.username }}</a> <!-- Not 100% if this dynamic variable tag is correct lol-->
+                        <a class="nav-link" href="#" style="transform: translateY(10%); font-size: 1.5vw;">{{ user.username }}</a>
                     </li>
                     <li class="login">
-                        <a class="nav-link" href="{% url 'logout' %}"><img src="{%  static 'logout.svg' %}" style="width: 44px"></a>
+                        <a class="nav-link" href="{% url 'logout' %}"><img src="{%  static 'logout.svg' %}" style="max-width: 44px"></a>
                     </li>
-                    <li class="login">
-                        <a class="nav-link" href="{% url 'dashboard' %}"><img src="{% static 'settings.svg' %}" style="width: 44px"></a>
-                    </li>
+                    <!-- <li class="login">
+                        <a class="nav-link" href="{ url 'dashboard' %}"><img src="{% static 'settings.svg' %}" style="width: 44px"></a>
+                    </li> -->
                     {% else %}
                     <li class="login">
                         <a class="nav-link" href="{% url 'login' %}">Log in</a>
@@ -79,25 +79,23 @@
             </div>
         </div>
     </nav>
-    {% endblock %}
 
     <div class="container-fluid d-flex flex-column justify-content-baseline align-items-center">
         {% block content %}
         {% endblock %}
     </div>
 
-    {% block footer %}
     <div class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <p class="text-center">
-                        Advice given by the chatbot does <strong>NOT</strong> constitute final legal advice, it is only meant to <i>inform</i> you on potential legal options. If you want to take action, seek a second opinion from a legal professional. <a href="/codeofconduct" style="color: #c7c7c7">Click here to read our Code of Conduct.</a> Copyright © 2024 - Newcastle University and Team 25
+                        Advice given by the chatbot does <strong>NOT</strong> constitute final legal advice, it is only meant to <i>inform</i> you on potential legal options. If you want to take action, seek a second opinion from a legal professional. <a href="{% url 'codeofconduct' %}" style="color: #c7c7c7">Click here to read our Code of Conduct.</a> Copyright © 2024 - Newcastle University and Team 25
                     </p>
                 </div>
             </div>
         </div>
     </div>
-    {% endblock %}
+
 </body>
 </html>

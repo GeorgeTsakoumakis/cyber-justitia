@@ -18,7 +18,10 @@ def register(request):
         password = request.POST["password"]
         password2 = request.POST["password2"]
         user_type = request.POST["user_type"]
-        flair = request.POST["flair"]
+        try:
+            flair = request.POST["flair"]
+        except:
+            flair = None
 
         try:
             validate_password(password)

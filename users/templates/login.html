@@ -19,16 +19,17 @@
         <form method="POST" action="login">
             {% csrf_token %}
             <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 52px; color: #FCD6DD;"><img src="../static/user.svg"></img></span>
-                <input type="text" class="form-control" placeholder="Username" required aria-label="username" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 52px; color: #FCD6DD;"><img src="../static/user.svg"></span>
+                <input name="username" type="text" class="form-control" placeholder="Username" required aria-label="username" aria-describedby="basic-addon1">
             </div>
 
             <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" style="background-color: white;  display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></img></span>
-                <input type="password" class="form-control" placeholder="Password" required aria-label="Password" aria-describedby="basic-addon1" id="inputPassword3">
+                <span class="input-group-text" id="basic-addon1" style="background-color: white;  display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
+                <input name="password" type="password" class="form-control" placeholder="Password" required aria-label="password" aria-describedby="basic-addon1" id="inputPassword3">
             </div>
         <br>
-            <button type="button submit" class="btn btn-primary" style="align-items: center;">Log in</button>
+            <button type="submit" class="btn btn-primary" style="align-items: center;">Log in</button>
+
         </form>
         </div>
         <p style="color: black">Haven’t created an account? <a href="{% url 'register' %}">Register here!</a></p>

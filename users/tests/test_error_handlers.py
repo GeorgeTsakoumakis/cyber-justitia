@@ -19,7 +19,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
         Test the 400 error handler.
         """
         response = self.client.get("/400/")
-        self.assertContains(response, "400: Bad Request", status_code=400)
+        self.assertContains(response, "Bad request", status_code=400)
 
     @staticmethod
     def custom_403_view(request):
@@ -33,7 +33,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
         Test the 403 error handler.
         """
         response = self.client.get("/403/")
-        self.assertContains(response, "403: Forbidden", status_code=403)
+        self.assertContains(response, "Forbidden", status_code=403)
 
     def test_handler_404(self):
         """
@@ -41,7 +41,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
         """
         response = self.client.get("/404/")
         # Make assertions on the response here. For example:
-        self.assertContains(response, "404: Page Not Found", status_code=404)
+        self.assertContains(response, "Page not found", status_code=404)
 
     @staticmethod
     def custom_500_view(request):
@@ -55,7 +55,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
         Test the 500 error handler.
         """
         response = self.client.get("/500/")
-        self.assertContains(response, "500: Internal " "Server Error", status_code=500)
+        self.assertContains(response, "Internal server error", status_code=500)
 
     @staticmethod
     def custom_503_view(request):
@@ -69,4 +69,4 @@ class TestCustomErrorHandlers(SimpleTestCase):
         Test the 503 error handler.
         """
         response = self.client.get("/503/")
-        self.assertContains(response, "503: Service " "Unavailable", status_code=503)
+        self.assertContains(response, "Service unavailable", status_code=503)
