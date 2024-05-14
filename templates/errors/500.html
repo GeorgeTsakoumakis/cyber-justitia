@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block styles %}
-    <!-- Custom styles for this template -->
-
-{% endblock %}
-
-
 {% block content %}
-    <h2 class="title is-2">500: Internal Server Error</h2>
-    <p>The server has encountered a situation it does not know how to handle.</p><p>Click <em><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500" target="_blank">here</a></em> to read more.</p>
+    <div class="warning-icon">
+        <img src="../../static/error.svg">
+    </div>
+    <div class="warning-icon-text" style="letter-spacing: 1.3rem;">
+        Error 500
+    </div>
+    <p style="color: black; font-size: 1.5vw">Internal server error. <a href="{% url 'index' %}">Back to homepage</a></p>
+    </div>
+    <br>
 {% endblock %}

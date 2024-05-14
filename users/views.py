@@ -82,6 +82,8 @@ def logout(request):
     auth.logout(request)
     return redirect("/")
 
+def codeofconduct(request):
+    return render(request, "codeofconduct.html")
 
 def handler400(request, *args, **argv):
     return render(request, "errors/400.html", status=400)

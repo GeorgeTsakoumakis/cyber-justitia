@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Import Bootstrap CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
+    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <!-- Imports Google Web fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Import Bootstrap and React JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Imports md-block for markdown rendering in HTML -->
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+
+    <link rel="stylesheet" href="{%  static 'style.css' %}">
+{% endblock %}
+
+{% block content %}
+        <div class="row" style="padding-bottom: 2%">
+            <div class="col">
+                <div class="secondary-box" style="width: 869px;">
+                    <h1 style="color: white">⚠️ DISCLAIMER! ⚠️</h1>
+                    <p>Our AI chatbot can <b>NOT</b> replace the advice of an actual legal professional, so if you plan on taking serious legal action, <i>consult a real legal professional first</i> before proceeding.</p>
+                    <p>One way you can do this is by checking out our <a href="{%  url '/forums' %}">Forums</a> where you can ask real legal professionals advice on your case and reach out to them if further legal action is necessary.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-8" style="width: 196px; padding-left: 2%;">
+                <div class="session-box">
+                    <h1 style="font-size: 22pt; padding-top: 2%;">Sessions</h1>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action"
+                        style="background-color: #FCD6DD; color: #3d3d3d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Is it illegal to throw</a>
+                        <a href="#" class="list-group-item list-group-item-action"
+                        style="background-color: #FDEFF2; color: #3d3d3d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">How much money do I owe the</a>
+                      </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-2" style="width: 680px;">
+                <div class="main-box" style="padding-top: 3%;">
+                    <!-- TODO: Add chatbot functionality here -->
+                    <!-- TODO: Fix speech bubble placement in CSS -->
+                    <div class="bot-speech">yo</div>
+                    <div class="user-speech" style="float: flex-end;">what's good</div>
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" placeholder="Type your message here..." class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                        <div class="input-group-append">    
+                            <button class="btn" type="button"><img src="{%  static 'sendmes.svg' %}"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

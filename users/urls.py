@@ -7,6 +7,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("login", views.login, name="login"),
     path("logout", views.logout, name="logout"),
+    path("codeofconduct", views.codeofconduct, name="codeofconduct"),
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
     ),
@@ -18,5 +19,5 @@ urlpatterns = [
     ),
     path(
         "503/", test_error_handlers.TestCustomErrorHandlers.custom_503_view, name="503"
-    ),
+    )
 ]

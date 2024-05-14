@@ -31,4 +31,3 @@ jobs:
 #            VALIDATE_CSS: false
             DEFAULT_BRANCH: dev
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

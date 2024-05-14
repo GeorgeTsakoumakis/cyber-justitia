@@ -2,8 +2,33 @@
 {% load static %}
 
 {% block styles %}
-    <!-- Custom styles and static assets for this template -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Register - Cyber Justitia</title>
+
+    <!-- Import Bootstrap CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
+    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <!-- Imports Google Web fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Import Bootstrap, JQuery and React JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
+
+    <link rel="stylesheet" href="{%  static 'style.css' %}">
     <script src="{% static 'flair_toggle.js' %}"></script>
+
 {% endblock %}
 
 
@@ -17,51 +42,62 @@
         </ul>
     {% endif %}
 
-<h1 class="title">Register</h1>
+    <br>
+    <br>
+    <div class="main-box" style="width: 484px; text-align: center;">
+        <h1>Register</h1>
+        <br>
+        <form method="POST" action="register">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px;"></span>
+            <input type="text" class="form-control" placeholder="First name" aria-label="firstname" aria-describedby="basic-addon1">
+        </div>
 
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px;"></span>
+            <input type="text" class="form-control" placeholder="Last name" aria-label="lastname" aria-describedby="basic-addon1">
+        </div>
 
-<!-- I used an HTML form instead of using the ModelForm by Django as it is simpler and simplifies front-end design -->
-<form method="POST" action="register">
-    {% csrf_token %}
-    <label for="first-name">
-        <input id="first-name" type="text" name="first_name" placeholder="First Name" required>
-    </label>
-    <br>
-    <label for="last-name">
-        <input id="last-name" type="text" name="last_name" placeholder="Last Name" required>
-    </label>
-    <br>
-    <label for="username">
-        <input id="username" type="text" name="username" placeholder="Username" required>
-    </label>
-    <br>
-    <label for="email">
-        <input type="email" name="email" placeholder="Email" required>
-    </label>
-    <br>
-    <label for="password">
-        <input type="password" name="password" placeholder="Password" required>
-    </label>
-    <br>
-    <label for="password2">
-        <input type="password" name="password2" placeholder="Confirm Password" required>
-    </label>
-    <br>
-    <label>
-        <input type="radio" name="user_type" value="standard" required> Standard user
-    </label>
-    <br>
-    <label>
-        <input type="radio" name="user_type" value="professional" required> Professional user
-    </label>
-    <br>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; color: #FCD6DD;"><img src="../static/mail.svg"></span>
+            <input type="text" class="form-control" placeholder="Email address" aria-label="email" aria-describedby="basic-addon1">
+        </div>
 
-    <div id="flair" style="display: none;">
-        <label for="flair">
-            <input id="flair" type="text" name="flair" placeholder="Professional Flair" required>
-        </label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
+            <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="inputPassword3">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
+            <input type="password" class="form-control" placeholder="Confirm password" aria-label="confirmpassword" aria-describedby="basic-addon1" id="inputPassword3">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; color: #FCD6DD; display: block;"><img src="../static/user.svg"></span>
+            <input type="text" class="form-control" placeholder="Username" aria-label="username" aria-describedby="basic-addon1">
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+            <label class="form-check-label" for="flexRadioDefault1">
+              I am a standard user
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+            <label class="form-check-label" for="flexRadioDefault2">
+              I am a legal professional
+            </label>
+          </div>
+          <div id="headlineFlair"></div>
+          <br>
+        <button type="button submit" class="btn btn-primary" style="align-items: center;">Submit</button>
+        </form>
     </div>
-    <button type="submit">Register</button>
-</form>
+</div>
+<br>
+<br>
 
 {% endblock %}

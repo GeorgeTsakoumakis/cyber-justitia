@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+<title>Code of Conduct - Cyber Justitia</title>
+{% block styles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Import Bootstrap CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
+    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <!-- Imports Google Web fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Imports md-block for markdown rendering in HTML -->
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+
+    <link rel="stylesheet" href="{%  static 'style.css' %}">
+    <style>
+        p, h2 {
+            color: black;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<md-block style="padding-top: 10%; padding-bottom: 10%">
+    # Code of Conduct
+
+    Welcome to Cyber Justitia. Our community is dedicated to providing a safe and supportive environment for individuals seeking legal assistance and engaging in discussions related to legal matters. To ensure a positive and respectful experience for all participants, we ask that you adhere to the following Code of Conduct:
+    
+    ## 1. Respect Others
+    
+    Treat all members of the community with respect and consideration. Be courteous, kind, and inclusive in your interactions with others. Avoid language or behavior that is discriminatory, offensive, or harmful.
+    
+    ## 2. Be Civil and Constructive
+    
+    Engage in discussions in a civil and constructive manner. Disagreements are natural, but they should be expressed respectfully. Refrain from personal attacks, insults, or inflammatory remarks.
+    
+    ## 3. Maintain Confidentiality
+    
+    Respect the privacy and confidentiality of others. Do not share personal information or confidential legal details without permission. Be mindful of the sensitive nature of legal discussions and protect the confidentiality of fellow community members.
+    
+    ## 4. Provide Accurate Information
+    
+    When offering legal advice or information, ensure that it is accurate, reliable, and up-to-date to the best of your knowledge. Avoid spreading misinformation or giving legal advice beyond your expertise.
+    
+    ## 5. Follow Community Guidelines
+    
+    Adhere to the community guidelines and rules set forth by [Legal Aid AI Chatbot and Forum]. Familiarize yourself with the platform's terms of service and abide by them in all interactions.
+    
+    ## 6. Report Misconduct
+    
+    If you encounter behavior that violates this Code of Conduct or community guidelines, report it to the moderators or administrators immediately. Do not engage with or escalate confrontations.
+    
+    ## 7. Consequences of Violations
+    
+    Violations of this Code of Conduct may result in disciplinary action, including warnings, temporary or permanent suspension of access, or removal of content. [Legal Aid AI Chatbot and Forum] reserves the right to take appropriate action to maintain a safe and respectful community environment.
+    
+    ## Contact Information
+    
+    If you have any questions, concerns, or feedback regarding this Code of Conduct or community guidelines, please contact the moderators or administrators at [contact email or link].
+</md-block>
+{% endblock %}
