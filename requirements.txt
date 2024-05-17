@@ -4,3 +4,6 @@ psycopg2-binary
 psycopg2
 coverage
 whitenoise
+google-cloud-aiplatform
+langchain-google-vertexai
+langchain

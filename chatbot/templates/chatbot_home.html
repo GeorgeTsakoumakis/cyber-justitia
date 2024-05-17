@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <!-- Custom styles for this template -->
+    <!-- TODO: change with actual styles, these are a placeholder -->
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+
+<style>
+    /* Basic styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrap-container {
+        max-width: 1000px;
+        margin: 0 0;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .chat-container {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: .5rem;
+        height: 50vh;
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+    }
+
+    #submit-prompt {
+        margin-top: 10px;
+        padding: 10px;
+        width: 20%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        float: right;
+    }
+
+    #user-input {
+        margin-top: 10px;
+        padding: 10px;
+        width:  calc(80% - 10px); /* Adjust width to leave space for the button */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    .message {
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+    .user-message {
+        color: #1b1b1b;
+        align-self: flex-end;
+        background-color: #ffc0cb; /* Pink */
+    }
+
+    .bot-message {
+        color: #ccc;
+        align-self: flex-start;
+        background-color: #9370db; /* Purple */
+    }
+
+    .chat-input{
+        display: flex;
+        justify-content: space-between;
+        /* position at bottom of the chat container */
+        position: relative;
+
+    }
+</style>
+{% endblock %}
+
+<!-- Error/info messages -->
+{% block content %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+                {% endfor %}
+        </ul>
+    {% endif %}
+
+<div class="wrap-container">
+    <h1 class="title">Chatbot Home</h1>
+    <div class="chat-container" id="chat-container">
+        <div id="chat-messages">
+            <!-- Chat messages will be displayed here -->
+            {% for message in chat_messages %}
+                {% if message.role == "user" %}
+                    <div class="message user-message">{{ message.text }}</div>
+                {% elif message.role == "bot" %}
+                    <md-block class="message bot-message">{{ message.text }}</md-block>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message..." >
+            <button id="submit-prompt" onclick="sendMessage()" >Send</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('user-input').onkeydown = function(e){
+
+        if(e.keyCode === 13){
+            sendMessage();
+        }
+    };
+
+    // Function to send user message and display it in the chat
+    function sendMessage() {
+        let userInput = document.getElementById("user-input").value;
+        if (userInput.trim() !== "") {
+            displayMessage(userInput, true); // Display user message
+            // Send to backend for processing
+            fetch('/chatbot/process/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => {
+                    return response.json();
+            })
+            .then(data => {
+                displayMessage(data.response, false); // Display bot response
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            document.getElementById("user-input").value = ""; // Clear input field
+        }
+    }
+
+    // Function to display messages in the chat container
+    function displayMessage(message, isUser) {
+        let chatContainer = document.getElementById("chat-container");
+        let messageElement;
+        if (isUser) {
+            messageElement = document.createElement("div");
+        } else {
+            messageElement = document.createElement("md-block");
+        }
+        messageElement.textContent = message;
+        messageElement.classList.add('message');
+        if (isUser) {
+            messageElement.classList.add('user-message');
+        } else {
+            messageElement.classList.add('bot-message');
+        }
+        chatContainer.appendChild(messageElement);
+        // Scroll to the bottom of the chat container to show the latest message
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+</script>
+
+{% endblock %}

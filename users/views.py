@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
+from chatbot.models import Session
 
 
 def index(request):
@@ -73,7 +75,11 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect("/")
+            # Add chatbot sessions to user session
+            # First, query database for chatbot sessions associated with user
+            session_ids = Session.objects.filter(user=user).values_list("session_id", flat=True)
+            request.session["session_ids"] = list(session_ids)
+            return redirect("chatbot/")
         else:
             messages.info(request, "Invalid credentials")
             return redirect("login")
@@ -81,12 +87,17 @@ def login(request):
     return render(request, "login.html")
 
 
+@login_required
 def logout(request):
+    # Clear chatbot sessions from user session
+    request.session.pop("session_ids", None)
     auth.logout(request)
     return redirect("/")
 
+
 def codeofconduct(request):
     return render(request, "codeofconduct.html")
+
 
 def handler400(request, *args, **argv):
     return render(request, "errors/400.html", status=400)
