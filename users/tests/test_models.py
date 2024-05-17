@@ -74,6 +74,17 @@ class CustomUserModelTest(TestCase):
                 password='password123'
             )
 
+    def test_blank_username(self):
+        # Check that username is not blank
+        with self.assertRaises(ValueError):
+            CustomUser.objects.create_user(
+                username='',
+                first_name='Firstname',
+                last_name='Lastname',
+                email='user@example.com',
+                password='password123'
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
