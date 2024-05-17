@@ -85,6 +85,74 @@ class CustomUserModelTest(TestCase):
                 password='password123'
             )
 
+    def test_duplicate_username(self):
+        # Check that usernames are unique
+        with self.assertRaises(IntegrityError):
+            CustomUser.objects.create_user(
+                username='testuser',
+                first_name='Another',
+                last_name='User',
+                email='anotheruser@example.com',
+                password='password123'
+            )
+
+    def test_default_is_banned(self):
+        # Check that is_banned defaults to False
+        self.assertFalse(self.user.is_banned)
+
+    def test_max_length_constraints(self):
+        # Check max length constraints
+        long_username = 'a' * 151  # lots of a's
+        with self.assertRaises(ValidationError):
+            user = CustomUser(
+                username=long_username,
+                first_name='Firstname',
+                last_name='Lastname',
+                email='user4@example.com'
+            )
+            user.full_clean()
+
+        long_first_name = 'a' * 151
+        with self.assertRaises(ValidationError):
+            user = CustomUser(
+                username='user5',
+                first_name=long_first_name,
+                last_name='Lastname',
+                email='user5@example.com'
+            )
+            user.full_clean()
+
+        long_last_name = 'a' * 151
+        with self.assertRaises(ValidationError):
+            user = CustomUser(
+                username='user6',
+                first_name='Firstname',
+                last_name=long_last_name,
+                email='user6@example.com'
+            )
+            user.full_clean()
+
+        long_email = 'a' * 321 + '@example.com'
+        with self.assertRaises(ValidationError):
+            user = CustomUser(
+                username='user7',
+                first_name='Firstname',
+                last_name='Lastname',
+                email=long_email
+            )
+            user.full_clean()
+
+        long_description = 'a' * 257
+        with self.assertRaises(ValidationError):
+            user = CustomUser(
+                username='user8',
+                first_name='Firstname',
+                last_name='Lastname',
+                email='user8@example.com',
+                description=long_description
+            )
+            user.full_clean()
+
 
 if __name__ == '__main__':
     unittest.main()
