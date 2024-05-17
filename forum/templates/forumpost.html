@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+        <!-- TODO: Replace curly brackets with Django tags-->
+        <div class="main-box" style="text-indent: 8%">
+            <h2 style="color: black">{{title}}</h2>
+            <p style="color: #3d3d3d">Post by {{ user.username }} • on {{ post.date }}</p>
+            <p style="color: black">{{post}}</p>
+        </div>
+
+        <div class="row align-items-start" style="padding-bottom: 3%;">
+            <div class="col">
+                <button type="button" class="btn btn-primary">+ Add comment</button>
+            </div>
+        </div>
+
+        <div id="comment1" class="main-box" style="background-color: #FCD6DD">
+            <!-- TODO: Add upvote/downvote-->
+            <!-- TODO: If user == professional, display headline flair and make username color #B72FA6 -->
+            <p style="color: #3d3d3d;">Post by {{ user.username }} • on {{ post.date }}</p>
+            <p style="color: black; font-size: 12pt">{{comment}}</p>
+        </div>
+
+        <div id="comment2" class="main-box">
+            <!-- TODO: Add upvote/downvote-->
+            <!-- TODO: If user == professional, display headline flair and make username color #B72FA6 -->
+            <p style="color: #3d3d3d; ;">Post by {{ user.username }} • on {{ post.date }}</p>
+            <p style="color: black; font-size: 12pt">{{comment}}</p>
+        </div>
+
+
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex justify-content-between">
+                <img id="back" style="width: 52px; fill: black; rotate:180deg;" src="../static/arrow.svg">
+                <img id="forward" style="width: 52px; fill: black;" src="../static/arrow.svg">
+            </div>
+        </div>         
+    </div>
+{% endblock %}

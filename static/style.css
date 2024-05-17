@@ -34,7 +34,7 @@ a:hover {
 
 p, li, span {
   font-size: 1.1em;
-  color: white;
+  color: black;
 }
 
 .accent {
@@ -67,18 +67,29 @@ p, li, span {
   color: black;
 }
 
-.main-box, .secondary-box, .session-box {
+.post-comment-box, .main-box, .secondary-box, .session-box {
   width: 90%;
   max-width: 90%;
   margin: 0 auto;
+  filter:drop-shadow(0px 4px 4px rgba(0,0,0,0.25));
+  border-radius: 6px;
 }
 
 .main-box, .secondary-box {
   padding: 2%;
 }
 
+.main-box, .post-comment-box {
+  background-color: #FDEFF2;
+}
+
+.post-comment-box div:nth-child(odd) {
+  background-color: #EAD4D9;
+}
+
 .secondary-box {
   text-align: center;
+  background-color: #BE6FB4;
 }
 
 .session-box {
@@ -125,6 +136,7 @@ p, li, span {
   width: 90%;
   max-width: 90%;
   margin: 0 auto;
+  text-align: center;
 }
 
 .warning-icon-text {
@@ -144,4 +156,8 @@ p, li, span {
 .input-container {
   display: flex;
   flex-wrap: wrap;
+}
+
+.footer .text-center {
+  color: black;
 }

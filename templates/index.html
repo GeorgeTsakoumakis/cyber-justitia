@@ -4,10 +4,7 @@
 <title>Home - Cyber Justitia</title>
 
 {% block content %}
-
-<br>
-<br>
-    <div class="row home-header" style="position: relative; padding-bottom: 3%">
+    <div class="row home-header" style="position: relative; padding-bottom: 3%; filter:drop-shadow(0px 4px 4px rgba(0,0,0,0.25));">
         <img src="{% static 'ryan-booth-X4rD2aEVll8-unsplash.png' %}" style="height: auto; border-radius: 2%;">
         <h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); color: white; text-align: center; z-index: 11; font-size: 3vw;">Seeking quick legal advice for a low cost?</h1>
         <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, +5%); color: white; text-align: center; z-index: 11; font-size: 1vw;"><strong>Cyber Justitia </strong>is here to help! Our chatbot can help you get started on seeking legal help, <i>pro bono.</i></h3>
@@ -17,25 +14,25 @@
         <div class="col">
             <div class="secondary-box">
                 <h2> Need to ask someone for advice on legal matters for a low cost?</h2>
-                <p><b>Cyber Justitia</b> is a chatbot designed to provide you legal assistance 
+                <p style="color: white"><b>Cyber Justitia</b> is a chatbot designed to provide you legal assistance 
                 and information. Our bot is designed specifically around UK law and Newcastle City bylaws, so if you’re a resident of one of 26 wards within the 
                 Newcastle area, Cyber Justitia can also help advise you on local manners as well. Remember though, AI can <b>NOT</b> replace the advise of an actual legal 
                 professional, so if you plan on taking serious legal action, consult a <i>real legal professional</i> first before proceeding.</p>
-                <p>You can do so by checking out our <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Forums</a> page where we help connect you with legal professionals for help, safely and affordably!</p>
+                <p>You can do so by checking out our <a href=<!-- /forums --></a>>Forums</a> page where we help connect you with legal professionals for help, safely and affordably!</p>
             </div>
         </div>
     </div>
     <div class="row" style="padding-top: 3%; padding-bottom: 4%">
         <div class="col">
             <div class="main-box ms-5" style="display: flex; flex-direction: column; align-items: center;">
-                <h2 style="color: black; font-size: 2.em;">With <span class="text-gradient">CyberJustitia</span>, you can...</h2>
+                <h2 style="color: black; font-size: 2.5em;">With <span class="text-gradient">CyberJustitia</span>, you can...</h2>
                 <div style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
                     <div style="margin-right: 20px; text-align: center; padding: 5%">
-                        <img src="{%  static 'bot.svg' %}" style="fill: black; max-width: 90%; height: auto;">
+                        <img src="{%  static 'bot.svg' %}" style="fill: black; max-width: 80%; height: auto;">
                         <p style="font-family: 'Roboto Condensed'; font-size: 15pt; margin-top: 10px; color: black">Talk to our chatbot to receive crucial legal information, without needing to understand legal jargon or to scour through public records and cases.</p>
                     </div>
                     <div style="margin-left: 20px; text-align: center; padding: 5%">
-                        <img src="{%  static 'contacts.svg' %}" style="fill: black; max-width: 90%; height: auto;">
+                        <img src="{%  static 'contacts.svg' %}" style="fill: black; max-width: 80%; height: auto;">
                         <p style="font-family: 'Roboto Condensed'; font-size: 15pt; margin-top: 10px; color: black">Connect with legal professionals and people who've had similar experiences on our forums and discuss advice and options for your case, pro bono.</p>
                     </div>
                 </div>
@@ -43,5 +40,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

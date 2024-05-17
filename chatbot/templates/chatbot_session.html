@@ -7,9 +7,8 @@
     <script type="module" src="https://md-block.verou.me/md-block.js"></script>
 
 <style>
-    /* Basic styling */
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Roboto Mono';
         margin: 0;
         padding: 0;
     }
@@ -24,35 +23,41 @@
     #chat-container {
         border: 1px solid #ccc;
         padding: 20px;
-        margin-bottom: .5rem;
-        height: 50vh;
+        margin-bottom: 1rem;
+        height: 60vh;
         display: flex;
         flex-direction: column;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     #chat-messages {
         display: flex;
         flex-direction: column;
         gap: 10px;
+        flex-grow: 1;
     }
 
     #submit-prompt {
-        margin-top: 10px;
-        padding: 10px;
-        width: 20%;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        float: right;
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        padding: 0;
+        padding-left: 10%;
+    }
+
+    #submit-prompt img {
+        width: 85%;
+        height: 85%;
     }
 
     #user-input {
-        margin-top: 10px;
-        padding: 10px;
-        width:  calc(80% - 10px); /* Adjust width to leave space for the button */
+        width: calc(100% - 5px);
         border: 1px solid #ccc;
         border-radius: 5px;
-        display: inline-block;
+        padding: 10px;
+        padding-right: 40px;
+        font-family: 'Roboto Mono';
     }
 
     .message {
@@ -61,26 +66,41 @@
         border-radius: 10px;
         max-width: 70%;
         word-wrap: break-word;
+        color: white;
     }
 
     .user-message {
         color: #1b1b1b;
         align-self: flex-end;
-        background-color: #ffc0cb; /* Pink */
+        background-color: #BE6FB4;
+        border: 1px solid #743E75;
+        border-radius: 6px 6px 0px 6px;
+        color: white;
     }
 
     .bot-message {
         color: #ccc;
         align-self: flex-start;
-        background-color: #9370db; /* Purple */
+        background-color: #695455;
+        border: 1px solid #453536;
+        border-radius: 6px 6px 6px 0px;
+        color: white;
     }
 
-    .chat-input{
+    .chat-input {
         display: flex;
-        justify-content: space-between;
-        /* position at bottom of the chat container */
-        position: relative;
+        position: sticky;
+        bottom: 0;
+        background: #FDEFF2;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+    }
 
+    .chat-input-container {
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
     }
 </style>
 {% endblock %}
@@ -95,45 +115,59 @@
         </ul>
     {% endif %}
 
+<div class="row" style="padding-top: 15%; padding-bottom: 2%">
+    <div class="col">
+        <div class="secondary-box" style="max-width: 869px; width: 90%">
+            <h1 style="color: white">⚠️ DISCLAIMER! ⚠️</h1>
+            <p style="color: white">Our AI chatbot can <b>NOT</b> replace the advice of an actual legal professional, so if you plan on taking serious legal action, <i>consult a real legal professional first</i> before proceeding.</p>
+            <p style="color: white">One way you can do this is by checking out our <a href=<!-- /forums --></a>>Forums</a> where you can ask real legal professionals advice on your case and reach out to them if further legal action is necessary.</p>
+        </div>
+    </div>
+</div>
+
 <div class="wrap-container">
-    <h1 class="title">Chatbot Session</h1>
-    <div class="sessions">
-        <div class="session-list">
-            <h2 style="color: black">Your Sessions:</h2>
-            <ul id="sessions-list">
-                {% if user_sessions %}
-                     {% for session in user_sessions %}
-                        {% if session != current_session %}
-                            <li><a href="{% url 'chatbot_session' session %}">Session {{ forloop.counter }}</a></li>
-                        {% else %}
-                            <li style="color: #453536">Session {{ forloop.counter }}</li>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <div class="session-box" style="padding-bottom: 5%; text-align: center">
+                <h2 style="text-align: center; color: black; background-color: #FDEFF2; padding: 3%;">Sessions</h2>
+                <div class="list-group">
+                    {% if user_sessions %}
+                        {% for session in user_sessions %}
+                            {% if session != current_session %}
+                                <a href="{% url 'chatbot_session' session %}" class="list-group-item list-group-item-action" style="background-color: #FDEFF2; color: #3d3d3d;">Session {{ forloop.counter }}</a>
+                            {% else %}
+                                <a class="list-group-item list-group-item-action active" style="background-color: #FCD6DD; color: #3d3d3d;">Session {{ forloop.counter }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <a class="list-group-item list-group-item-action disabled" style="background-color: #FDEFF2; color: #3d3d3d;">No sessions available</a>
+                    {% endif %}
+                </div>
+                <form method="post" action="{% url 'create_session' %}" style="margin-top: 1rem;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">+ Start new session</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <div id="chat-container" class="main-box">
+                <div id="chat-messages">
+                    {% for message in chat_messages %}
+                        {% if message.role == "user" %}
+                            <div class="message user-message">{{ message.text }}</div>
+                        {% elif message.role == "bot" %}
+                            <md-block class="message bot-message">{{ message.text }}</md-block>
                         {% endif %}
                     {% endfor %}
-                {% else %}
-                    <li style="color: black">No sessions available</li>
-                {% endif %}
-            </ul>
+                </div>
+                <div class="chat-input">
+                    <div class="chat-input-container">
+                        <input type="text" id="user-input" placeholder="Type your message here..." class="form-control">
+                        <button id="submit-prompt" onclick="sendMessage()"><img src="{% static 'sendmes.svg' %}" alt="Send"></button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form method="post" action="{% url 'create_session' %}">
-            {% csrf_token %}
-            <button type="submit">Start New Session</button>
-        </form>
-    </div>
-    <div class="chat-container" id="chat-container">
-        <div id="chat-messages">
-            <!-- Chat messages will be displayed here -->
-            {% for message in chat_messages %}
-                {% if message.role == "user" %}
-                    <div class="message user-message">{{ message.text }}</div>
-                {% elif message.role == "bot" %}
-                    <md-block class="message bot-message">{{ message.text }}</md-block>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-    <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Type your message..." >
-            <button id="submit-prompt" onclick="sendMessage()" >Send</button>
     </div>
 </div>
 
@@ -175,6 +209,7 @@
     // Function to display messages in the chat container
     function displayMessage(message, isUser) {
         let chatContainer = document.getElementById("chat-container");
+        let chatMessages = document.getElementById("chat-messages");
         let messageElement;
         if (isUser) {
             messageElement = document.createElement("div");
@@ -188,8 +223,8 @@
         } else {
             messageElement.classList.add('bot-message');
         }
-        chatContainer.appendChild(messageElement);
-        // Scroll to the bottom of the chat container to show the latest message
+
+        chatMessages.appendChild(messageElement);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 </script>
