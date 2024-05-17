@@ -28,6 +28,21 @@ class CustomUserModelTest(TestCase):
         self.assertEqual(self.user.email, 'testuser@example.com')
         self.assertTrue(self.user.check_password('password123'))
 
+    def test_str_method(self):
+        # Check the __str__ method
+        self.assertEqual(str(self.user), 'testuser')
+
+    def test_unique_email(self):
+        # Check that emails are unique
+        with self.assertRaises(IntegrityError):
+            CustomUser.objects.create_user(
+                username='anotheruser',
+                first_name='Another',
+                last_name='User',
+                email='testuser@example.com',
+                password='password123'
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
