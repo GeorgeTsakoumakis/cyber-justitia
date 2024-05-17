@@ -88,7 +88,7 @@ p, li, span {
   text-overflow: ellipsis;
 }
 
-@media (max-width: 100%) {
+@media (max-width: 1000px) {
   .navbar-nav {
     padding-left: 2%;
   }
