@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+<title>User Profile - Cyber Justitia</title>
+
+{% block styles %}
+<style>
+    .line-sep {
+        max-width: 40vw;
+        border: 2px solid #000000;
+    }
+
+    .professional {
+        background-color: #C597E2;
+    }
+
+    p, h2, h3 {
+        color: black;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="row">
+    <div class="col">
+        <div class="main-box {% if user.is_professional %}professional{% endif %}" style="border-radius: 6px 6px 0px 0px; width: 75vw; background-color: #FCD6DD">
+            <p {% if user.is_professional %}class="professional"{% endif %} style="font-size: 3em; color: black;">{{ first_name }} {{ last_name }}</p>
+        <div class="email-container">
+            <span><img style="padding-bottom: 1%" src="{% static 'mail_dark.svg'%}"></span>
+            <a {% if user.is_professional %}class="professional"{% endif %} href="mailto:{{ email }}">{{ email }}</a>
+        </div>
+        <div class="line-sep"></div>
+        </div>
+        <div class="main-box" style="border-radius: 0px 0px 6px 6px; width: 75vw;">
+            <h3 style="color: black; font-weight: bold;">Description</h3>
+            <p style="color: #3D3D3D">{{ description }}</p>
+            {% if description == None %}
+                <p style="color: #3D3D3D; font-style: italic;">There is no description.</p>
+            {% endif %}
+            {% if user.is_professional %}
+                <h3>Qualifications</h3>
+                    <p>{{ user.qualifications }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row" style="padding: 2%;">
+    <div class="col">
+        <div class="main-box post-comment-box" style="width: 34.7vw;">
+            <h3><b>Recent posts</b></h3>
+            <div style="max-width: 90%" class="line-sep"></div>
+            {% for post in recent_posts %}
+                <div>
+                    <h3>{{ post.question }}</h3>
+                    <p>{{ post.answer }}</p>
+                </div>
+            {% empty %}
+            <br>
+                <p style="color: #3D3D3D; font-style: italic;">No recent posts.</p>
+            {% endfor %}
+        </div>
+        <br>
+    </div>
+    <div class="col">
+        <div class="main-box post-comment-box" style="width: 34.7vw;">
+            <h3><b>Recent comments</b></h3>
+            <div style="max-width: 90%" class="line-sep"></div>
+            {% for comment in recent_comments %}
+                <div>
+                    <h3>{{ comment.question }}</h3>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% empty %}
+            <br>
+                <p style="color: #3D3D3D; font-style: italic;">No recent comments.</p>
+            {% endfor %}
+            
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+
+{% endblock %}
+
