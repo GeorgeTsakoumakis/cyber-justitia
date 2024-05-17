@@ -43,6 +43,17 @@ class CustomUserModelTest(TestCase):
                 password='password123'
             )
 
+    def test_email_format(self):
+        # Check that invalid email format raises a ValidationError
+        with self.assertRaises(ValidationError):
+            user = CustomUser(
+                username='user8',
+                first_name='Firstname',
+                last_name='Lastname',
+                email='invalid-email-format'
+            )
+            user.full_clean()
+
 
 if __name__ == '__main__':
     unittest.main()
