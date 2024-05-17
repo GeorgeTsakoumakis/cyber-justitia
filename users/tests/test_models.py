@@ -153,6 +153,47 @@ class CustomUserModelTest(TestCase):
             )
             user.full_clean()
 
+    def test_username_with_special_characters(self):
+        with (self.assertRaises(ValidationError)):
+            user = CustomUser(
+                username='!@#%$%',
+                first_name='Firstname',
+                last_name='Lastname',
+                email='user11@example.com',
+                password='password123'
+            )
+            user.full_clean()
+
+    def test_whitespace_username(self):
+        with self.assertRaises(ValidationError):
+            user = CustomUser(username='   ')
+            user.full_clean()
+
+    def test_whitespace_names(self):
+        # Check that first_name and last_name are not blank
+        with self.assertRaises(ValueError):
+            CustomUser.objects.create_user(
+                username='user2',
+                first_name='     ',
+                last_name='Lastname',
+                email='user2@example.com',
+                password='password123'
+            )
+
+        with self.assertRaises(ValueError):
+            CustomUser.objects.create_user(
+                username='user3',
+                first_name='Firstname',
+                last_name='     ',
+                email='user3@example.com',
+                password='password123'
+            )
+
+    def test_whitespace_email(self):
+        with self.assertRaises(ValidationError):
+            user = CustomUser(username='user8', email='   valid@example.com   ')
+            user.full_clean()
+
 
 if __name__ == '__main__':
     unittest.main()
