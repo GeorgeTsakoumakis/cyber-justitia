@@ -42,7 +42,8 @@ Or on Windows:
 ```bash
 pip install -r requirements.txt
 ```
-6. Create a `.env` file in the root directory of the project and add the following environment variables:
+6. Create a project on Google Cloud and find the project ID and location. For example, project ID `my-project` and location `us-central1`
+7. Create a `.env` file in the root directory of the project and add the following environment variables:
 ```bash
 SECRET_KEY=your_secret_key
 DEBUG=False
@@ -51,8 +52,10 @@ DB_USER = postgresql_user
 DB_PASSWORD = postgresql_password
 DB_HOST=postgresql_host
 DB_PORT='5432'
+PROJECT_ID=your_gcloud_project_id
+LOCATION=your_gcloud_project_location
 ```
-7. Run the following command to create a migration:
+8. Run the following command to create a db migration:
 ```bash
 python manage.py makemigrations
 ```
