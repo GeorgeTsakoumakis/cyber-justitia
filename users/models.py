@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -12,8 +11,8 @@ class CustomUser(AbstractUser):
         verbose_name_plural = "Users"
         db_table = "users"
 
-    first_name = models.CharField(_("first name"), max_length=150, blank=False)
-    last_name = models.CharField(_("last name"), max_length=150, blank=False)
+    first_name = models.CharField(_("first name"), max_length=150, blank=False, null=False)
+    last_name = models.CharField(_("last name"), max_length=150, blank=False, null=False)
     description = models.CharField(
         max_length=256,
         null=True,
@@ -33,6 +32,14 @@ class CustomUser(AbstractUser):
     email = models.EmailField(
         _("email address"), null=False, blank=False, unique=True, max_length=320
     )
+
+    def clean(self):
+        # Updated clean function because default Django doesn't recognize whitespace as blank
+        super().clean()
+        if not self.first_name.strip():
+            raise ValidationError({'first_name': "First name cannot be blank or whitespace only."})
+        if not self.last_name.strip():
+            raise ValidationError({'last_name': "Last name cannot be blank or whitespace only."})
 
     def __str__(self):
         return self.username
