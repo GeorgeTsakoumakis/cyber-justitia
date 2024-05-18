@@ -57,6 +57,13 @@ DB_PORT='5432'
 python manage.py makemigrations
 ```
 
+#### Google Cloud Setup
+You will also need to set up a Google Cloud Project to access the Gemini Pro model. If you want others admins to also have access on their machine, you can 
+add roles via IAM. Once they have been assigned their roles and they have accepted access rights, everyone must run the following command:
+```
+gcloud auth application-default login
+```
+
 ### Running the Application:
 To run the application, execute the following command:
 ```bash
