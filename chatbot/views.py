@@ -4,16 +4,6 @@ from django.shortcuts import render, redirect
 from chatbot.models import Session, Message
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    MessagesPlaceholder,
-    SystemMessagePromptTemplate,
-)
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_vertexai import ChatVertexAI, HarmBlockThreshold, HarmCategory
 import json
 from vertexai.generative_models import Content, GenerativeModel, Part
 import vertexai
