@@ -1,9 +1,7 @@
-python-dotenv
-Django
+Django~=5.0.4
 psycopg2-binary
 psycopg2
 coverage
 whitenoise
 google-cloud-aiplatform
-langchain-google-vertexai
-langchain
+vertexai
