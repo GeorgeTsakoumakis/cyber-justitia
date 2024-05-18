@@ -190,7 +190,8 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ message: userInput })
+                body: JSON.stringify({ message: userInput, session_id: {{ current_session }}
+                })
             })
             .then(response => {
                     return response.json();
