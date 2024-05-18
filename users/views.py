@@ -8,7 +8,7 @@ from chatbot.models import Session
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, "index.html")
 
 
 def register(request):
@@ -75,13 +75,15 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            session_ids = Session.objects.filter(user=user).values_list("session_id", flat=True)
+            session_ids = Session.objects.filter(user=user).values_list(
+                "session_id", flat=True
+            )
             request.session["session_ids"] = list(session_ids)
             return redirect("chatbot/")
         else:
             messages.info(request, "Invalid credentials")
             return redirect("login")
-        
+
     return render(request, "login.html")
 
 
@@ -91,8 +93,10 @@ def logout(request):
     auth.logout(request)
     return redirect("/")
 
+
 def codeofconduct(request):
     return render(request, "codeofconduct.html")
+
 
 def handler400(request, *args, **argv):
     return render(request, "errors/400.html", status=400)

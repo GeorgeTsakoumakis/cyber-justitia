@@ -26,6 +26,7 @@ class Message(models.Model):
     Message model to store chatbot messages. Each message is associated with a session.
     A message can be from a user, the chatbot, or a system message.
     """
+
     class Meta:
         verbose_name = "Message"
         verbose_name_plural = "Messages"
