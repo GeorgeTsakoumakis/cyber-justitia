@@ -8,7 +8,10 @@ urlpatterns = [
     path("login", views.login, name="login"),
     path("logout", views.logout, name="logout"),
     path("codeofconduct", views.codeofconduct, name="codeofconduct"),
-    # path('user_profile', views.user_profile, name="profile"),
+    # path("profile/", views.profile, name="profile"),
+
+
+
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
     ),
