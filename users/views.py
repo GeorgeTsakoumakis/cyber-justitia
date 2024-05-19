@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
-from .forms import UpdateDetailsForm
+from .forms import UpdateDetailsForm, UpdatePasswordForm
 
 
 def anonymous_required(redirect_url):
@@ -158,14 +158,46 @@ def dashboard(request):
     if request.method == 'POST':
         if 'update_details' in request.POST:
             return update_details(request)
+        elif 'change_password' in request.POST:
+            return change_password(request)
     else:
         update_details_form = UpdateDetailsForm(instance=request.user)
+        update_password_form = UpdatePasswordForm(instance=request.user)
 
     context = {
         'update_details_form': update_details_form,
+        'update_password_form': update_password_form,
     }
 
     return render(request, "dashboard.html", context)
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = UpdatePasswordForm(request.POST, instance=request.user)
+        if form.is_valid():
+            messages.info(request, "form is valid")
+            old_password = form.cleaned_data.get('old_password')
+            new_password1 = form.cleaned_data.get('new_password1')
+            new_password2 = form.cleaned_data.get('new_password2')
+            if not request.user.check_password(old_password):
+                messages.error(request, 'Old password is incorrect')
+                return render(request, 'dashboard.html', {'update_password_form': form})
+            if new_password1 != new_password2:
+                messages.error(request, 'New passwords do not match')
+                return render(request, 'dashboard.html', {'update_password_form': form})
+
+            request.user.set_password(new_password1)
+            request.user.save()
+            print("password is valid and saved")
+            messages.success(request, 'Password updated successfully')
+            return redirect('/')
+
+        else:
+            print(form.errors)  # Print form errors
+            return render(request, 'dashboard.html', {'update_password_form': form})
+    return redirect('/')
 
 
 @login_required
@@ -178,7 +210,7 @@ def update_details(request):
             return redirect('dashboard')
         else:
             return render(request, 'dashboard.html', {'update_details_form': form})
-    return redirect('dashboard.html')
+    return redirect('dashboard')
 
 
 @login_required
