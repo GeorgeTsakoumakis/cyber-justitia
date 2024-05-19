@@ -158,12 +158,14 @@ def dashboard(request):
     return render(request, "dashboard.html")
 
 
+@login_required
 def update_details(request):
-    #TODO: check user detilas arnt the same as already in the database
     user = request.user
     if request.method == 'POST':
+        print("here")
         form = UpdateDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
+            print(form.cleaned_data['first_name'])
             form.save()
             return redirect('dashboard')
     else:
