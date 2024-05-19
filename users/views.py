@@ -7,10 +7,32 @@ from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
 
 
+def anonymous_required(redirect_url):
+    """
+    Decorator for views that allow only unauthenticated users to access view.
+    Usage:
+    @anonymous_required(redirect_url='company_info')
+    def homepage(request):
+        return render(request, 'homepage.html')
+
+    :param redirect_url: URL to redirect to if user is authenticated
+    Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
+    """
+    def _wrapped(view_func, *args, **kwargs):
+        def check_anonymous(request, *args, **kwargs):
+            view = view_func(request, *args, **kwargs)
+            if request.user.is_authenticated:
+                return redirect(redirect_url)
+            return view
+        return check_anonymous
+    return _wrapped
+
+
 def index(request):
     return render(request, "index.html")
 
 
+@anonymous_required(redirect_url="chatbot/")
 def register(request):
     if request.method == "POST":
         first_name = request.POST["first_name"]
@@ -66,6 +88,7 @@ def register(request):
     return render(request, "register.html")
 
 
+@anonymous_required(redirect_url="chatbot/")
 def login(request):
     if request.method == "POST":
         username = request.POST["username"]
