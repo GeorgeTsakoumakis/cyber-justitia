@@ -155,26 +155,30 @@ def dashboard(request):
     # context = {
     #     'user': user,
     # }
-    return render(request, "dashboard.html")
+    if request.method == 'POST':
+        if 'update_details' in request.POST:
+            return update_details(request)
+    else:
+        update_details_form = UpdateDetailsForm(instance=request.user)
+
+    context = {
+        'update_details_form': update_details_form,
+    }
+
+    return render(request, "dashboard.html", context)
 
 
 @login_required
 def update_details(request):
-    user = request.user
     if request.method == 'POST':
-        print("here")
         form = UpdateDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
-            print(form.cleaned_data['first_name'])
             form.save()
+            messages.success(request, 'Details updated successfully')
             return redirect('dashboard')
-    else:
-        form = UpdateDetailsForm(instance=request.user)
-
-    context = {
-        'user': user,
-    }
-    return render(request, 'dashboard.html', context)
+        else:
+            return render(request, 'dashboard.html', {'update_details_form': form})
+    return redirect('dashboard.html')
 
 
 @login_required
