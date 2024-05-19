@@ -20,7 +20,32 @@
     <h2>Update Details</h2>
     <form method="POST" action="{% url 'dashboard' %}">
         {% csrf_token %}
-        {{  update_details_form.as_p }}
+        <div class="form-group">
+                <input placeholder="First Name" type="text" class="form-control" id="{{ update_details_form.first_name.id_for_label }}" name="{{ update_details_form.first_name.html_name }}" value="{{ update_details_form.first_name.value }}">
+                {% if update_details_form.first_name.errors %}
+                    <div class="text-danger">
+                        {{ update_details_form.first_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <input placeholder="Last Name" type="text" class="form-control" id="{{ update_details_form.last_name.id_for_label }}" name="{{ update_details_form.last_name.html_name }}" value="{{ update_details_form.last_name.value }}">
+                {% if update_details_form.last_name.errors %}
+                    <div class="text-danger">
+                        {{ update_details_form.last_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <input placeholder="Email" type="email" class="form-control" id="{{ update_details_form.email.id_for_label }}" name="{{ update_details_form.email.html_name }}" value="{{ update_details_form.email.value }}">
+                {% if update_details_form.email.errors %}
+                    <div class="text-danger">
+                        {{ update_details_form.email.errors }}
+                    </div>
+                {% endif %}
+            </div>
         <button type="submit" class="btn btn-primary" name="update_details">Update</button>
     </form>
 </div>
