@@ -190,12 +190,10 @@ def change_password(request):
 
             request.user.set_password(new_password1)
             request.user.save()
-            print("password is valid and saved")
             messages.success(request, 'Password updated successfully')
             return redirect('/')
 
         else:
-            print(form.errors)  # Print form errors
             return render(request, 'dashboard.html', {'update_password_form': form})
     return redirect('/')
 
