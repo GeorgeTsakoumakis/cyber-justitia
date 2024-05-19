@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<title>Dashboard - Cyber Justitia</title>
 <!-- TODO: add styles and HTML in styles and content blocks -->
+
+{% block styles %}
+    <!-- Imports JQuery for dynamic form uses -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
+    <script src="{% static 'flair_toggle.js'%}"></script>
+{% endblock %}
