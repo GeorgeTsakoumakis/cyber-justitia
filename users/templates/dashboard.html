@@ -4,8 +4,27 @@
 <title>Dashboard - Cyber Justitia</title>
 <!-- TODO: add styles and HTML in styles and content blocks -->
 
-{% block styles %}
-    <!-- Imports JQuery for dynamic form uses -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
-    <script src="{% static 'flair_toggle.js'%}"></script>
+
+<title>Dashboard - Cyber Justitia</title>
+
+{% block content %}
+<div class="container">
+    <h2>Update Details</h2>
+    <form method="POST" action="{% url 'update_details' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_first_name">First Name:</label>
+            <input type="text" id="id_first_name" name="first_name" class="form-control" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+            <label for="id_last_name">Last Name:</label>
+            <input type="text" id="id_last_name" name="last_name" class="form-control" value="{{ user.last_name }}">
+        </div>
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            <input type="email" id="id_email" name="email" class="form-control" value="{{ user.email }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
 {% endblock %}

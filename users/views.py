@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
+from .forms import UpdateDetailsForm
 
 
 def anonymous_required(redirect_url):
@@ -108,6 +109,70 @@ def login(request):
             return redirect("login")
 
     return render(request, "login.html")
+
+
+@login_required
+def dashboard(request):
+    # TODO: Add different POST forms for different actions based on prototype (frontend) and retrieve information here,
+    #  redirect to appropriate functions to handle the actions
+    # user = request.user
+    # if request.method == 'POST':
+    #     if 'delete' in request.POST and request.POST['delete'] == 'on':
+    #         user.is_active = False
+    #         user.save()
+    #         return redirect('/')
+    #     else:
+    #         return redirect('dashboard')
+    # if request.method == 'POST':
+    #     # Get the new data from the form
+    #     first_name = request.POST['firstName']
+    #     last_name = request.POST['lastName']
+    #     username = request.POST['username']
+    #     email = request.POST['email']
+    #     password = request.POST['password']
+    #     new_password = request.POST['newpassword']
+    #
+    #     # Update the user's information if the new data is not empty
+    #     if first_name:
+    #         user.first_name = first_name
+    #     if last_name:
+    #         user.last_name = last_name
+    #     if username:
+    #         user.username = username
+    #     if email:
+    #         user.email = email
+    #
+    #     # Check if the password field is not empty and if the new password is different from the old one
+    #     if password and user.check_password(password) and password != new_password:
+    #         user.set_password(new_password)
+    #
+    #     # Save the user object
+    #     user.save()
+    #
+    #     # Redirect to the profile page
+    #     return redirect('dashboard')
+    #
+    # context = {
+    #     'user': user,
+    # }
+    return render(request, "dashboard.html")
+
+
+def update_details(request):
+    #TODO: check user detilas arnt the same as already in the database
+    user = request.user
+    if request.method == 'POST':
+        form = UpdateDetailsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = UpdateDetailsForm(instance=request.user)
+
+    context = {
+        'user': user,
+    }
+    return render(request, 'dashboard.html', context)
 
 
 @login_required
