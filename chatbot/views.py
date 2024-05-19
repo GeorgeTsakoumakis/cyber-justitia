@@ -4,11 +4,13 @@ from django.shortcuts import render, redirect
 from chatbot.models import Session, Message
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 import json
 from vertexai.generative_models import Content, GenerativeModel, Part
 import vertexai
 
 
+@login_required
 def chatbot_session(request, session_id):
     # Check if the user is authenticated
     if request.user.is_authenticated:
@@ -16,7 +18,6 @@ def chatbot_session(request, session_id):
         session_ids = Session.objects.filter(user_id=request.user.id).values_list(
             "session_id", flat=True
         )
-        print(list(session_ids))
 
         # Store session IDs in the session object
         request.session["session_ids"] = list(session_ids)
@@ -172,6 +173,7 @@ def process_chat_message(request):
 
 
 @require_POST
+@login_required
 def create_session(request):
     # Check if the user is authenticated
     if request.user.is_authenticated:
