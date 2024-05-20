@@ -181,7 +181,7 @@ def dashboard(request):
 
     return render(request, "dashboard.html", context)
 
-
+@login_required()
 def deactivate_account(request):
     if request.method == 'POST':
         form = DeactivateAccountForm(request.POST, instance=request.user)
