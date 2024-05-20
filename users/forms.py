@@ -1,11 +1,19 @@
 from django import forms
 from .models import CustomUser
+from django.utils.translation import gettext_lazy as _
 
 
 class UpdateDetailsForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["first_name", "last_name", "email"]
+
+    def clean_email(self):
+        # Check if the email is already in use
+        email = self.cleaned_data["email"]
+        if CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(_("This email is already in use."), code="invalid")
+        return email
 
 
 class UpdatePasswordForm(forms.ModelForm):
