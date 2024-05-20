@@ -258,6 +258,46 @@ class ProfessionalUserModelTest(TestCase):
         professional_user.refresh_from_db()
         self.assertEqual(professional_user.flair, "Expert Legal Advisor")
 
+    def test_valid_reason_banned(self):
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney",
+            reason_banned="Violation of terms"
+        )
+        self.assertIsInstance(professional_user, ProfessionalUser)
+        self.assertEqual(professional_user.reason_banned, "Violation of terms")
+
+    def test_blank_reason_banned(self):
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney",
+            reason_banned=""
+        )
+        self.assertEqual(professional_user.reason_banned, "")
+
+    def test_null_reason_banned(self):
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney",
+            reason_banned=None
+        )
+        self.assertIsNone(professional_user.reason_banned)
+
+    def test_max_reason_banned_length(self):
+        reason_banned = 'a' * 150
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney",
+            reason_banned=reason_banned
+        )
+        self.assertEqual(professional_user.reason_banned, reason_banned)
+
+    def test_long_reason_banned(self):
+        reason_banned = 'a' * 151
+        professional_user = ProfessionalUser(user=self.user, flair="Experienced Attorney", reason_banned=reason_banned)
+        with self.assertRaises(ValidationError):
+            professional_user.full_clean()
+
 
 if __name__ == '__main__':
     unittest.main()
