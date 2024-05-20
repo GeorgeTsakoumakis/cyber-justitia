@@ -129,6 +129,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
+    {
+        "NAME": "justitia.validators.SpecialCharacterPasswordValidator",
+    },
 ]
 
 # Custom user model
