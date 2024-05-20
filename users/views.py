@@ -163,6 +163,8 @@ def dashboard(request):
             return update_details(request)
         elif "change_password" in request.POST:
             return change_password(request)
+        elif "update_description" in request.POST:
+            return update_description(request)
     else:
         update_details_form = UpdateDetailsForm(instance=request.user)
         update_password_form = UpdatePasswordForm(instance=request.user)
@@ -204,6 +206,17 @@ def update_details(request):
             return redirect("dashboard")
         else:
             return render(request, "dashboard.html", {"update_details_form": form})
+    return redirect("dashboard")
+
+
+@login_required
+def update_description(request):
+    if request.method == "POST":
+        description = request.POST["description"]
+        request.user.description = description
+        request.user.save()
+        messages.success(request, "Description updated successfully")
+        return redirect("dashboard")
     return redirect("dashboard")
 
 

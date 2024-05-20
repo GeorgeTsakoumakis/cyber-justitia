@@ -86,4 +86,15 @@
     </form>
   
 </div>
+<div class="container">
+    <h2 style="color: black">Description</h2>
+    <form method="POST" action="{% url 'dashboard' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <!-- Send the description to the server without a form -->
+            <textarea placeholder="Description" class="form-control" id="description" name="description">{{ description }}</textarea>
+            <button type="submit" class="btn btn-primary" name="update_description">Save</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
