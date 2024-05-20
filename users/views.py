@@ -206,9 +206,7 @@ def change_password(request):
     if request.method == "POST":
         form = UpdatePasswordForm(request.POST, instance=request.user)
         if form.is_valid():
-            new_password = form.cleaned_data["new_password1"]
-            request.user.set_password(new_password)
-            request.user.save()
+            form.save()
             messages.success(request, "Password updated successfully")
             # Keep the user logged in
             auth.login(request, request.user)
@@ -216,8 +214,8 @@ def change_password(request):
         else:
             for error in form.errors.values():
                 messages.error(request, error)
-            return redirect("dashboard")
-    return redirect("/")
+            return render(request, "dashboard.html", {"update_password_form": form})
+    return redirect("dashboard")
 
 
 @login_required
