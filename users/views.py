@@ -19,13 +19,16 @@ def anonymous_required(redirect_url):
     :param redirect_url: URL to redirect to if user is authenticated
     Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
     """
+
     def _wrapped(view_func, *args, **kwargs):
         def check_anonymous(request, *args, **kwargs):
             view = view_func(request, *args, **kwargs)
             if request.user.is_authenticated:
                 return redirect(redirect_url)
             return view
+
         return check_anonymous
+
     return _wrapped
 
 
@@ -155,13 +158,15 @@ def dashboard(request):
     # context = {
     #     'user': user,
     # }
-    if request.method == 'POST':
-        if 'update_details' in request.POST:
+    if request.method == "POST":
+        if "update_details" in request.POST:
             return update_details(request)
-        elif 'change_password' in request.POST:
+        elif "change_password" in request.POST:
             return change_password(request)
         elif 'deactivate_account' in request.POST:
             return deactivate_account(request)
+        elif "update_description" in request.POST:
+            return update_description(request)
     else:
         update_details_form = UpdateDetailsForm(instance=request.user)
         update_password_form = UpdatePasswordForm(instance=request.user)
@@ -171,6 +176,7 @@ def dashboard(request):
         'update_details_form': update_details_form,
         'update_password_form': update_password_form,
         'deactivate_account': deactivate_account_form,
+        "update_details_form": update_details_form,
     }
 
     return render(request, "dashboard.html", context)
@@ -196,34 +202,45 @@ def deactivate_account(request):
 
 @login_required
 def change_password(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UpdatePasswordForm(request.POST, instance=request.user)
         if form.is_valid():
-            new_password = form.cleaned_data['new_password1']
+            new_password = form.cleaned_data["new_password1"]
             request.user.set_password(new_password)
             request.user.save()
-            messages.success(request, 'Password updated successfully')
+            messages.success(request, "Password updated successfully")
             # Keep the user logged in
             auth.login(request, request.user)
-            return redirect('dashboard')
+            return redirect("dashboard")
         else:
             for error in form.errors.values():
                 messages.error(request, error)
-            return redirect('dashboard')
-    return redirect('/')
+            return redirect("dashboard")
+    return redirect("/")
 
 
 @login_required
 def update_details(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UpdateDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Details updated successfully')
-            return redirect('dashboard')
+            messages.success(request, "Details updated successfully")
+            return redirect("dashboard")
         else:
-            return render(request, 'dashboard.html', {'update_details_form': form})
-    return redirect('dashboard')
+            return render(request, "dashboard.html", {"update_details_form": form})
+    return redirect("dashboard")
+
+
+@login_required
+def update_description(request):
+    if request.method == "POST":
+        description = request.POST["description"]
+        request.user.description = description
+        request.user.save()
+        messages.success(request, "Description updated successfully")
+        return redirect("dashboard")
+    return redirect("dashboard")
 
 
 @login_required

@@ -85,13 +85,26 @@
         <button type="submit" class="btn btn-primary" name="change_password">Save</button>
     </form>
 
-    <<form method="post">
+  
+</div>
+<div class="container">
+    <h2 style="color: black">Description</h2>
+    <form method="POST" action="{% url 'dashboard' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <!-- Send the description to the server without a form -->
+            <textarea placeholder="Description" class="form-control" id="description" name="description">{{ description }}</textarea>
+            <button type="submit" class="btn btn-primary" name="update_description">Save</button>
+        </div>
+    </form>
+</div>
+    
+        <<form method="post">
     {% csrf_token %}
     <input type="hidden" name="deactive_profile" value="False">
     <label for="{{ deactivate_account_form.deactive_profile.id_for_label }}">Confirm Deactivation:</label>
     <input type="checkbox" id="{{ deactivate_account_form.deactive_profile.id_for_label }}" name="deactive_profile" value="True" {% if deactivate_account_form.deactive_profile.value %}checked{% endif %}>
     <button type="submit" name="deactivate_account">Deactivate Account</button>
 </form>
-  
-</div>
+    
 {% endblock %}
