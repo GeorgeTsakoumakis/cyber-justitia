@@ -101,9 +101,9 @@
     
         <form method="post">
     {% csrf_token %}
-    <input type="hidden" name="deactive_profile" value="False">
-    <label for="{{ deactivate_account_form.deactive_profile.id_for_label }}">Confirm Deletion:</label>
-    <input type="checkbox" id="{{ deactivate_account_form.deactive_profile.id_for_label }}" name="deactive_profile" value="True" {% if deactivate_account_form.deactive_profile.value %}checked{% endif %}>
+    <input type="hidden" name="deactivate_profile" value="False">
+    <label for="{{ deactivate_account_form.deactivate_profile.id_for_label }}">Confirm Deletion:</label>
+    <input type="checkbox" id="{{ deactivate_account_form.deactivate_profile.id_for_label }}" name="deactivate_profile" value="True" {% if deactivate_account_form.deactivate_profile.value %}checked{% endif %}>
     <button type="submit" name="deactivate_account">Delete Account</button>
 </form>
     
