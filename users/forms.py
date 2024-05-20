@@ -56,6 +56,13 @@ class UpdatePasswordForm(forms.ModelForm):
             )
         return cleaned_data
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["new_password1"])
+        if commit:
+            user.save()
+        return user
+
 
 class UpdateDescriptionForm(forms.ModelForm):
     class Meta:
