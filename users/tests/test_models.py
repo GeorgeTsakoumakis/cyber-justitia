@@ -1,4 +1,6 @@
 import unittest
+
+from django.contrib.auth.password_validation import validate_password
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
@@ -17,7 +19,7 @@ class CustomUserModelTest(TestCase):
             first_name='Test',
             last_name='User',
             email='testuser@example.com',
-            password='password123'
+            password='Password123!'
         )
 
     def test_user_creation(self):
@@ -26,7 +28,7 @@ class CustomUserModelTest(TestCase):
         self.assertEqual(self.user.first_name, 'Test')
         self.assertEqual(self.user.last_name, 'User')
         self.assertEqual(self.user.email, 'testuser@example.com')
-        self.assertTrue(self.user.check_password('password123'))
+        self.assertTrue(self.user.check_password('Password123!'))
 
     def test_str_method(self):
         # Check the __str__ method
@@ -40,7 +42,7 @@ class CustomUserModelTest(TestCase):
                 first_name='Another',
                 last_name='User',
                 email='testuser@example.com',
-                password='password123'
+                password='Password123!'
             )
 
     def test_email_format(self):
@@ -61,7 +63,7 @@ class CustomUserModelTest(TestCase):
             first_name='',
             last_name='Lastname',
             email='user2@example.com',
-            password='password123'
+            password='Password123!'
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -71,7 +73,7 @@ class CustomUserModelTest(TestCase):
             first_name='Firstname',
             last_name='',
             email='user3@example.com',
-            password='password123'
+            password='Password123!'
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -84,7 +86,7 @@ class CustomUserModelTest(TestCase):
                 first_name='Firstname',
                 last_name='Lastname',
                 email='user@example.com',
-                password='password123'
+                password='Password123!'
             )
 
     def test_duplicate_username(self):
@@ -95,7 +97,7 @@ class CustomUserModelTest(TestCase):
                 first_name='Another',
                 last_name='User',
                 email='anotheruser@example.com',
-                password='password123'
+                password='Password123!'
             )
 
     def test_default_is_banned(self):
@@ -162,7 +164,7 @@ class CustomUserModelTest(TestCase):
                 first_name='Firstname',
                 last_name='Lastname',
                 email='user11@example.com',
-                password='password123'
+                password='Password123!'
             )
             user.full_clean()
 
@@ -179,7 +181,7 @@ class CustomUserModelTest(TestCase):
                 first_name='     ',
                 last_name='Lastname',
                 email='user2@example.com',
-                password='password123'
+                password='Password123!'
             )
             user.full_clean()
 
@@ -189,7 +191,7 @@ class CustomUserModelTest(TestCase):
                 first_name='Firstname',
                 last_name='     ',
                 email='user3@example.com',
-                password='password123'
+                password='Password123!'
             )
             user.full_clean()
 
@@ -197,6 +199,13 @@ class CustomUserModelTest(TestCase):
         with self.assertRaises(ValidationError):
             user = CustomUser(username='user8', email='   valid@example.com   ')
             user.full_clean()
+
+    def test_invalid_password(self):
+        # Check that an invalid password raises a ValidationError
+        invalid_password = 'cringe'
+
+        with self.assertRaises(ValidationError):
+            validate_password(invalid_password, user=self.user)
 
 
 if __name__ == '__main__':
