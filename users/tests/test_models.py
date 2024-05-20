@@ -298,6 +298,20 @@ class ProfessionalUserModelTest(TestCase):
         with self.assertRaises(ValidationError):
             professional_user.full_clean()
 
+    def test_create_professional_without_user(self):
+        professional_user = ProfessionalUser(user=None, flair="Experienced Attorney")
+        with self.assertRaises(IntegrityError):
+            professional_user.save()
+
+    def test_delete_associated_user(self):
+        # Checks if ProfessionalUser deletes itself when the associated User is deleted
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney"
+        )
+        self.user.delete()
+        with self.assertRaises(ProfessionalUser.DoesNotExist):
+            ProfessionalUser.objects.get(pk=professional_user.prof_id)
 
 if __name__ == '__main__':
     unittest.main()
