@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
-from .forms import UpdateDetailsForm, UpdatePasswordForm
+from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm
 
 
 def anonymous_required(redirect_url):
@@ -160,17 +160,39 @@ def dashboard(request):
             return update_details(request)
         elif 'change_password' in request.POST:
             return change_password(request)
+        elif 'deactivate_account' in request.POST:
+            return deactivate_account(request)
     else:
         update_details_form = UpdateDetailsForm(instance=request.user)
         update_password_form = UpdatePasswordForm(instance=request.user)
+        deactivate_account_form = DeactivateAccountForm(instance=request.user)
 
     context = {
         'update_details_form': update_details_form,
         'update_password_form': update_password_form,
+        'deactivate_account': deactivate_account_form,
     }
 
     return render(request, "dashboard.html", context)
 
+
+def deactivate_account(request):
+    if request.method == 'POST':
+        form = DeactivateAccountForm(request.POST, instance=request.user)
+        if form.is_valid():
+            if form.cleaned_data['deactive_profile']:
+                request.user.is_active = False
+                request.user.save()
+                messages.success(request, 'Account deactivated successfully')
+                return redirect('index')
+            else:
+                messages.error(request, 'Please check the box to confirm account deactivation')
+                return redirect('dashboard')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+            return redirect('dashboard')
+    return redirect('dashboard')
 
 @login_required
 def change_password(request):

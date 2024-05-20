@@ -43,8 +43,8 @@ class UpdateDescriptionForm(forms.ModelForm):
         fields = ['description']
 
 
-class DeleteAccountForm(forms.ModelForm):
-    delete_profile = forms.BooleanField(
+class DeactivateAccountForm(forms.ModelForm):
+    deactive_profile = forms.BooleanField(
         required=True,
         initial=False,
         widget=forms.CheckboxInput()
