@@ -19,13 +19,21 @@ class UpdatePasswordForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        old_password = cleaned_data.get('old_password')
         new_password1 = cleaned_data.get('new_password1')
         new_password2 = cleaned_data.get('new_password2')
 
+        # Check if the old password is correct
+        if not self.instance.check_password(old_password):
+            raise forms.ValidationError("The old password is incorrect.")
+
+        # Check if the new passwords match
         if new_password1 != new_password2:
             raise forms.ValidationError("The new passwords do not match.")
 
-
+        # Check if the new password is the same as the old password
+        if old_password == new_password1:
+            raise forms.ValidationError("The new password cannot be the same as the old password.")
         return cleaned_data
 
 

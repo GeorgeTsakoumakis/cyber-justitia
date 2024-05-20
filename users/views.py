@@ -177,24 +177,17 @@ def change_password(request):
     if request.method == 'POST':
         form = UpdatePasswordForm(request.POST, instance=request.user)
         if form.is_valid():
-            messages.info(request, "form is valid")
-            old_password = form.cleaned_data.get('old_password')
-            new_password1 = form.cleaned_data.get('new_password1')
-            new_password2 = form.cleaned_data.get('new_password2')
-            if not request.user.check_password(old_password):
-                messages.error(request, 'Old password is incorrect')
-                return render(request, 'dashboard.html', {'update_password_form': form})
-            if new_password1 != new_password2:
-                messages.error(request, 'New passwords do not match')
-                return render(request, 'dashboard.html', {'update_password_form': form})
-
-            request.user.set_password(new_password1)
+            new_password = form.cleaned_data['new_password1']
+            request.user.set_password(new_password)
             request.user.save()
             messages.success(request, 'Password updated successfully')
-            return redirect('/')
-
+            # Keep the user logged in
+            auth.login(request, request.user)
+            return redirect('dashboard')
         else:
-            return render(request, 'dashboard.html', {'update_password_form': form})
+            for error in form.errors.values():
+                messages.error(request, error)
+            return redirect('dashboard')
     return redirect('/')
 
 
