@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import sys
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -90,6 +90,14 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT"),
     }
 }
+if "test" in sys.argv or os.getenv("GITHUB_TEST") == "True":
+    print("Using SQLite for testing")
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
