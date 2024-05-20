@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
+from ..models import ProfessionalUser
 
 # Get the CustomUser model
 CustomUser = get_user_model()
@@ -206,6 +207,56 @@ class CustomUserModelTest(TestCase):
 
         with self.assertRaises(ValidationError):
             validate_password(invalid_password, user=self.user)
+
+
+class ProfessionalUserModelTest(TestCase):
+
+    def setUp(self):
+        # Create a test user
+        self.user = CustomUser.objects.create_user(
+            username='testuser',
+            first_name='Test',
+            last_name='User',
+            email='testuser@example.com',
+            password='Password123!'
+        )
+
+    def test_create_professional_user(self):
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney"
+        )
+        self.assertIsInstance(professional_user, ProfessionalUser)
+        self.assertEqual(professional_user.flair, "Experienced Attorney")
+
+    def test_blank_flair(self):
+        professional_user = ProfessionalUser(user=self.user, flair="")
+        with self.assertRaises(ValidationError):
+            professional_user.full_clean()
+
+    def test_max_flair_length(self):
+        flair = 'a' * 100
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair=flair
+        )
+        self.assertEqual(professional_user.flair, flair)
+
+    def test_long_flair(self):
+        flair = 'a' * 101
+        professional_user = ProfessionalUser(user=self.user, flair=flair)
+        with self.assertRaises(ValidationError):
+            professional_user.full_clean()
+
+    def test_update_flair(self):
+        professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair="Experienced Attorney"
+        )
+        professional_user.flair = "Expert Legal Advisor"
+        professional_user.save()
+        professional_user.refresh_from_db()
+        self.assertEqual(professional_user.flair, "Expert Legal Advisor")
 
 
 if __name__ == '__main__':
