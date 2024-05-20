@@ -99,7 +99,7 @@
     </form>
 </div>
     
-        <<form method="post">
+        <form method="post">
     {% csrf_token %}
     <input type="hidden" name="deactive_profile" value="False">
     <label for="{{ deactivate_account_form.deactive_profile.id_for_label }}">Confirm Deactivation:</label>
