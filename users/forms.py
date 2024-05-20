@@ -1,11 +1,19 @@
 from django import forms
 from .models import CustomUser
+from django.utils.translation import gettext_lazy as _
 
 
 class UpdateDetailsForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["first_name", "last_name", "email"]
+
+    def clean_email(self):
+        # Check if the email is already in use
+        email = self.cleaned_data["email"]
+        if CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(_("This email is already in use."), code="invalid")
+        return email
 
 
 class UpdatePasswordForm(forms.ModelForm):
@@ -47,6 +55,13 @@ class UpdatePasswordForm(forms.ModelForm):
                 "The new password cannot be the same as the old password."
             )
         return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["new_password1"])
+        if commit:
+            user.save()
+        return user
 
 
 class UpdateDescriptionForm(forms.ModelForm):
