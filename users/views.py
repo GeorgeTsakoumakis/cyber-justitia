@@ -176,10 +176,10 @@ def dashboard(request):
         'update_details_form': update_details_form,
         'update_password_form': update_password_form,
         'deactivate_account': deactivate_account_form,
-        "update_details_form": update_details_form,
     }
 
     return render(request, "dashboard.html", context)
+
 
 @login_required()
 def deactivate_account(request):
@@ -199,6 +199,7 @@ def deactivate_account(request):
                 messages.error(request, error)
             return redirect('dashboard')
     return redirect('dashboard')
+
 
 @login_required
 def change_password(request):
