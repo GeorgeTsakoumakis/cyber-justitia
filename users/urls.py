@@ -14,7 +14,7 @@ urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     path("update_details/", views.update_details, name="update_details"),
     path("update_description/", views.update_description, name="update_description"),
-)
+
 
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
