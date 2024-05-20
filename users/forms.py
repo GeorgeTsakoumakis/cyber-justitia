@@ -57,7 +57,10 @@ class UpdateDescriptionForm(forms.ModelForm):
 
 
 class DeactivateAccountForm(forms.ModelForm):
-    deactive_profile = forms.BooleanField(required=True, initial=False, widget=forms.CheckboxInput()
+    deactivate_profile = forms.BooleanField(
+        required=True,
+        initial=False,
+        widget=forms.CheckboxInput()
 
     )
 

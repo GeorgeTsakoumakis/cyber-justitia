@@ -186,7 +186,7 @@ def deactivate_account(request):
     if request.method == 'POST':
         form = DeactivateAccountForm(request.POST, instance=request.user)
         if form.is_valid():
-            if form.cleaned_data['deactive_profile']:
+            if form.cleaned_data['deactivate_profile']:
                 request.user.is_active = False
                 request.user.save()
                 messages.success(request, 'Account deactivated successfully')
