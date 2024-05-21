@@ -36,7 +36,6 @@ def index(request):
 
 @anonymous_required(redirect_url="chatbot/")
 def register(request):
-    """ Handles the registration form """
     if request.method == "POST":
         first_name = request.POST["first_name"]
         last_name = request.POST["last_name"]
@@ -116,9 +115,12 @@ def login(request):
 
 @login_required
 def dashboard(request):
-    """ Handles all POST requests from the dashboard page """
-    # TODO: Add different POST forms for different actions based on prototype (frontend) and retrieve information here,
-    #  redirect to appropriate functions to handle the actions
+    """
+    Handles all POST requests from the dashboard page.
+
+    Depending on the action in the POST request, different functions are called
+    to handle the respective form submissions (update details, change password,
+    deactivate account, update description)."""
     if request.method == "POST":
         if "update_details" in request.POST:
             return update_details(request)
@@ -129,11 +131,13 @@ def dashboard(request):
         elif "update_description" in request.POST:
             return update_description(request)
     else:
+        # Initialize forms with the current user's data
         update_details_form = UpdateDetailsForm(instance=request.user)
         update_password_form = UpdatePasswordForm(instance=request.user)
         deactivate_account_form = DeactivateAccountForm(instance=request.user)
         update_description_form = UpdateDescriptionForm(instance=request.user)
 
+    # Pass the forms to the context for rendering in the template
     context = {
         'update_details_form': update_details_form,
         'update_password_form': update_password_form,
@@ -146,10 +150,18 @@ def dashboard(request):
 
 @login_required()
 def deactivate_account(request):
-    """ Deactivates the users account """
+    """
+    Deactivates the user's account.
+
+    If the form is valid and the 'deactivate_profile' checkbox is checked,
+    the user's account is set to inactive, and the user is redirected to the index page
+    with a success message.
+    """
     if request.method == 'POST':
+        # creates a form instance and populates it with data from the request
         form = DeactivateAccountForm(request.POST, instance=request.user)
         if form.is_valid():
+            # Check if the 'deactivate_profile' checkbox was checked in the form
             if form.cleaned_data['deactivate_profile']:
                 request.user.is_active = False
                 request.user.save()
@@ -162,7 +174,12 @@ def deactivate_account(request):
 
 @login_required
 def change_password(request):
-    """ Handles the change password form """
+    """
+       Handles the change password form submission.
+
+       If the form is valid, the user's password is updated, the user is kept logged in,
+       and a success message is displayed. The user is then redirected to the dashboard.
+       """
     if request.method == "POST":
         form = UpdatePasswordForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -173,12 +190,17 @@ def change_password(request):
             return redirect("dashboard")
         else:
             return render(request, "dashboard.html", {"change_password_form": form})
-    return redirect("dashboard", {"change_password_form": form})
+    return redirect("dashboard")
 
 
 @login_required
 def update_details(request):
-    """ Handles the update details form """
+    """
+    Handles the update details form submission.
+
+    If the form is valid, the user's details are updated, and a success message is displayed.
+    The user is then redirected to the dashboard.
+    """
     if request.method == "POST":
         form = UpdateDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -192,7 +214,12 @@ def update_details(request):
 
 @login_required
 def update_description(request):
-    """ Handles the update description form """
+    """
+    Handles the update description form submission.
+
+    If the form is valid, the user's description is updated, and a success message is displayed.
+    The user is then redirected to the dashboard.
+    """
     if request.method == "POST":
         form = UpdateDescriptionForm(request.POST, instance=request.user)
         if form.is_valid():
