@@ -156,8 +156,6 @@ def deactivate_account(request):
                 messages.success(request, 'Account deactivated successfully')
                 return redirect('index')
         else:
-            for error in form.errors.values():
-                messages.error(request, error)
             return render(request, 'dashboard.html', {'deactivate_account_form': form})
     return redirect('dashboard')
 
@@ -174,8 +172,6 @@ def change_password(request):
             auth.login(request, request.user)
             return redirect("dashboard")
         else:
-            for error in form.errors.values():
-                messages.error(request, error)
             return render(request, "dashboard.html", {"change_password_form": form})
     return redirect("dashboard", {"change_password_form": form})
 

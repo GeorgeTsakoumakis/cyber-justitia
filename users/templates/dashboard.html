@@ -8,6 +8,14 @@
 <title>Dashboard - Cyber Justitia</title>
 
 {% block content %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+                {% endfor %}
+        </ul>
+    {% endif %}
+    
     <div class="container">
         <h2 style="color: black">Update Details</h2>
         <form method="POST" action="{% url 'dashboard' %}">
@@ -111,11 +119,6 @@
     </div>
 
 </div>
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 4e0268efe063b345cabaac8eda01351157b7b375
         <form method="post">
     {% csrf_token %}
     <label for="{{ deactivate_account_form.deactivate_profile.id_for_label }}">Confirm Deletion:</label>

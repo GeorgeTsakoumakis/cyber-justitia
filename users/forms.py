@@ -53,7 +53,7 @@ class UpdatePasswordForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['password']
+        fields = ['old_password', 'new_password1', 'new_password2']
 
     def clean(self):
         cleaned_data = super().clean()
