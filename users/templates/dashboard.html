@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>Dashboard - Cyber Justitia</title>
+<!-- TODO: add styles and HTML in styles and content blocks -->
+
+
+<title>Dashboard - Cyber Justitia</title>
+
+{% block content %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li style="color: black !important;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="container">
+        <h2 style="color: black">Update Details</h2>
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input placeholder="First Name" type="text" class="form-control"
+                       id="{{ update_details_form.first_name.id_for_label }}"
+                       name="{{ update_details_form.first_name.html_name }}"
+                       value="{{ update_details_form.first_name.value }}">
+                {% if update_details_form.first_name.errors %}
+                    <div class="text-danger">
+                        {{ update_details_form.first_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <input placeholder="Last Name" type="text" class="form-control"
+                       id="{{ update_details_form.last_name.id_for_label }}"
+                       name="{{ update_details_form.last_name.html_name }}"
+                       value="{{ update_details_form.last_name.value }}">
+                {% if update_details_form.last_name.errors %}
+                    <div class="text-danger">
+                        {{ update_details_form.last_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <input placeholder="Email" type="email" class="form-control"
+                       id="{{ update_details_form.email.id_for_label }}"
+                       name="{{ update_details_form.email.html_name }}" value="{{ update_details_form.email.value }}">
+                {% if update_details_form.email.errors %}
+                    <div class="text-danger">
+                        {{ update_details_form.email.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary" name="update_details">Save</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h2 style="color: black">Change Password</h2>
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <input placeholder="Old Password" type="password" class="form-control"
+                       id="{{ change_password_form.old_password.id_for_label }}" name="old_password">
+                {% if change_password_form.old_password.errors %}
+                    <div class="text-danger">
+                        {{ change_password_form.old_password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <input placeholder="New Password" type="password" class="form-control"
+                       id="{{ change_password_form.new_password1.id_for_label }}" name="new_password1">
+                {% if change_password_form.old_password.errors %}
+                    <div class="text-danger">
+                        {{ change_password_form.new_password1.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <input placeholder="Confirm New Password" type="password" class="form-control"
+                       id="{{ change_password_form.new_password2.id_for_label }}" name="new_password2">
+                {% if change_password_form.confirm_new_password.errors %}
+                    <div class="text-danger">
+                        {{ change_password_form.new_password2.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary" name="change_password">Save</button>
+        </form>
+
+
+    </div>
+    <div class="container">
+        <h2 style="color: black">Description</h2>
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <!-- Send the description to the server without a form -->
+                <textarea placeholder="Description" class="form-control" id="description"
+                          name="description">{{ description }}</textarea>
+                <button type="submit" class="btn btn-primary" name="update_description">Save</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+    
+        <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="deactivate_profile" value="False">
+    <label for="{{ deactivate_account_form.deactivate_profile.id_for_label }}">Confirm Deletion:</label>
+    <input type="checkbox" id="{{ deactivate_account_form.deactivate_profile.id_for_label }}" name="deactivate_profile" value="True" {% if deactivate_account_form.deactivate_profile.value %}checked{% endif %}>
+    <button type="submit" name="deactivate_account">Delete Account</button>
+</form>
+    
+
+
+
+{% endblock %}
+

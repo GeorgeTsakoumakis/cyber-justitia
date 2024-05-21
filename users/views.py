@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
+<<<<<<< HEAD
+=======
+from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm
+>>>>>>> 33bd28f (squashed commit message)
 
 
 def anonymous_required(redirect_url):
@@ -18,13 +22,23 @@ def anonymous_required(redirect_url):
     :param redirect_url: URL to redirect to if user is authenticated
     Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
     """
+<<<<<<< HEAD
+=======
+
+>>>>>>> 33bd28f (squashed commit message)
     def _wrapped(view_func, *args, **kwargs):
         def check_anonymous(request, *args, **kwargs):
             view = view_func(request, *args, **kwargs)
             if request.user.is_authenticated:
                 return redirect(redirect_url)
             return view
+<<<<<<< HEAD
         return check_anonymous
+=======
+
+        return check_anonymous
+
+>>>>>>> 33bd28f (squashed commit message)
     return _wrapped
 
 
@@ -111,6 +125,137 @@ def login(request):
 
 
 @login_required
+<<<<<<< HEAD
+=======
+def dashboard(request):
+    # TODO: Add different POST forms for different actions based on prototype (frontend) and retrieve information here,
+    #  redirect to appropriate functions to handle the actions
+    # user = request.user
+    # if request.method == 'POST':
+    #     if 'delete' in request.POST and request.POST['delete'] == 'on':
+    #         user.is_active = False
+    #         user.save()
+    #         return redirect('/')
+    #     else:
+    #         return redirect('dashboard')
+    # if request.method == 'POST':
+    #     # Get the new data from the form
+    #     first_name = request.POST['firstName']
+    #     last_name = request.POST['lastName']
+    #     username = request.POST['username']
+    #     email = request.POST['email']
+    #     password = request.POST['password']
+    #     new_password = request.POST['newpassword']
+    #
+    #     # Update the user's information if the new data is not empty
+    #     if first_name:
+    #         user.first_name = first_name
+    #     if last_name:
+    #         user.last_name = last_name
+    #     if username:
+    #         user.username = username
+    #     if email:
+    #         user.email = email
+    #
+    #     # Check if the password field is not empty and if the new password is different from the old one
+    #     if password and user.check_password(password) and password != new_password:
+    #         user.set_password(new_password)
+    #
+    #     # Save the user object
+    #     user.save()
+    #
+    #     # Redirect to the profile page
+    #     return redirect('dashboard')
+    #
+    # context = {
+    #     'user': user,
+    # }
+    if request.method == "POST":
+        if "update_details" in request.POST:
+            return update_details(request)
+        elif "change_password" in request.POST:
+            return change_password(request)
+        elif 'deactivate_account' in request.POST:
+            return deactivate_account(request)
+        elif "update_description" in request.POST:
+            return update_description(request)
+    else:
+        update_details_form = UpdateDetailsForm(instance=request.user)
+        update_password_form = UpdatePasswordForm(instance=request.user)
+        deactivate_account_form = DeactivateAccountForm(instance=request.user)
+
+    context = {
+        'update_details_form': update_details_form,
+        'update_password_form': update_password_form,
+        'deactivate_account': deactivate_account_form,
+    }
+
+    return render(request, "dashboard.html", context)
+
+
+@login_required()
+def deactivate_account(request):
+    if request.method == 'POST':
+        form = DeactivateAccountForm(request.POST, instance=request.user)
+        if form.is_valid():
+            if form.cleaned_data['deactivate_profile']:
+                request.user.is_active = False
+                request.user.save()
+                messages.success(request, 'Account deactivated successfully')
+                return redirect('index')
+            else:
+                messages.error(request, 'Please check the box to confirm account deactivation')
+                return redirect('dashboard')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+            return redirect('dashboard')
+    return redirect('dashboard')
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = UpdatePasswordForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Password updated successfully")
+            # Keep the user logged in
+            auth.login(request, request.user)
+            return redirect("dashboard")
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+            return render(request, "dashboard.html", {"update_password_form": form})
+    return redirect("dashboard")
+
+
+@login_required
+def update_details(request):
+    if request.method == "POST":
+        form = UpdateDetailsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Details updated successfully")
+            return redirect("dashboard")
+        else:
+            return render(request, "dashboard.html", {"update_details_form": form})
+    return redirect("dashboard")
+
+
+@login_required
+def update_description(request):
+    if request.method == "POST":
+        description = request.POST["description"]
+        request.user.description = description
+        request.user.save()
+        messages.success(request, "Description updated successfully")
+        return redirect("dashboard")
+    return redirect("dashboard")
+
+
+@login_required
+>>>>>>> 33bd28f (squashed commit message)
 def logout(request):
     request.session.pop("session_ids", None)
     auth.logout(request)
