@@ -8,3 +8,4 @@
 !**/migrations/__init__.py
 **/.coverage
 **/htmlcov/
+/users/ayeshaTemplate.html

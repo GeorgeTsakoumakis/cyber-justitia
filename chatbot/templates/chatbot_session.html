@@ -7,10 +7,13 @@
     <script type="module" src="https://md-block.verou.me/md-block.js"></script>
 
 <style>
+<<<<<<< HEAD
     p, li, span, a {
         color: white;
     }
     
+=======
+>>>>>>> d041ba9 (Squashed 60 commits)
     body {
         font-family: 'Roboto Mono';
         margin: 0;
@@ -26,18 +29,29 @@
 
     #chat-container {
         border: 1px solid #ccc;
+<<<<<<< HEAD
         padding: 0;
+=======
+        padding: 20px;
+>>>>>>> d041ba9 (Squashed 60 commits)
         margin-bottom: 1rem;
         height: 60vh;
         display: flex;
         flex-direction: column;
+<<<<<<< HEAD
     }
     
+=======
+        overflow-y: auto;
+    }
+
+>>>>>>> d041ba9 (Squashed 60 commits)
     #chat-messages {
         display: flex;
         flex-direction: column;
         gap: 10px;
         flex-grow: 1;
+<<<<<<< HEAD
         padding: 3%;
         font-size: 0.8em;
     }
@@ -45,6 +59,8 @@
     #chat-messages-container {
         flex: 1;
         overflow-y: auto;
+=======
+>>>>>>> d041ba9 (Squashed 60 commits)
     }
 
     #submit-prompt {
@@ -62,7 +78,11 @@
     }
 
     #user-input {
+<<<<<<< HEAD
         width: 100%;
+=======
+        width: calc(100% - 5px);
+>>>>>>> d041ba9 (Squashed 60 commits)
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 10px;
@@ -112,6 +132,7 @@
         display: flex;
         align-items: center;
     }
+<<<<<<< HEAD
 
     .chat-input-container input {
         flex: 1;
@@ -126,6 +147,8 @@
     .main-box {
         width: 100%;
     }
+=======
+>>>>>>> d041ba9 (Squashed 60 commits)
 </style>
 {% endblock %}
 
@@ -150,8 +173,13 @@
 </div>
 
 <div class="wrap-container">
+<<<<<<< HEAD
     <div class="row justify-content-center">
         <div class="col-3">
+=======
+    <div class="row">
+        <div class="col-12 col-md-4">
+>>>>>>> d041ba9 (Squashed 60 commits)
             <div class="session-box" style="padding-bottom: 5%; text-align: center">
                 <h2 style="text-align: center; color: black; background-color: #FDEFF2; padding: 3%;">Sessions</h2>
                 <div class="list-group">
@@ -169,6 +197,7 @@
                 </div>
                 <form method="post" action="{% url 'create_session' %}" style="margin-top: 1rem;">
                     {% csrf_token %}
+<<<<<<< HEAD
                     <button type="submit" class="btn btn-primary" style="font-size: 14px">+ Start new session</button>
                 </form>
             </div>
@@ -185,6 +214,22 @@
                             {% endif %}
                         {% endfor %}
                     </div>
+=======
+                    <button type="submit" class="btn btn-primary">+ Start new session</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <div id="chat-container" class="main-box">
+                <div id="chat-messages">
+                    {% for message in chat_messages %}
+                        {% if message.role == "user" %}
+                            <div class="message user-message">{{ message.text }}</div>
+                        {% elif message.role == "bot" %}
+                            <md-block class="message bot-message">{{ message.text }}</md-block>
+                        {% endif %}
+                    {% endfor %}
+>>>>>>> d041ba9 (Squashed 60 commits)
                 </div>
                 <div class="chat-input">
                     <div class="chat-input-container">
@@ -192,7 +237,11 @@
                         <button id="submit-prompt" onclick="sendMessage()"><img src="{% static 'sendmes.svg' %}" alt="Send"></button>
                     </div>
                 </div>
+<<<<<<< HEAD
             </div>            
+=======
+            </div>
+>>>>>>> d041ba9 (Squashed 60 commits)
         </div>
     </div>
 </div>

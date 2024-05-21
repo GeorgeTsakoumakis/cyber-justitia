@@ -9,6 +9,10 @@ import json
 from vertexai.generative_models import Content, GenerativeModel, Part
 import vertexai
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d041ba9 (Squashed 60 commits)
 @login_required
 def chatbot_session(request, session_id):
     # Check if the user is authenticated
@@ -195,4 +199,8 @@ def create_session(request):
         return redirect("chatbot_session", session_id=session.session_id)
 
     # Return an error response if the user is not authenticated
+<<<<<<< HEAD
     return JsonResponse({"error": "User is not authenticated"}, status=403)
+=======
+    return JsonResponse({"error": "User is not authenticated"}, status=403)
+>>>>>>> d041ba9 (Squashed 60 commits)
