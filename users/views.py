@@ -30,11 +30,13 @@ def anonymous_required(redirect_url):
 
 
 def index(request):
+    """ Renders the index page """
     return render(request, "index.html")
 
 
 @anonymous_required(redirect_url="chatbot/")
 def register(request):
+    """ Handles the registration form """
     if request.method == "POST":
         first_name = request.POST["first_name"]
         last_name = request.POST["last_name"]
@@ -91,6 +93,7 @@ def register(request):
 
 @anonymous_required(redirect_url="chatbot/")
 def login(request):
+    """ Handles the login form """
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -209,30 +212,37 @@ def update_description(request):
 
 @login_required
 def logout(request):
+    """ Logs out the user """
     request.session.pop("session_ids", None)
     auth.logout(request)
     return redirect("/")
 
 
 def codeofconduct(request):
+    """ Renders the code of conduct page """
     return render(request, "codeofconduct.html")
 
 
 def handler400(request, *args, **argv):
+    """ Custom error handlers bad request """
     return render(request, "errors/400.html", status=400)
 
 
 def handler403(request, *args, **argv):
+    """ Custom error handlers forbidden"""
     return render(request, "errors/403.html", status=403)
 
 
 def handler404(request, *args, **argv):
+    """ Custom error handlers not found """
     return render(request, "errors/404.html", status=404)
 
 
 def handler500(request, *args, **argv):
+    """ Custom error handlers server error """
     return render(request, "errors/500.html", status=500)
 
 
 def handler503(request, *args, **argv):
+    """ Custom error handlers service unavailable """
     return render(request, "errors/503.html", status=503)
