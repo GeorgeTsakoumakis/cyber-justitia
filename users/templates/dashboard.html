@@ -8,14 +8,6 @@
 <title>Dashboard - Cyber Justitia</title>
 
 {% block content %}
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li style="color: black !important;">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
     <div class="container">
         <h2 style="color: black">Update Details</h2>
         <form method="POST" action="{% url 'dashboard' %}">
@@ -76,7 +68,7 @@
             <div class="form-group">
                 <input placeholder="New Password" type="password" class="form-control"
                        id="{{ change_password_form.new_password1.id_for_label }}" name="new_password1">
-                {% if change_password_form.old_password.errors %}
+                {% if change_password_form.new_password1.errors %}
                     <div class="text-danger">
                         {{ change_password_form.new_password1.errors }}
                     </div>
@@ -86,7 +78,7 @@
             <div class="form-group">
                 <input placeholder="Confirm New Password" type="password" class="form-control"
                        id="{{ change_password_form.new_password2.id_for_label }}" name="new_password2">
-                {% if change_password_form.confirm_new_password.errors %}
+                {% if change_password_form.new_password2.errors %}
                     <div class="text-danger">
                         {{ change_password_form.new_password2.errors }}
                     </div>

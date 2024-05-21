@@ -176,8 +176,8 @@ def change_password(request):
         else:
             for error in form.errors.values():
                 messages.error(request, error)
-            return render(request, "dashboard.html", {"update_password_form": form})
-    return redirect("dashboard")
+            return render(request, "dashboard.html", {"change_password_form": form})
+    return redirect("dashboard", {"change_password_form": form})
 
 
 @login_required

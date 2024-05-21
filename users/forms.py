@@ -61,20 +61,26 @@ class UpdatePasswordForm(forms.ModelForm):
         new_password1 = cleaned_data.get("new_password1")
         new_password2 = cleaned_data.get("new_password2")
 
-        # Check if the old password is correct
-        if not self.instance.check_password(old_password):
-            raise forms.ValidationError("The old password is incorrect.")
+        # Check if the old password feild is empty
+        if old_password:
+            # Check if the old password is correct
+            if not self.instance.check_password(old_password):
+                self.add_error('old_password', "The old password is incorrect.")
+
+        # Check if the new password1 field is empty
+        if new_password1:
+        # Check if the new password is the same as the old password
+            if old_password == new_password1:
+                self.add_error('new_password1', "The new password cannot be the same as the old password.")
+
 
         # Check if the new passwords match
         if new_password1 != new_password2:
-            raise forms.ValidationError("The new passwords do not match.")
+            self.add_error('new_password2', "The new passwords do not match.")
 
-        # Check if the new password is the same as the old password
-        if old_password == new_password1:
-            raise forms.ValidationError(
-                "The new password cannot be the same as the old password."
-            )
         return cleaned_data
+
+
 
     def save(self, commit=True):
         user = super().save(commit=False)
