@@ -113,48 +113,9 @@ def login(request):
 
 @login_required
 def dashboard(request):
+    """ Handles all POST requests from the dashboard page """
     # TODO: Add different POST forms for different actions based on prototype (frontend) and retrieve information here,
     #  redirect to appropriate functions to handle the actions
-    # user = request.user
-    # if request.method == 'POST':
-    #     if 'delete' in request.POST and request.POST['delete'] == 'on':
-    #         user.is_active = False
-    #         user.save()
-    #         return redirect('/')
-    #     else:
-    #         return redirect('dashboard')
-    # if request.method == 'POST':
-    #     # Get the new data from the form
-    #     first_name = request.POST['firstName']
-    #     last_name = request.POST['lastName']
-    #     username = request.POST['username']
-    #     email = request.POST['email']
-    #     password = request.POST['password']
-    #     new_password = request.POST['newpassword']
-    #
-    #     # Update the user's information if the new data is not empty
-    #     if first_name:
-    #         user.first_name = first_name
-    #     if last_name:
-    #         user.last_name = last_name
-    #     if username:
-    #         user.username = username
-    #     if email:
-    #         user.email = email
-    #
-    #     # Check if the password field is not empty and if the new password is different from the old one
-    #     if password and user.check_password(password) and password != new_password:
-    #         user.set_password(new_password)
-    #
-    #     # Save the user object
-    #     user.save()
-    #
-    #     # Redirect to the profile page
-    #     return redirect('dashboard')
-    #
-    # context = {
-    #     'user': user,
-    # }
     if request.method == "POST":
         if "update_details" in request.POST:
             return update_details(request)
@@ -180,6 +141,7 @@ def dashboard(request):
 
 @login_required()
 def deactivate_account(request):
+    """ Deactivates the users account """
     if request.method == 'POST':
         form = DeactivateAccountForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -200,6 +162,7 @@ def deactivate_account(request):
 
 @login_required
 def change_password(request):
+    """ Handles the change password form """
     if request.method == "POST":
         form = UpdatePasswordForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -217,6 +180,7 @@ def change_password(request):
 
 @login_required
 def update_details(request):
+    """ Handles the update details form """
     if request.method == "POST":
         form = UpdateDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -230,6 +194,7 @@ def update_details(request):
 
 @login_required
 def update_description(request):
+    """ Handles the update description form """
     if request.method == "POST":
         description = request.POST["description"]
         request.user.description = description
