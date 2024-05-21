@@ -8,9 +8,8 @@ urlpatterns = [
     path("login", views.login, name="login"),
     path("logout", views.logout, name="logout"),
     path("codeofconduct", views.codeofconduct, name="codeofconduct"),
-<<<<<<< HEAD
+
     # path('user_profile', views.user_profile, name="profile"),
-=======
     # path("profile/", views.profile, name="profile"),
 
 
@@ -18,8 +17,6 @@ urlpatterns = [
     path("update_details/", views.update_details, name="update_details"),
     path("update_description/", views.update_description, name="update_description"),
 
-
->>>>>>> 33bd28f (squashed commit message)
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
     ),

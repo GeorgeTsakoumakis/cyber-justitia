@@ -5,10 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
-<<<<<<< HEAD
-=======
 from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm
->>>>>>> 33bd28f (squashed commit message)
 
 
 def anonymous_required(redirect_url):
@@ -22,23 +19,13 @@ def anonymous_required(redirect_url):
     :param redirect_url: URL to redirect to if user is authenticated
     Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
     """
-<<<<<<< HEAD
-=======
-
->>>>>>> 33bd28f (squashed commit message)
     def _wrapped(view_func, *args, **kwargs):
         def check_anonymous(request, *args, **kwargs):
             view = view_func(request, *args, **kwargs)
             if request.user.is_authenticated:
                 return redirect(redirect_url)
             return view
-<<<<<<< HEAD
         return check_anonymous
-=======
-
-        return check_anonymous
-
->>>>>>> 33bd28f (squashed commit message)
     return _wrapped
 
 
@@ -125,8 +112,6 @@ def login(request):
 
 
 @login_required
-<<<<<<< HEAD
-=======
 def dashboard(request):
     # TODO: Add different POST forms for different actions based on prototype (frontend) and retrieve information here,
     #  redirect to appropriate functions to handle the actions
@@ -255,7 +240,6 @@ def update_description(request):
 
 
 @login_required
->>>>>>> 33bd28f (squashed commit message)
 def logout(request):
     request.session.pop("session_ids", None)
     auth.logout(request)
