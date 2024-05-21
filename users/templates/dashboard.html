@@ -104,8 +104,15 @@
             {% csrf_token %}
             <div class="form-group">
                 <!-- Send the description to the server without a form -->
-                <textarea placeholder="Description" class="form-control" id="description"
-                          name="description">{{ description }}</textarea>
+                <textarea placeholder="Description" class="form-control"
+                          id="{{ update_description_form.description.id_for_label }}"
+                          name="description">{{ description }}
+                </textarea>
+                {% if update_description_form.description.errors %}
+                    <div class="text-danger">
+                        {{ update_description_form.description.errors }}
+                    </div>
+                {% endif %}
                 <button type="submit" class="btn btn-primary" name="update_description">Save</button>
             </div>
         </form>

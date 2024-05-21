@@ -15,6 +15,26 @@ class UpdateDetailsForm(forms.ModelForm):
             raise forms.ValidationError(_("This email is already in use."), code="invalid")
         return email
 
+    def clean_first_name(self):
+        # Check if the first name is empty
+        first_name = self.cleaned_data["first_name"]
+        if not first_name:
+            raise forms.ValidationError(_("First name field is required."), code="invalid")
+        # Check if the first name is too long
+        if len(first_name) > 150:
+            raise forms.ValidationError(_("First name is too long."), code="invalid")
+        return first_name
+
+    def clean_last_name(self):
+        # Check if the last name is empty
+        last_name = self.cleaned_data["last_name"]
+        if not last_name:
+            raise forms.ValidationError(_("Last name field is required."), code="invalid")
+        # Check if the last name is too long
+        if len(last_name) > 150:
+            raise forms.ValidationError(_("Last name is too long."), code="invalid")
+        return last_name
+
 
 class UpdatePasswordForm(forms.ModelForm):
     old_password = forms.CharField(
@@ -33,7 +53,7 @@ class UpdatePasswordForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ["old_password", "new_password1", "new_password2"]
+        fields = ['password']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -70,13 +90,11 @@ class UpdateDescriptionForm(forms.ModelForm):
         fields = ["description"]
 
 
-
 class DeactivateAccountForm(forms.ModelForm):
     deactivate_profile = forms.BooleanField(
         required=True,
         initial=False,
         widget=forms.CheckboxInput()
-
     )
 
     class Meta:

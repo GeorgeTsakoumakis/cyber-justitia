@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
-from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm
+from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm, UpdateDescriptionForm
 
 
 def anonymous_required(redirect_url):
@@ -129,11 +129,13 @@ def dashboard(request):
         update_details_form = UpdateDetailsForm(instance=request.user)
         update_password_form = UpdatePasswordForm(instance=request.user)
         deactivate_account_form = DeactivateAccountForm(instance=request.user)
+        update_description_form = UpdateDescriptionForm(instance=request.user)
 
     context = {
         'update_details_form': update_details_form,
         'update_password_form': update_password_form,
         'deactivate_account': deactivate_account_form,
+        'update_description_form': update_description_form
     }
 
     return render(request, "dashboard.html", context)
@@ -196,12 +198,13 @@ def update_details(request):
 def update_description(request):
     """ Handles the update description form """
     if request.method == "POST":
-        description = request.POST["description"]
-        request.user.description = description
-        request.user.save()
-        messages.success(request, "Description updated successfully")
-        return redirect("dashboard")
-    return redirect("dashboard")
+        form = UpdateDescriptionForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Description updated successfully")
+            return redirect("dashboard")
+        else:
+            return render(request, "dashboard.html", {"update_description_form": form})
 
 
 @login_required
