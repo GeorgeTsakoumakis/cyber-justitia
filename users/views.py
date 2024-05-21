@@ -116,6 +116,14 @@ def logout(request):
     auth.logout(request)
     return redirect("/")
 
+@login_required
+def user_profile(request):
+    first_name = request.user.first_name
+    last_name = request.user.last_name
+    email = request.user.email
+
+    return render(request, 'main/templates/user_profile.html', {'first_name': first_name, 'last_name': last_name, 'email': email})
+
 
 def codeofconduct(request):
     return render(request, "codeofconduct.html")

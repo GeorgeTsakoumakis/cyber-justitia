@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% load static %}
+<title>Dashboard - Cyber Justitia</title>
+
+{% block styles %}
+<style>    
+    .flex-container {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .update-details {
+        width: 483px;
+        height: 382px;
+        background-color: #FCD6DD;
+        text-align: center;
+        margin-top: 90px;
+        margin-right: 100px;
+        margin-left: 150px;
+    }
+
+    .update-details form input[type="text"] {
+        width: 432px;
+        height: 35px;
+        margin-top: 15px;
+    }
+
+    .update-password {
+        width: 483px;
+        height: 382px;
+        background-color: #FDEFF2;
+        text-align: center;
+        margin-top: 90px;
+    }
+
+    .update-password form input[type="password"] {
+        width: 432px;
+        height: 35px;
+        margin-top: 15px;
+    }
+
+    .description {
+        width: 1038px;
+        height: 257px;
+        background-color: #FDEFF2;
+        text-align: center;
+        margin-top: 90px;
+        margin-right: 150px;
+        margin-left: 150px;
+    }
+
+    .description form input[type="text"] {
+        width: 987px;
+        height: 70px;
+        margin-top: 15px;
+    }
+
+    .delete-account {
+        width: 1038px;
+        height: 257px;
+        background-color: #FDEFF2;
+        text-align: center;
+        margin-top: 90px;
+        margin-right: 150px;
+        margin-left: 150px;
+    }
+
+    .delete-account form input[type="checkbox"] {
+        width: 34px;
+        height: 34px;
+        margin-top: 15px;
+    }
+    
+    .delete-label {
+        width: 678px;
+        height: 52px;
+        font-size: 25px; 
+    }
+
+    .delete-account form input[type="submit"] {
+        background-color: #C597E2;
+        width: 124px;
+        height: 38px;
+        font-size: 16px;
+        padding: 0;
+        text-align: center;
+        color: #FFFFFF;
+        border: none;
+        margin-top: 30px;
+    }
+
+    .admin-features {
+        width: 1028px;
+        height: 250px;
+        background-color: #BE6FB4;
+        text-align: center;
+        margin-top: 90px;
+        margin-right: 150px;
+        margin-left: 150px;
+    }
+
+    .admin-features form input[type="submit"] {
+        background-color: #C597E2;
+        width: 323px;
+        height: 102px;
+        font-size: 16px;
+        padding: 0;
+        text-align: center;
+        color: #FFFFFF;
+        border: none;
+        margin-top: 30px;
+    }
+
+    .flair {
+        width: 1028px;
+        height: 225px;
+        background-color: #BE6FB4;
+        text-align: center;
+        margin-top: 90px;
+        margin-right: 150px;
+        margin-left: 150px;
+    }
+
+    .flair form input[type="text"] {
+        width: 987px;
+        height: 60px;
+    }
+
+    .credentials {
+        width: 1028px;
+        height: 500px;
+        background-color: #BE6FB4;
+        text-align: center;
+        margin-top: 90px;
+        margin-right: 150px;
+        margin-left: 150px;
+    }
+
+    .credentials form input[type="text"] {
+        width: 441px;
+        height: 35px;
+        margin-top: 5px;
+    }
+
+    .credentials form input[type="date"] {
+        width: 210px;
+        height: 35px;
+        margin-top: 5px;
+    }
+    
+    .credentials form input[type="checkbox"] {
+        width: 34px;
+        height: 34px;
+    }
+    
+    label[for="inprogress"] {
+        font-size: 25px; /* Adjust size as needed */
+    }
+    
+    .form-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 130px;
+    }
+    
+    #began {
+        width: 210px;
+        float: left;
+    }
+    
+    #ended {
+        width: 210px;
+        float: right;
+        margin-top: -38px;
+        margin-right: 10px;
+    }
+    
+    .save-button {
+        background-color: #C597E2;
+        width: 124px;
+        height: 38px;
+        font-size: 16px;
+        padding: 0;
+        text-align: center;
+        color: #FFFFFF;
+        border: none;
+        margin-top: 10px;
+    }
+
+    body {
+        font-family: 'Roboto Mono', monospace;
+    }
+    
+    input[type=text] {
+        border: 2px solid #EEB3C0;
+    }
+    
+    input[type=password] {
+        border: 2px solid #EEB3C0;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<body>
+<div class="flex-container">
+    <div class="update-details">
+        <h1>Update Details</h1>
+        <form action="/user_profile" method="get">
+            <label for="first_name"></label><br>
+            <input type="text" id="first_name" name="first_name" placeholder="First name"><br>
+            <label for="last_name"></label><br>
+            <input type="text" id="last_name" name="last_name" placeholder="Last name"><br>
+            <label for="email"></label><br>
+            <input type="text" id="email" name="email" placeholder="Email"><br><br>
+            <input type="submit" value="save" class="save-button">
+        </form>
+    </div>
+    <div class="update-password">
+        <h1>Update Password</h1>
+        <form action="/user_profile" method="post">
+            <label for="password"></label><br>
+            <input type="password" id="password" name="password" placeholder="New password" required><br>
+            <label for="confirm_password"></label><br>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required><br><br>
+            <input type="submit" value="save" class="save-button">
+            </form>
+    </div>
+</div>
+    <div class="description">
+        <h1>Description</h1>
+        <form action="/user_profile" method="get">
+            <label for="description"></label><br>
+            <input type="text" id="description" name="description"><br><br>
+            <input type="submit" value="save" class="save-button">
+        </form>
+    </div>
+    <div class="delete-account">
+        <h1>Delete Account</h1>
+        <form action="/user_profile" method="get">
+            <input type="checkbox" id="delete" name="delete" required>
+            <label class="delete-label" for="delete" > Are you sure you want to delete your account? Your profile and all of your posts will no longer be viewable</label><br>
+            <input type="submit" value="DELETE!">
+        </form>
+    </div>
+    {% if user.is_admin %}
+     <div class="admin-features">
+        <h1>Access administrator features (visible to admins only)</h1>
+        <form action="/admin_dashboard">
+            <input type="submit" value="Go to Dashboard">
+        </form>
+     </div>
+    {% endif %}
+    {%if user.is_professional %}
+    <div class="flair">
+        <h1>Headline flair (visible to professionals only):</h1>
+        <form action="/user_profile" method="get">
+            <label for="flair"></label><br>
+            <input type="text" id="flair" name="flair"><br><br>
+            <input type="submit" value="save" class="save-button">
+        </form>
+    </div>
+    {% endif %}
+     {% if user.is_professional %}
+     <div class="credentials">
+        <h1>Credentials (visible to professionals only)</h1>
+         <div class="form-container">
+        <form action="/user_profile" method="get">
+            <label for="school"></label><br>
+            <input type="text" id="" name="school" placeholder="School"><br>
+            <label for="degree"></label><br>
+            <input type="text" id="" name="degree" placeholder="Degree Title"><br>
+            <label for="began"></label><br>
+            <input type="text" id="began" name="began" placeholder="Began" onfocus="(this.type='date')" onblur="(this.type='text')"><br>
+            <label for="ended"></label><br>
+            <input type="text" id="ended" name="ended" placeholder="Ended" onfocus="(this.type='date')" onblur="(this.type='text')"><br>
+            <input type="checkbox" id="inprogress" name="inprogress">
+            <label for="inprogress" > In Progress</label><br>
+            <input type="submit" value="save" class="save-button">
+        </form>
+        <form action="/user_profile" method="get">
+            <label for="position"></label><br>
+            <input type="text" id="" name="position" placeholder="Position"><br>
+            <label for="company"></label><br>
+            <input type="text" id="" name="company" placeholder="Company"><br>
+            <label for="began"></label><br>
+            <input type="text" id="began" name="began" placeholder="Began" onfocus="(this.type='date')" onblur="(this.type='text')"><br>
+            <label for="ended"></label><br>
+            <input type="text" id="ended" name="ended" placeholder="Ended" onfocus="(this.type='date')" onblur="(this.type='text')"><br>
+            <input type="checkbox" id="inprogress" name="inprogress">
+            <label for="inprogress" > In Progress</label><br>
+            <input type="submit" value="save" class="save-button">
+        </form>
+        </div>
+    {% endif %}
+    </div>
+</body>
+
+{% endblock %}

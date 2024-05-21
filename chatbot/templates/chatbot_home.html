@@ -7,6 +7,10 @@
     <script type="module" src="https://md-block.verou.me/md-block.js"></script>
 
 <style>
+    p, li, span, a {
+        color: white;
+    }
+    
     body {
         font-family: 'Roboto Mono';
         margin: 0;
@@ -22,19 +26,25 @@
 
     #chat-container {
         border: 1px solid #ccc;
-        padding: 20px;
+        padding: 0;
         margin-bottom: 1rem;
         height: 60vh;
         display: flex;
         flex-direction: column;
-        overflow-y: auto;
     }
-
+    
     #chat-messages {
         display: flex;
         flex-direction: column;
         gap: 10px;
         flex-grow: 1;
+        padding: 3%;
+        font-size: 0.8em;
+    }
+
+    #chat-messages-container {
+        flex: 1;
+        overflow-y: auto;
     }
 
     #submit-prompt {
@@ -52,7 +62,7 @@
     }
 
     #user-input {
-        width: calc(100% - 5px);
+        width: 100%;
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 10px;
@@ -101,6 +111,20 @@
         flex-grow: 1;
         display: flex;
         align-items: center;
+    }
+
+    .chat-input-container input {
+        flex: 1;
+        padding: 0.5rem;
+        margin-right: 0.5rem;
+    }
+    
+    .chat-input-container button {
+        padding: 0.5rem;
+    }
+
+    .main-box {
+        width: 100%;
     }
 </style>
 {% endblock %}

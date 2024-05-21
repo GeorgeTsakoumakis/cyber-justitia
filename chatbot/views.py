@@ -9,7 +9,6 @@ import json
 from vertexai.generative_models import Content, GenerativeModel, Part
 import vertexai
 
-
 @login_required
 def chatbot_session(request, session_id):
     # Check if the user is authenticated
