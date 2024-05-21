@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -112,7 +111,11 @@
     </div>
 
 </div>
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 4e0268efe063b345cabaac8eda01351157b7b375
         <form method="post">
     {% csrf_token %}
     <label for="{{ deactivate_account_form.deactivate_profile.id_for_label }}">Confirm Deletion:</label>
@@ -126,5 +129,5 @@
             {% endif %}
         {% endif %}
 </form>
-
+    
 {% endblock %}

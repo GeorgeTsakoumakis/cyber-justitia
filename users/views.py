@@ -205,8 +205,6 @@ def update_description(request):
             return redirect("dashboard")
         else:
             return render(request, "dashboard.html", {"update_description_form": form})
-    return render(request, "login.html")
-
 
 @login_required
 def logout(request):
