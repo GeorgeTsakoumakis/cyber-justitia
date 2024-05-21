@@ -152,13 +152,10 @@ def deactivate_account(request):
                 request.user.save()
                 messages.success(request, 'Account deactivated successfully')
                 return redirect('index')
-            else:
-                messages.error(request, 'Please check the box to confirm account deactivation')
-                return redirect('dashboard')
         else:
             for error in form.errors.values():
                 messages.error(request, error)
-            return redirect('dashboard')
+            return render(request, 'dashboard.html', {'deactivate_account_form': form})
     return redirect('dashboard')
 
 
