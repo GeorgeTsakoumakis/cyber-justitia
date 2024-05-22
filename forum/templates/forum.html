@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block styles %}
+<link rel="stylesheet" href="{%  static 'forum/css/forummainpage.css' %}">
+{% endblock %}
+
 {% block content %}
     <div class="header">
         <a href="#" class="button_leftarrow">
