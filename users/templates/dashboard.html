@@ -133,4 +133,17 @@
         {% endif %}
 </form>
     
+    {% if user.is_staff %}
+    <div class="flair">
+        <h1>Headline flair:</h1>
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            <label for="flair"></label><br>
+              {{ update_flair_form.as_p }}
+        <input type="submit" value="Save" class="save-button" name="update_flair">
+    </form>
+</div>
+    {% endif %}
+   
+    
 {% endblock %}

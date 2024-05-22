@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
-from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm, UpdateDescriptionForm
+from .forms import UpdateDetailsForm, UpdatePasswordForm, DeactivateAccountForm, UpdateDescriptionForm, UpdateFlairForm
 
 
 def anonymous_required(redirect_url):
@@ -121,6 +121,13 @@ def dashboard(request):
     Depending on the action in the POST request, different functions are called
     to handle the respective form submissions (update details, change password,
     deactivate account, update description)."""
+    # Initialize forms with the current user's data
+    update_details_form = UpdateDetailsForm(instance=request.user)
+    update_password_form = UpdatePasswordForm(instance=request.user)
+    deactivate_account_form = DeactivateAccountForm(instance=request.user)
+    update_description_form = UpdateDescriptionForm(instance=request.user)
+    update_flair_form = UpdateFlairForm(instance=request.user)
+
     if request.method == "POST":
         if "update_details" in request.POST:
             return update_details(request)
@@ -130,19 +137,16 @@ def dashboard(request):
             return deactivate_account(request)
         elif "update_description" in request.POST:
             return update_description(request)
-    else:
-        # Initialize forms with the current user's data
-        update_details_form = UpdateDetailsForm(instance=request.user)
-        update_password_form = UpdatePasswordForm(instance=request.user)
-        deactivate_account_form = DeactivateAccountForm(instance=request.user)
-        update_description_form = UpdateDescriptionForm(instance=request.user)
+        elif "update_flair" in request.POST:
+            return update_flair(request)
 
     # Pass the forms to the context for rendering in the template
     context = {
         'update_details_form': update_details_form,
         'update_password_form': update_password_form,
         'deactivate_account': deactivate_account_form,
-        'update_description_form': update_description_form
+        'update_description_form': update_description_form,
+        'update_flair_form': update_flair_form,
     }
 
     return render(request, "dashboard.html", context)
@@ -228,6 +232,28 @@ def update_description(request):
             return redirect("dashboard")
         else:
             return render(request, "dashboard.html", {"update_description_form": form})
+
+
+@login_required
+def update_flair(request):
+    """
+    Handles the update flair form submission.
+
+    If the form is valid, the user's flair is updated, and a success message is displayed.
+    The user is then redirected to the dashboard.
+    """
+    if request.method == "POST":
+        # Get the professional user profile if it exists, otherwise creates it
+        profile, created = ProfessionalUser.objects.get_or_create(user=request.user)
+
+        form = UpdateFlairForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Flair updated successfully")
+            return redirect("dashboard")
+        else:
+            return render(request, "dashboard.html", {"update_flair_form": form})
+
 
 @login_required
 def logout(request):

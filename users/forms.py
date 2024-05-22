@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser
+from .models import CustomUser, ProfessionalUser
 from django.utils.translation import gettext_lazy as _
 
 
@@ -79,7 +79,6 @@ class UpdatePasswordForm(forms.ModelForm):
 
         return cleaned_data
 
-
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["new_password1"])
@@ -104,3 +103,19 @@ class DeactivateAccountForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = []
+
+
+class UpdateFlairForm(forms.ModelForm):
+    class Meta:
+        model = ProfessionalUser
+        fields = ["flair"]
+
+    def clean_flair(self):
+        # Check if the flair is empty
+        flair = self.cleaned_data["flair"]
+        if not flair:
+            raise forms.ValidationError(_("Flair field is required."), code="invalid")
+        # Check if the flair is too long
+        if len(flair) > 100:
+            raise forms.ValidationError(_("Flair is too long."), code="invalid")
+        return flair
