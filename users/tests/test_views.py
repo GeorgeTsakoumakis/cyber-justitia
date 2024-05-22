@@ -1,14 +1,12 @@
 import unittest
 
 from django.test import TestCase, Client
-from django.test.utils import override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import auth
 from ..models import ProfessionalUser
-from chatbot.models import Session
 
 CustomUser = get_user_model()
+
 
 class ViewsTestCase(TestCase):
 
@@ -21,7 +19,6 @@ class ViewsTestCase(TestCase):
             email='testuser@example.com',
             password='Password123!'
         )
-
     def test_render_index_page(self):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
@@ -148,14 +145,127 @@ class ViewsTestCase(TestCase):
         self.assertRedirects(response, '/')
         self.assertNotIn('_auth_user_id', self.client.session)
 
-    def test_authenticated_user_accesses_profile_page(self):
+
+class DashboardViewsTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+            username='testuser',
+            first_name='Test',
+            last_name='User',
+            email='testuser@example.com',
+            password='Password123!'
+        )
         self.client.force_login(self.user)
-        response = self.client.get(reverse('profile'))
+
+    def test_dashboard_page_access(self):
+        response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'templates/user_profile.html')
-        self.assertContains(response, self.user.first_name)
-        self.assertContains(response, self.user.last_name)
-        self.assertContains(response, self.user.email)
+        self.assertTemplateUsed(response, 'dashboard.html')
+
+    # Will pass once dashboard implemented
+    def test_update_details_with_valid_data(self):
+        response = self.client.post(reverse('update_details'), {
+            'first_name': 'Updated',
+            'last_name': 'User',
+            'email': 'updateduser@example.com'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTemplateUsed(response, 'users/templates/dashboard.html')
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, 'Updated')
+        self.assertEqual(self.user.last_name, 'User')
+        self.assertEqual(self.user.email, 'updateduser@example.com')
+
+    # Will pass once dashboard implemented
+    def test_update_first_name_with_invalid_data(self):
+        response = self.client.post(reverse('dashboard'), {
+            'first_name': '',
+            'last_name': 'User',
+            'email': 'updateduser@example.com'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertContains(response, 'First name field is required.')
+
+    # Will pass once dashboard implemented
+    def test_update_last_name_with_invalid_data(self):
+        response = self.client.post(reverse('dashboard'), {
+            'first_name': 'Test',
+            'last_name': '',
+            'email': 'updateduser@example.com'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertContains(response, 'Last name field is required.')
+
+    def test_change_password_with_valid_data(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('dashboard'), {
+            'old_password': 'Password123!',
+            'new_password1': 'NewPassword123!',
+            'new_password2': 'NewPassword123!'
+        })
+        self.assertRedirects(response, reverse('dashboard'))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('NewPassword123!'))
+
+    def test_change_password_mismatch(self):
+        response = self.client.post(reverse('dashboard'), {
+            'old_password': 'Password123!',
+            'new_password1': 'NewPassword123!',
+            'new_password2': 'DifferentPassword123!'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertContains(response, 'The new passwords do not match.')
+
+    def test_deactivate_account_with_checkbox_checked(self):
+        self.client.force_login(self.user)  # Ensure the user is logged in
+        response = self.client.post(reverse('dashboard'), {
+            'deactivate_profile': True
+        })
+        self.assertRedirects(response, reverse('index'))
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+
+    # Will pass once dashboard implemented
+    def test_deactivate_account_without_checkbox_checked(self):
+        self.client.force_login(self.user)  # Ensure the user is logged in
+        response = self.client.post(reverse('dashboard'), {
+            'deactivate_profile': False
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertContains(response, 'Checkbox is required.')
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)  # Ensure the account is still active
+
+    def test_update_description_with_valid_data(self):
+        response = self.client.post(reverse('update_description'), {
+            'description': 'Updated description'
+        })
+        self.assertRedirects(response, reverse('dashboard'))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.description, 'Updated description')
+
+    def test_update_flair_with_valid_data(self):
+        response = self.client.post(reverse('update_flair'), {
+            'flair': 'Updated flair'
+        })
+        self.assertRedirects(response, reverse('dashboard'))
+        self.user.professionaluser.refresh_from_db()
+        self.assertEqual(self.user.professionaluser.flair, 'Updated flair')
+
+    # Will pass once dashboard implemented
+    def test_update_flair_blank(self):
+        response = self.client.post(reverse('dashboard'), {
+            'flair': ''
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertContains(response, 'Flair field is required.')
 
 
 if __name__ == '__main__':
