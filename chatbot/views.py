@@ -9,6 +9,7 @@ import json
 from vertexai.generative_models import Content, GenerativeModel, Part
 import vertexai
 
+
 @login_required
 def chatbot_session(request, session_id):
     # Check if the user is authenticated
@@ -147,7 +148,6 @@ def process_chat_message(request):
 
         # Generate a response from the chatbot
         chatbot_response = chat.send_message(user_message).text
-
         # Don't save to session for anonymous users
         if request.user.is_authenticated:
             # Save the system message in the database if it doesn't exist
@@ -166,7 +166,6 @@ def process_chat_message(request):
 
         # Return the chatbot response in JSON format
         return JsonResponse({"response": chatbot_response})
-
     # Return an error response if the request method is not POST
     return JsonResponse({"error": "Invalid request method"}, status=400)
 

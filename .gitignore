@@ -8,3 +8,5 @@
 !**/migrations/__init__.py
 **/.coverage
 **/htmlcov/
+/users/templates/ayeshaTemplate.html
+/users/templates/devDashboard.html
