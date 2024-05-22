@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load forum_extras %}
+{% load hitcount_tags %}
 
 {% block styles %}
 <link rel="stylesheet" href="{%  static 'forum/css/forummainpage.css' %}">
@@ -25,7 +27,8 @@
     </div>
 
     <div class="posts">
-        <div class="post-container" id="post1-container">
+        {% for post in posts %}
+        <div class="post-container">
             <div class="vote-section">
                 <button class="button_upvote">
                     <img src="{% static 'upvote.svg' %}" alt="upvote">
@@ -34,86 +37,15 @@
                     <img src="{% static 'downvote.svg' %}" alt="downvote">
                 </button>
             </div>
-            <p class="upvote-count" id="upvote-count-1">0</p>
-            <div class="post" id="post1">
-                <h2>title1</h2>
-                <p>content1</p>
-            </div>
+            <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+            <a href="{{ post.get_url }}">
+                <div class="post" >
+                    <!-- TODO: fix css for the hit count -->
+                    <h2>{{ post.title|title }}</h2> <br> {% get_hit_count for post %} views
+                    <p>{{ post.text|first_line }}</p>
+                </div>
+            </a>
         </div>
-        <div class="post-container" id="post2-container">
-            <div class="vote-section">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
-            </div>
-            <p class="upvote-count" id="upvote-count-2">0</p>
-            <div class="post" id="post2">
-                <h2>title2</h2>
-                <p>content2</p>
-            </div>
-        </div>
-        <div class="post-container" id="post3-container">
-            <div class="vote-section">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
-            </div>
-            <p class="upvote-count" id="upvote-count-3">0</p>
-            <div class="post" id="post3">
-                <h2>title3</h2>
-                <p>content3</p>
-            </div>
-        </div>
-        <div class="post-container" id="post4-container">
-            <div class="vote-section">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
-            </div>
-            <p class="upvote-count" id="upvote-count-4">0</p>
-            <div class="post" id="post4">
-                <h2>title4</h2>
-                <p>content4</p>
-            </div>
-        </div>
-        <div class="post-container" id="post5-container">
-            <div class="vote-section">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
-            </div>
-            <p class="upvote-count" id="upvote-count-5">0</p>
-            <div class="post" id="post5">
-                <h2>title5</h2>
-                <p>content5</p>
-            </div>
-        </div>
-        <div class="post-container" id="post6-container">
-            <div class="vote-section">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
-            </div>
-            <p class="upvote-count" id="upvote-count-6">0</p>
-            <div class="post" id="post6">
-                <h2>title6</h2>
-                <p>content6</p>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 {% endblock %}
