@@ -6,3 +6,5 @@ whitenoise
 google-cloud-aiplatform
 vertexai
 python-dotenv
+django-hitcount
+pillow
