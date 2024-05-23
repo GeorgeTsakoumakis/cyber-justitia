@@ -26,6 +26,23 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    @property
+    def is_professional(self):
+        """
+        Check if the user is a professional user
+        :return:  bool
+        """
+        # Query the ProfessionalUser model to check if the user is a professional
+        exists = ProfessionalUser.objects.filter(user=self).exists()
+        return exists
+
+    # If user exists in professional user model, return its flair
+    @property
+    def flair(self):
+        if self.is_professional:
+            return ProfessionalUser.objects.get(user=self).flair
+        return None
+
 
 class ProfessionalUser(models.Model):
     class Meta:
