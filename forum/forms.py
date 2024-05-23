@@ -50,7 +50,10 @@ class CreateCommentForm(forms.Form):
     """
     Form for creating a new comment. It includes a field for the comment text.
     """
-    comment = forms.CharField(label=_("Comment"), widget=forms.Textarea(attrs={"rows": 3, "cols": 40}))
+    comment = forms.CharField(label=_("Comment"),
+                              widget=forms.Textarea(attrs={"rows": 3, "cols": 40}),
+                              error_messages={"required": _("Comment field is required."),
+                                              "max_length": _("Comment cannot exceed 40000 characters.")})
 
     def clean_comment(self):
         """
@@ -58,7 +61,7 @@ class CreateCommentForm(forms.Form):
         """
         comment = self.cleaned_data["comment"]
         if not comment:
-            self.add_error("comment", _("Comment field is required."))
+            raise forms.ValidationError(_("Comment field is required."), code="invalid")
         if len(comment) > 40000:
-            self.add_error("comment", _("Comment cannot exceed 40000 characters."))
+            raise forms.ValidationError(_("Comment cannot exceed 40000 characters."), code="invalid")
         return comment
