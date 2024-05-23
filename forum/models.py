@@ -17,7 +17,7 @@ class Post(models.Model):
     post_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=256)
     slug = models.SlugField(max_length=256, unique=True, blank=True)
-    text = models.CharField(max_length=40000)
+    text = models.TextField(max_length=40000)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
