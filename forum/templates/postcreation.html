@@ -22,6 +22,11 @@
             <textarea id="{{ form.text.id_for_label }}" name="{{ form.text.html_name }}"
                    class="form-control" placeholder="Enter your post here..."
                    aria-label="post-body" aria-describedby="basic-addon1"></textarea>
+            {% if form.text.errors %}
+                <div class="text-danger">
+                    {{ form.text.errors }}
+                </div>
+            {% endif %}
         </div>
 
         <p style="color: black; text-align: center;">Please make sure your post follows our <a href="{% url 'codeofconduct' %}">code of conduct!</a></p>
