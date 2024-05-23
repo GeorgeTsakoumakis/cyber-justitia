@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% load forum_extras %}
-{% load hitcount_tags %}
 
 {% block styles %}
 <link rel="stylesheet" href="{%  static 'forum/css/forummainpage.css' %}">
@@ -40,8 +39,7 @@
             <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
             <a href="{{ post.get_url }}">
                 <div class="post" >
-                    <!-- TODO: fix css for the hit count -->
-                    <h2>{{ post.title|title }}</h2> <br> {% get_hit_count for post %} views
+                    <h2>{{ post.title|title }}</h2>
                     <p>{{ post.text|first_line }}</p>
                 </div>
             </a>
