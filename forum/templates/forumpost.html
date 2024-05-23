@@ -5,7 +5,7 @@
 {% block content %}
         <div class="main-box" style="text-indent: 8%">
             <h2 style="color: black">{{ post.title|title }}</h2>
-            <p style="color: #3d3d3d">Post by {{ post.user.first_name }} {{ post.user.last_name }} • on {{ post.created_at }} • (Read {% get_hit_count for post %} times)</p>
+            <p style="color: #3d3d3d">Post by {{ post.user.first_name }} {{ post.user.last_name }} • on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
             <p style="color: black">{{ post.text|safe }}</p>
         </div>
 
