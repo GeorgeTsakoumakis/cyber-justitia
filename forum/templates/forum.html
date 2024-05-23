@@ -9,12 +9,12 @@
 {% block content %}
     <div class="header">
         <a href="#" class="button_leftarrow">
-            <!-- Implement CSS that greys out arrows when reaching first and last pages -->
+            <!-- TODO: Implement CSS that greys out arrows when reaching first and last pages -->
             <img src="{% static 'arrow.svg' %}"alt="button_leftarrow" class="button_leftarrow">
         </a>
         <h1>Posts</h1>
-        <a href="#" class="button_addpost">+ Create new post</a>
-        <form action="#">
+        <a href="{% url 'create_post' %}" class="button_addpost">+ Create new post</a>
+        <form action="#"> <!-- TODO: Implement search functionality -->
             <img src="{% static 'admin/img/search.svg' %}" alt="Search" class="search_icon">
             <label>
                 <input type="text" placeholder="Search...">

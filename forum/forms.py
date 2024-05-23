@@ -1,0 +1,34 @@
+from django import forms
+from django.utils.translation import gettext_lazy as _
+from .models import Post
+
+
+class CreatePostForm(forms.ModelForm):
+    """
+    Form for creating a new post. It includes fields for the title and text of the post.
+    """
+    class Meta:
+        model = Post
+        fields = ["title", "text"]
+
+    def clean_title(self):
+        """
+        Check if the title is empty or exceeds allowed character limit.
+        """
+        title = self.cleaned_data["title"]
+        if not title:
+            raise forms.ValidationError(_("Title field is required."), code="invalid")
+        if len(title) > 256:
+            raise forms.ValidationError(_("Title cannot exceed 256 characters."), code="invalid")
+        return title
+
+    def clean_text(self):
+        """
+        Check if the text is empty or exceeds allowed character limit.
+        """
+        text = self.cleaned_data["text"]
+        if not text:
+            raise forms.ValidationError(_("Text field is required."), code="invalid")
+        if len(text) > 40000:
+            raise forms.ValidationError(_("Text cannot exceed 40000 characters."), code="invalid")
+        return text
