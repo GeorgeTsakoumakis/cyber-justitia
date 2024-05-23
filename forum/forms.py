@@ -44,3 +44,21 @@ class CreatePostForm(forms.ModelForm):
         if len(text) > 40000:
             raise forms.ValidationError(_("Text cannot exceed 40000 characters."), code="invalid")
         return text
+
+
+class CreateCommentForm(forms.Form):
+    """
+    Form for creating a new comment. It includes a field for the comment text.
+    """
+    comment = forms.CharField(label=_("Comment"), widget=forms.Textarea(attrs={"rows": 3, "cols": 40}))
+
+    def clean_comment(self):
+        """
+        Check if the comment is empty or exceeds allowed character limit.
+        """
+        comment = self.cleaned_data["comment"]
+        if not comment:
+            self.add_error("comment", _("Comment field is required."))
+        if len(comment) > 40000:
+            self.add_error("comment", _("Comment cannot exceed 40000 characters."))
+        return comment
