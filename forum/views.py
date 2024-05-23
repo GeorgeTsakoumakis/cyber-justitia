@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
+from .models import Post, Comment
 from .utils import update_views
-from .forms import CreatePostForm
+from .forms import CreatePostForm, CreateCommentForm
 
 
 def forums(request):
@@ -15,8 +15,13 @@ def forums(request):
 
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
+    comments = post.get_comments()
+    # Comment creation form
+    comment_form = CreateCommentForm()
     context = {
         "post": post,
+        "comments": comments,
+        "comment_form": comment_form,
     }
     update_views(request, post)
 
@@ -37,3 +42,18 @@ def create_post(request):
     else:
         form = CreatePostForm()
     return render(request, "postcreation.html", {"form": form})
+
+
+def create_comment(request, slug):
+    if not request.user.is_authenticated:
+        return redirect("login")
+    post = get_object_or_404(Post, slug=slug)
+    if request.method == "POST":
+        form = CreateCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.cleaned_data["comment"]
+            Comment.objects.create(user=request.user, post=post, text=comment)
+            return redirect("post_detail", slug=slug)
+    else:
+        form = CreateCommentForm()
+        return render(request, "forumpost.html", {"comment_form": form})
