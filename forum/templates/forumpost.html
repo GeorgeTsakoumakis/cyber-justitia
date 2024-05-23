@@ -3,37 +3,81 @@
 {% load hitcount_tags %}
 
 {% block content %}
-        <div class="main-box" style="text-indent: 8%">
-            <h2 style="color: black">{{ post.title|title }}</h2>
-            <p style="color: #3d3d3d">Post by {{ post.user.first_name }} {{ post.user.last_name }} • on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
-            <p style="color: black">{{ post.text|safe }}</p>
+    <div class="main-box" style="text-indent: 8%">
+        <h2 style="color: black">{{ post.title|title }}</h2>
+        <p style="color: #3d3d3d">Post by {{ post.user.first_name }} {{ post.user.last_name }} •
+            on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
+        <p style="color: black">{{ post.text|safe }}</p>
+    </div>
+
+    <div class="row align-items-start" style="padding-bottom: 3%;">
+        <div class="col">
+            <button type="button" class="btn btn-primary">+ Add comment</button>
         </div>
-
-        <div class="row align-items-start" style="padding-bottom: 3%;">
-            <div class="col">
-                <button type="button" class="btn btn-primary">+ Add comment</button>
+    </div>
+    <div id="comment-form-template" style="display: none;">
+        <form method="POST" action="{% url 'create_comment' post.slug %}">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <textarea id="{{ comment_form.comment.id_for_label }}"
+                          name="{{ comment_form.comment.html_name }}"
+                          class="form-control" placeholder="Enter your comment here..."
+                          aria-label="comment-body" aria-describedby="basic-addon1" required>
+                </textarea>
             </div>
-        </div>
-
-{#        <div id="comment1" class="main-box" style="background-color: #FCD6DD">#}
-{#            <!-- TODO: Add upvote/downvote-->#}
-{#            <!-- TODO: If user == professional, display headline flair and make username color #B72FA6 -->#}
-{#            <p style="color: #3d3d3d;">Post by {{ user.username }} • on {{ post.created_at }}</p>#}
-{#            <p style="color: black; font-size: 12pt">{{comment}}</p>#}
-{#        </div>#}
-{##}
-{#        <div id="comment2" class="main-box">#}
-{#            <!-- TODO: Add upvote/downvote-->#}
-{#            <!-- TODO: If user == professional, display headline flair and make username color #B72FA6 -->#}
-{#            <p style="color: #3d3d3d; ;">Post by {{ user.username }} • on {{ post.created_at }}</p>#}
-{#            <p style="color: black; font-size: 12pt">{{comment}}</p>#}
-{#        </div>#}
-
-
-        <div class="row justify-content-center">
-            <div class="col-12 d-flex justify-content-between">
-                <img id="back" style="width: 52px; fill: black; rotate:180deg;" src="{% static 'arrow.svg' %}">
-                <img id="forward" style="width: 52px; fill: black;" src={% static 'arrow.svg' %}>
+            <button id="submit-comment" type="submit" class="btn btn-success">Submit Comment</button>
+            <button id="cancel-comment" type="button" class="btn btn-secondary" onclick="removeForm(this)">Cancel</button>
+        </form>
+    </div>
+    <div id="comment-container">
+        {% for comment in comments %}
+            <div class="main-box" style="background-color: #FCD6DD">
+            <!-- TODO: Add upvote/downvote-->
+                <p style="color: #3d3d3d;">Comment by {{ comment.user.first_name }} {{ comment.user.last_name }} •
+                    on {{ comment.created_at|date }}</p>
+                    <!-- If user is professional, display flair -->
+                    {% if comment.user.is_professional %}
+                        <p style="color: #B72FA6; font-size: 12pt">{{ comment.user.flair }}</p>
+                    {% endif %}
+                <p style="color: black; font-size: 12pt">{{ comment.text|safe }}</p>
             </div>
-        </div>         
+        {% endfor %}
+    </div>
+
+    {#        <div id="comment1" class="main-box" style="background-color: #FCD6DD">#}
+    {#            <!-- TODO: Add upvote/downvote-->#}
+    {#            <!-- TODO: If user == professional, display headline flair and make username color #B72FA6 -->#}
+    {#            <p style="color: #3d3d3d;">Post by {{ user.username }} • on {{ post.created_at }}</p>#}
+    {#            <p style="color: black; font-size: 12pt">{{comment}}</p>#}
+    {#        </div>#}
+    {##}
+    {#        <div id="comment2" class="main-box">#}
+    {#            <!-- TODO: Add upvote/downvote-->#}
+    {#            <!-- TODO: If user == professional, display headline flair and make username color #B72FA6 -->#}
+    {#            <p style="color: #3d3d3d; ;">Post by {{ user.username }} • on {{ post.created_at }}</p>#}
+    {#            <p style="color: black; font-size: 12pt">{{comment}}</p>#}
+    {#        </div>#}
+
+    <script>
+    {#function addCommentForm() {#}
+    {#    let template = document.getElementById('comment-form-template').cloneNode(true);#}
+    {#    template.style.display = 'block';#}
+    {#    template.id = ''; // Clear the ID so we can add multiple forms#}
+    {##}
+    {#    let container = document.getElementById('comment-container');#}
+    {#    container.appendChild(template); // Add the form to the container#}
+    {# } #}
+    {##}
+    {#function removeForm(button) {#}
+    {#    let form = button.closest('form');#}
+    {#    form.remove();#}
+    {# } #}
+    document.getElementById('submit-comment').onclick = function() {
+        let form = document.createElement('div');
+        form.innerHTML = document.getElementById('comment-form-template').innerHTML;
+        form.style.display = 'block';
+        form.id = '';
+        document.getElementById('comment-container').appendChild(form);
+    }
+    </script>
 {% endblock %}
