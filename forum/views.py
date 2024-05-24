@@ -9,7 +9,7 @@ def forums(request):
     posts = Post.objects.all()
     paginator = Paginator(posts, 5)  # Show 5 posts per page
 
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     try:
         page_obj = paginator.page(page_number)
     except PageNotAnInteger:

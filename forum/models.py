@@ -38,7 +38,11 @@ class Post(models.Model):
             self.slug = slugify(self.title)
             # Ensure the slug is unique
             while Post.objects.filter(slug=self.slug).exists():
-                self.slug = slugify(self.title) + "-" + str(Post.objects.filter(slug=self.slug).count())
+                self.slug = (
+                    slugify(self.title)
+                    + "-"
+                    + str(Post.objects.filter(slug=self.slug).count())
+                )
         self.full_clean()
         super(Post, self).save(*args, **kwargs)
 
@@ -66,11 +70,15 @@ class Post(models.Model):
         if not self.title:
             raise ValidationError(_("Title field is required."), code="invalid")
         if len(self.title) > 256:
-            raise ValidationError(_("Title cannot exceed 256 characters."), code="invalid")
+            raise ValidationError(
+                _("Title cannot exceed 256 characters."), code="invalid"
+            )
         if not self.text:
             raise ValidationError(_("Text field is required."), code="invalid")
         if len(self.text) > 40000:
-            raise ValidationError(_("Text cannot exceed 40000 characters."), code="invalid")
+            raise ValidationError(
+                _("Text cannot exceed 40000 characters."), code="invalid"
+            )
         return cleaned_data
 
 
@@ -93,7 +101,9 @@ class Comment(models.Model):
         if not self.text:
             raise ValidationError(_("Text field is required."), code="invalid")
         if len(self.text) > 40000:
-            raise ValidationError(_("Text cannot exceed 40000 characters."), code="invalid")
+            raise ValidationError(
+                _("Text cannot exceed 40000 characters."), code="invalid"
+            )
         return cleaned_data
 
     def save(self, *args, **kwargs):
