@@ -59,7 +59,7 @@
                     {% if user.is_authenticated %}
                     <li class="login">
                         <!-- TODO: Set href to dynamically link to own user's profile, once web structure is fully realised -->
-                        <a class="nav-link" href="#" style="transform: translateY(10%); font-size: 3vh;">{{ user.username }}</a>
+                        <a class="nav-link" href="#" style="transform: translateY(20%); font-size: 1rem;">{{ user.username }}</a>
                     </li>
                     <li class="login">
                         <a class="nav-link" href="{% url 'logout' %}"><img src="{%  static 'logout.svg' %}" style="max-width: 44px"></a>
