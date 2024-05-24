@@ -9,10 +9,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="main-box" style="text-indent: 8%; margin-bottom: 1rem">
+    <div class="main-box" style="margin-bottom: 1rem">
         <h2 style="color: black">{{ post.title|title }}</h2>
-        <p style="color: #3d3d3d">Post by {{ post.user.first_name }} {{ post.user.last_name }} •
-            on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
+        <p style="color: #3d3d3d">Post by <span
+                style="text-decoration: underline">{{ post.user.first_name }} {{ post.user.last_name }}</span> •
+            on {{ post.created_at }} • (Read {% get_hit_count for post %} times)</p>
         <p style="color: black">{{ post.text|safe }}</p>
     </div>
 
@@ -27,28 +28,31 @@
                 {% csrf_token %}
                 <div class="input-group mb-3">
                     <textarea id="{{ comment_form.comment.id_for_label }}"
-                            name="{{ comment_form.comment.html_name }}"
-                            class="form-control" placeholder="Enter your comment here..."
-                            aria-label="comment-body" aria-describedby="basic-addon1" required></textarea>
+                              name="{{ comment_form.comment.html_name }}"
+                              class="form-control" placeholder="Enter your comment here..."
+                              aria-label="comment-body" aria-describedby="basic-addon1" required></textarea>
                 </div>
                 <button id="submit-comment" type="submit" class="btn btn-success">Submit Comment</button>
-                <button id="cancel-comment" type="button" class="btn btn-secondary" onclick="removeForm(this)">Cancel</button>
+                <button id="cancel-comment" type="button" class="btn btn-secondary" onclick="removeForm(this)">Cancel
+                </button>
             </form>
         </div>
         <div id="comment-container"></div>
     </div>
-        {% for comment in comments %}
-            <div class="main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
+    {% for comment in comments %}
+        <div class="main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
             <!-- TODO: Add upvote/downvote-->
-                <p style="color: #3d3d3d;">Comment by {{ comment.user.first_name }} {{ comment.user.last_name }} •
-                    on {{ comment.created_at|date }}</p>
-                    <!-- If user is professional, display flair -->
-                    {% if comment.user.is_professional %}
-                        <p class="comment-professional">{{ comment.user.flair }}</p>
-                    {% endif %}
-                <p style="color: black; font-size: 12pt">{{ comment.text|safe }}</p>
-            </div>
-        {% endfor %}
+            <p style="color: #3d3d3d;">Comment by
+                <span class="comment-professional-name">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
+                •
+                on {{ comment.created_at }}</p>
+            <!-- If user is professional, display flair -->
+            {% if comment.user.is_professional %}
+                <p class="comment-professional-flair">{{ comment.user.flair }}</p>
+            {% endif %}
+            <p style="color: black; font-size: 12pt">{{ comment.text|safe }}</p>
+        </div>
+    {% endfor %}
     </div>
 
     {#        <div id="comment1" class="main-box" style="background-color: #FCD6DD">#}
@@ -78,7 +82,7 @@
                     clone.style.display = 'block';
                     clone.removeAttribute('id');
                     clone.classList.add('cloned-comment-form');
-        
+
                     let container = document.getElementById('comment-container');
                     container.appendChild(clone);
                 } else {
@@ -86,15 +90,15 @@
                 }
             }
         }
-        
+
         function removeForm(button) {
             const form = button.closest('.cloned-comment-form');
             if (form) {
                 form.remove();
             }
         }
-        
-        document.getElementById('submit-comment').onclick = function() {
+
+        document.getElementById('submit-comment').onclick = function () {
             addCommentForm();
         };
     </script>

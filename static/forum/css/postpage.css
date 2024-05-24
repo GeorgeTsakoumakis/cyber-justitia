@@ -1,7 +1,12 @@
-.comment-professional {
-    color: #B72FA6;
+.comment-professional-flair {
+    color: #79216D;
     font-size: 12pt;
     font-style: italic;
-    text-decoration: underline;
     margin-top: -10px;
+}
+
+.comment-professional-name {
+    color: #B72FA6;
+    font-size: 12pt;
+    text-decoration: underline;
 }
