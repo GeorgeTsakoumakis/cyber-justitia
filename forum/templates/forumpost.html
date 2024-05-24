@@ -3,7 +3,7 @@
 {% load hitcount_tags %}
 
 {% block content %}
-    <div class="main-box" style="text-indent: 8%">
+    <div class="main-box" style="text-indent: 8%; margin-bottom: 1rem">
         <h2 style="color: black">{{ post.title|title }}</h2>
         <p style="color: #3d3d3d">Post by {{ post.user.first_name }} {{ post.user.last_name }} •
             on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-primary" onclick="addCommentForm()">+ Add comment</button>
         </div>
     </div>
-    <div class="main-box" id="comment-box" style="width: 44vw">
+    <div class="main-box" id="comment-box" style="width: 44vw; display: none; margin-bottom: 2rem">
         <div id="comment-form-template" style="display: none;">
             <form method="POST" action="{% url 'create_comment' post.slug %}">
                 {% csrf_token %}
@@ -23,8 +23,7 @@
                     <textarea id="{{ comment_form.comment.id_for_label }}"
                             name="{{ comment_form.comment.html_name }}"
                             class="form-control" placeholder="Enter your comment here..."
-                            aria-label="comment-body" aria-describedby="basic-addon1" required>
-                    </textarea>
+                            aria-label="comment-body" aria-describedby="basic-addon1" required></textarea>
                 </div>
                 <button id="submit-comment" type="submit" class="btn btn-success">Submit Comment</button>
                 <button id="cancel-comment" type="button" class="btn btn-secondary" onclick="removeForm(this)">Cancel</button>
@@ -33,7 +32,7 @@
         <div id="comment-container"></div>
     </div>
         {% for comment in comments %}
-            <div class="main-box" style="background-color: #FCD6DD">
+            <div class="main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
             <!-- TODO: Add upvote/downvote-->
                 <p style="color: #3d3d3d;">Comment by {{ comment.user.first_name }} {{ comment.user.last_name }} •
                     on {{ comment.created_at|date }}</p>
@@ -63,6 +62,8 @@
     <script>
         function addCommentForm() {
             const commentBox = document.getElementById('comment-box');
+            // Make commentbox visible
+            commentBox.style.display = 'block';
             const existingForm = commentBox.querySelector('.cloned-comment-form');
             if (existingForm === null) {
                 let template = document.getElementById('comment-form-template');
