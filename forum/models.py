@@ -36,6 +36,9 @@ class Post(models.Model):
         """
         if not self.slug:
             self.slug = slugify(self.title)
+            # Ensure the slug is unique
+            while Post.objects.filter(slug=self.slug).exists():
+                self.slug = slugify(self.title) + "-" + str(Post.objects.filter(slug=self.slug).count())
         self.full_clean()
         super(Post, self).save(*args, **kwargs)
 
