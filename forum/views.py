@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
 from .utils import update_views
@@ -6,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def forums(request):
-    posts = Post.objects.all()
+    posts = Post.objects.filter(is_deleted=False).order_by("-created_at")
     paginator = Paginator(posts, 5)  # Show 5 posts per page
 
     page_number = request.GET.get("page")
@@ -55,6 +56,7 @@ def create_post(request):
 
 
 def create_comment(request, slug):
+    # Don't 404, redirect to login
     if not request.user.is_authenticated:
         return redirect("login")
     post = get_object_or_404(Post, slug=slug)
@@ -67,3 +69,17 @@ def create_comment(request, slug):
     else:
         form = CreateCommentForm()
         return render(request, "forumpost.html", {"comment_form": form})
+
+
+@login_required
+def delete_post(request, slug):
+    print("in delete post")
+    post = get_object_or_404(Post, slug=slug)
+    # print(post.user, request.user)
+    if request.user == post.user:
+        post.delete()
+    try:
+        print(post.user)
+    except:
+        print("post deleted")
+    return redirect("forums")

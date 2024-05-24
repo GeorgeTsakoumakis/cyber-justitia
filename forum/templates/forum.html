@@ -50,9 +50,9 @@
                     </a>
                     <!-- TODO: Delete post functionality link -->
                     {% if user.is_authenticated and user == post.user %}
-{#                    <a href="{% url 'delete_post' post.slug %}" class="delete-post">#}
+                    <a href="{% url 'delete_post' post.slug %}" class="delete-post">
                         <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
-{#                    </a>#}
+                    </a>
                     {% endif %}
                 </div>
         </div>

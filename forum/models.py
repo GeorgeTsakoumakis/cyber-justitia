@@ -48,6 +48,7 @@ class Post(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         self.text = "[deleted]"
+        self.title = "[deleted]"
         self.is_deleted = True
         self.save()
         return self
