@@ -73,10 +73,8 @@ def create_comment(request, slug):
 
 @login_required
 def delete_post(request, slug):
-    print("in delete post")
     post = get_object_or_404(Post, slug=slug)
-    # print(post.user, request.user)
-    if request.user == post.user:
+    if request.user == post.user or request.user.is_staff:
         post.delete()
     try:
         print(post.user)
