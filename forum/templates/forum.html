@@ -12,10 +12,6 @@
         <a href="?page={{ page_obj.previous_page_number }}" class="button_leftarrow">
             <img src="{% static 'arrow.svg' %}" alt="button_leftarrow" class="button_leftarrow">
         </a>
-        {% else %}
-        <a href="#" class="button_leftarrow" style="visibility: hidden;">
-            <img src="{% static 'arrow.svg' %}" alt="button_leftarrow" class="button_leftarrow">
-        </a>
         {% endif %}
 
         <h1>Posts</h1>
@@ -29,10 +25,6 @@
 
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}" class="button_rightarrow">
-            <img src="{% static 'arrow.svg' %}" alt="button_rightarrow" class="button_rightarrow">
-        </a>
-        {% else %}
-        <a href="#" class="button_rightarrow" style="visibility: hidden;">
             <img src="{% static 'arrow.svg' %}" alt="button_rightarrow" class="button_rightarrow">
         </a>
         {% endif %}
