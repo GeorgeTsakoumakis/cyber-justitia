@@ -42,12 +42,19 @@
                 </button>
             </div>
             <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
-            <a href="{{ post.get_url }}">
                 <div class="post">
-                    <h2>{{ post.title|title }}</h2>
-                    <p style="font-weight: bold;">{{ post.text|first_line }}</p>
+                    <!-- Position title left and backspace.svg right -->
+                    <a href="{{ post.get_url }}">
+                        <h2>{{ post.title|title }}</h2>
+                        <p style="font-weight: bold;">{{ post.text|first_line }}</p>
+                    </a>
+                    <!-- TODO: Delete post functionality link -->
+                    {% if user.is_authenticated and user == post.user %}
+{#                    <a href="{% url 'delete_post' post.slug %}" class="delete-post">#}
+                        <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
+{#                    </a>#}
+                    {% endif %}
                 </div>
-            </a>
         </div>
         {% endfor %}
     </div>

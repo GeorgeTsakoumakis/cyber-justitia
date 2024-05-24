@@ -3,6 +3,14 @@ body {
     background-color: #F5F5F5;
 }
 
+.backspace {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+
 .header {
     display: flex;
     align-items: center;
