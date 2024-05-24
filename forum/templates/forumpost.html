@@ -2,6 +2,12 @@
 {% load static %}
 {% load hitcount_tags %}
 
+<title>{{ post.title|title }} - Cyber Justitia</title>
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'forum/css/postpage.css' %}">
+{% endblock %}
+
 {% block content %}
     <div class="main-box" style="text-indent: 8%; margin-bottom: 1rem">
         <h2 style="color: black">{{ post.title|title }}</h2>
@@ -38,7 +44,7 @@
                     on {{ comment.created_at|date }}</p>
                     <!-- If user is professional, display flair -->
                     {% if comment.user.is_professional %}
-                        <p style="color: #B72FA6; font-size: 12pt">{{ comment.user.flair }}</p>
+                        <p class="comment-professional">{{ comment.user.flair }}</p>
                     {% endif %}
                 <p style="color: black; font-size: 12pt">{{ comment.text|safe }}</p>
             </div>
