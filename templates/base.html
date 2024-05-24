@@ -64,9 +64,9 @@
                     <li class="login">
                         <a class="nav-link" href="{% url 'logout' %}"><img src="{%  static 'logout.svg' %}" style="max-width: 44px"></a>
                     </li>
-                    <!-- <li class="login">
-                        <a class="nav-link" href="{ url 'dashboard' %}"><img src="{% static 'settings.svg' %}" style="width: 44px"></a>
-                    </li> -->
+                    <li class="login">
+                        <a class="nav-link" href="{% url 'dashboard' %}"><img src="{% static 'settings.svg' %}" style="width: 44px"></a>
+                    </li>
                     {% else %}
                     <li class="login">
                         <a class="nav-link" href="{% url 'login' %}">Log in</a>
