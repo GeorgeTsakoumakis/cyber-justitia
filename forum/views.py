@@ -76,8 +76,4 @@ def delete_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.user == post.user or request.user.is_staff:
         post.delete()
-    try:
-        print(post.user)
-    except:
-        print("post deleted")
     return redirect("forums")
