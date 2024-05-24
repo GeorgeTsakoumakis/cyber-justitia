@@ -13,7 +13,7 @@
     <div class="main-box" style="margin-bottom: 1rem">
         <div class="flex-container">
             <h2 style="color: black">{{ post.title|title }}</h2>
-            {% if user.is_authenticated and user == post.user or user.is_superuser %}
+            {% if user.is_authenticated and user == post.user or user.is_staff %}
                 <a href="{% url 'delete_post' post.slug %}" class="delete-post">
                     <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
                 </a>
@@ -50,10 +50,17 @@
     {% for comment in comments %}
         <div class="main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
             <!-- TODO: Add upvote/downvote-->
-            <p style="color: #3d3d3d;">Comment by
-                <span class="comment-professional-name">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
-                •
-                on {{ comment.created_at }}</p>
+            <div class="flex-container">
+                <p style="color: #3d3d3d;">Comment by
+                    <span class="comment-professional-name">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
+                    •
+                    on {{ comment.created_at }}</p>
+                {% if user.is_authenticated and user == comment.user or user.is_staff %}
+                    <a href="{% url 'delete_comment' post.slug comment.comment_id %}" class="delete-post">
+                        <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
+                    </a>
+                {% endif %}
+            </div>
             <!-- If user is professional, display flair -->
             {% if comment.user.is_professional %}
                 <p class="comment-professional-flair">{{ comment.user.flair }}</p>

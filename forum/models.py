@@ -64,7 +64,7 @@ class Post(models.Model):
         Get all comments for this post in descending order of creation
         :return:  QuerySet of Comment objects
         """
-        return Comment.objects.filter(post=self).order_by("-created_at")
+        return Comment.objects.filter(post=self).filter(is_deleted=False).order_by("-created_at")
 
     def clean(self):
         cleaned_data = super().clean()

@@ -77,3 +77,11 @@ def delete_post(request, slug):
     if request.user == post.user or request.user.is_staff:
         post.delete()
     return redirect("forums")
+
+
+@login_required
+def delete_comment(request, slug, comment_id):
+    comment = get_object_or_404(Comment, comment_id=comment_id)
+    if request.user == comment.user or request.user.is_staff:
+        comment.delete()
+    return redirect("post_detail", slug=slug)
