@@ -2,13 +2,23 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
 from .utils import update_views
 from .forms import CreatePostForm, CreateCommentForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def forums(request):
     posts = Post.objects.all()
+    paginator = Paginator(posts, 5)  # Show 5 posts per page
+
+    page_number = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
 
     context = {
-        "posts": posts,
+        "page_obj": page_obj,
     }
     return render(request, "forum.html", context)
 
