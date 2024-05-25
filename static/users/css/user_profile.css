@@ -1,0 +1,32 @@
+.line-sep {
+    max-width: 40vw;
+    border: 2px solid #000000;
+}
+
+.professional {
+    background-color: #C597E2 !important;
+}
+
+.admin {
+    background-color: #743E75 !important;
+}
+
+.admin-secondary {
+    background-color: #BE6FB4 !important;
+}
+
+.admin-text {
+    color: white !important;
+}
+
+p, h2, h3 {
+    color: black;
+}
+
+.top-right-icon {
+    position: absolute;
+    top: 1vw;
+    right: 1vw;
+    width: 5vw;
+    height: auto;
+}

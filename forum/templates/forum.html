@@ -5,76 +5,69 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'forum/css/forummainpage.css' %}">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
+<script type="text/javascript" src="{% static 'forum/js/forum.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <div class="header">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="button_leftarrow">
-            <img src="{% static 'arrow.svg' %}" alt="button_leftarrow" class="button_leftarrow">
-        </a>
-        {% endif %}
-
-        <h1>Posts</h1>
-        <a href="{% url 'create_post' %}" class="button_addpost">+ Create new post</a>
-        <form action="#"> <!-- TODO: Implement search functionality -->
-            <img src="{% static 'admin/img/search.svg' %}" alt="Search" class="search_icon">
-            <label>
-                <input type="text" placeholder="Search...">
-            </label>
-        </form>
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="button_rightarrow">
-            <img src="{% static 'arrow.svg' %}" alt="button_rightarrow" class="button_rightarrow">
-        </a>
-        {% endif %}
-    </div>
-
-    <div class="posts">
-        {% for post in page_obj %}
-        <div class="post-container">
-            <div class="vote-section">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
-            </div>
-            <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
-                <div class="post">
-                    <!-- Position title left and backspace.svg right -->
-                    <a href="{{ post.get_url }}">
-                        <h2>{{ post.title|title }}</h2>
-                        <p style="font-weight: bold;">{{ post.text|first_line }}</p>
-                    </a>
-                    {% if user.is_authenticated and user == post.user or user.is_authenticated %}
-                    <a href="{% url 'delete_post' post.slug %}" class="delete-post">
-                        <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
-                    </a>
-                    {% endif %}
-                </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <div class="pagination">
-    <!-- TODO: Customise styles for pagination -->
-        <span class="step-links">
+    <div class="row">
+        <div class="col header" style="padding-bottom: 2%; justify-content: center; flex-wrap: wrap;">
             {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="button_leftarrow">
+                <img src="{% static 'arrow.svg' %}" alt="button_leftarrow" class="button_leftarrow">
+            </a>
             {% endif %}
 
+            <h1>Posts</h1>
+            <a href="{% url 'create_post' %}" class="button_addpost">+ Create new post</a>
+            <form action="#"> <!-- TODO: Implement search functionality -->
+                <img src="{% static 'admin/img/search.svg' %}" alt="Search" class="search_icon">
+                <label>
+                    <input type="text" placeholder="Search...">
+                </label>
+            </form>
+
+            <img src="{% static 'rss.svg' %}" style="width: 3rem; margin-left: 1.875rem;">
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="button_rightarrow">
+                <img src="{% static 'arrow.svg' %}" alt="button_rightarrow" class="button_rightarrow">
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="posts">
+                {% for post in page_obj %}
+                <div class="post-container">
+                    <div class="vote-section" data-id="{{ post.post_id }}">
+                        <button class="button_upvote">
+                            <img src="{% static 'upvote.svg' %}" alt="upvote">
+                        </button>
+                        <button class="button_downvote">
+                            <img src="{% static 'downvote.svg' %}" alt="downvote">
+                        </button>
+                    </div>
+                    <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+                    <a href="{{ post.get_url }}">
+                        <div class="post">
+                            <h2>{{ post.title|title }}</h2>
+                            <p style="font-weight: bold;">{{ post.text|first_line }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div> 
+    </div>
+
+    <div class="pagination" style="padding-bottom: 2%; text-align: center;">
+        <span class="step-links">
             <span class="current">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
             </span>
-
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
         </span>
     </div>
 {% endblock %}

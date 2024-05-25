@@ -283,7 +283,6 @@ def user_profile(request):
         {"first_name": first_name, "last_name": last_name, "email": email},
     )
 
-
 def codeofconduct(request):
     """Renders the code of conduct page"""
     return render(request, "codeofconduct.html")
