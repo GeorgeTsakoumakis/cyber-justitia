@@ -1,0 +1,121 @@
+p, li, span, a {
+    color: white;
+}
+
+body {
+    font-family: 'Roboto Mono';
+    margin: 0;
+    padding: 0;
+}
+
+.wrap-container {
+    max-width: 1000px;
+    margin: 0 0;
+    padding: 20px;
+    width: 100%;
+}
+
+#chat-container {
+    border: 1px solid #ccc;
+    padding: 0;
+    margin-bottom: 1rem;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+    padding: 3%;
+    font-size: 0.8em;
+}
+
+#chat-messages-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+#submit-prompt {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    padding: 0;
+    padding-left: 10%;
+}
+
+#submit-prompt img {
+    width: 85%;
+    height: 85%;
+}
+
+#user-input {
+    width: 100%;
+    width: calc(100% - 5px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    padding-right: 40px;
+    font-family: 'Roboto Mono';
+}
+
+.message {
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+    color: white;
+}
+
+.user-message {
+    color: #1b1b1b;
+    align-self: flex-end;
+    background-color: #BE6FB4;
+    border: 1px solid #743E75;
+    border-radius: 6px 6px 0px 6px;
+    color: white;
+}
+
+.bot-message {
+    color: #ccc;
+    align-self: flex-start;
+    background-color: #695455;
+    border: 1px solid #453536;
+    border-radius: 6px 6px 6px 0px;
+    color: white;
+}
+
+.chat-input {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    background: #FDEFF2;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chat-input-container {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.chat-input-container input {
+    flex: 1;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.chat-input-container button {
+    padding: 0.5rem;
+}
+
+.main-box {
+    width: 100%;
+}

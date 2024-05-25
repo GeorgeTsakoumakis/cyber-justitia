@@ -9,6 +9,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
     <!-- Import Bootstrap CSS -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,13 +60,13 @@
                     {% if user.is_authenticated %}
                     <li class="login">
                         <!-- TODO: Set href to dynamically link to own user's profile, once web structure is fully realised -->
-                        <a class="nav-link" href="#" style="transform: translateY(20%); font-size: 1rem;">{{ user.username }}</a>
+                        <a class="nav-link" href="#" style="transform: translateY(10%); font-size: 1.35rem;">{{ user.username }}</a>
                     </li>
                     <li class="login">
-                        <a class="nav-link" href="{% url 'logout' %}"><img src="{%  static 'logout.svg' %}" style="max-width: 44px"></a>
+                        <a class="nav-link" href="{% url 'logout' %}"><img src="{%  static 'logout.svg' %}" style="max-width: 40px"></a>
                     </li>
                     <li class="login">
-                        <a class="nav-link" href="{% url 'dashboard' %}"><img src="{% static 'settings.svg' %}" style="width: 44px"></a>
+                        <a class="nav-link" href="{% url 'dashboard' %}"><img src="{% static 'settings.svg' %}" style="max-width: 40px"></a>
                     </li>
                     {% else %}
                     <li class="login">
@@ -79,7 +80,8 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid d-flex flex-column justify-content-baseline align-items-center" >
+    <div class="container-fluid d-flex flex-column justify-content-baseline align-items-center">
+        <br>
         {% block content %}
         {% endblock %}
     </div>
