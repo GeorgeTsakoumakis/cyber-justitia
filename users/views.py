@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
+from forum.models import Post, Comment
 from .forms import (
     UpdateDetailsForm,
     UpdatePasswordForm,
@@ -273,15 +274,17 @@ def logout(request):
 
 
 @login_required
-def profile(request):
-    first_name = request.user.first_name
-    last_name = request.user.last_name
-    email = request.user.email
-    return render(
-        request,
-        "user_profile.html",
-        {"first_name": first_name, "last_name": last_name, "email": email},
-    )
+def profile(request, username):
+    """Renders the profile page at /profile/username"""
+    user = CustomUser.objects.get(username=username)
+    recent_posts = Post.objects.filter(user=user).filter(is_deleted=False).order_by("-created_at")[:3]
+    recent_comments = Comment.objects.filter(user=user).filter(is_deleted=False).order_by("-created_at")[:3]
+    context = {
+        "viewed_user": user,
+        "recent_posts": recent_posts,
+        "recent_comments": recent_comments,
+    }
+    return render(request, "user_profile.html", context)
 
 
 def codeofconduct(request):
