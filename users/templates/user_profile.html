@@ -34,10 +34,11 @@
                  style="border-radius: 0px 0px 6px 6px; width: 75vw;">
                 <h3 style="color: black; font-weight: bold; {% if user.is_superuser %}filter: invert(100%);{% endif %}">
                     Description</h3>
-                <p style="color: #3D3D3D {% if not user.is_superuser %}filter: invert(100%);{% endif %}">{{ viewed_user.description }}</p>
                 {% if viewed_user.description == None %}
                     <p style="color: #3D3D3D; font-style: italic; {% if user.is_superuser %}filter: invert(100%);{% endif %}">
                         There is no description.</p>
+                {% else %}
+                    <p style="color: #3D3D3D {% if not user.is_superuser %}filter: invert(100%);{% endif %}">{{ viewed_user.description }}</p>
                 {% endif %}
 
                 <!-- TODO: Implement and display credentials for professionals -->
