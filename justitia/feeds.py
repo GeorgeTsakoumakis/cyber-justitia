@@ -5,7 +5,7 @@ from forum.models import Post
 class LatestPostsFeed(Feed):
     """
     RSS Feed for the latest posts on Justitia.
-    Install Feedly or another RSS reader extension to view and subscribe to this feed.
+    Install Feeder or another RSS reader extension to view and subscribe to this feed.
     """
 
     title = "Justitia - Latest Posts"
