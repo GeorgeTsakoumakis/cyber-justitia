@@ -1,0 +1,130 @@
+.flex-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.update-details, .update-password, .description, .delete-account, .admin-features, .flair, .credentials {
+    background-color: #FCD6DD;
+    text-align: center;
+    padding: 2%;
+}
+
+.update-details {
+    background-color: #FCD6DD;
+}
+
+.update-password {
+    background-color: #FDEFF2;
+}
+
+.description {
+    background-color: #FDEFF2;
+}
+
+.delete-account {
+    background-color: #FDEFF2;
+}
+
+.admin-features {
+    background-color: #BE6FB4;
+}
+
+.flair {
+    background-color: #BE6FB4;
+}
+
+.credentials {
+    background-color: #BE6FB4;
+}
+
+.update-details form input[type="text"],
+.update-password form input[type="password"],
+.description form input[type="text"],
+.flair form input[type="text"],
+.credentials form input[type="text"],
+.credentials form input[type="date"] {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.description form input[type="text"] {
+    height: 4.4rem;
+}
+
+.delete-label {
+    width: 100%;
+    height: 3.3rem;
+    font-size: 1.5rem;
+}
+
+label[for="inprogress"] {
+    font-size: 1.5rem;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 8rem;
+}
+
+#began, #ended {
+    width: 100%;
+    margin-top: 0.3rem;
+}
+
+body {
+    font-family: 'Roboto Mono', monospace;
+}
+
+input[type=text], input[type=password] {
+    border: 0.125rem solid #EEB3C0;
+}
+
+@media (min-width: 48rem) {
+    .update-details, .update-password {
+        width: 45%;
+        margin-right: 5%;
+        margin-left: 5%;
+    }
+
+    .description, .delete-account, .admin-features, .flair, .credentials {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-container {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    #began, #ended {
+        width: 45%;
+    }
+}
+
+@media (min-width: 62rem) {
+    .update-details, .update-password {
+        width: 30rem;
+        height: 24rem;
+        margin-right: 3rem;
+        margin-left: 3rem;
+    }
+
+    .description, .delete-account, .admin-features, .flair, .credentials {
+        width: 100%;
+    }
+
+    .form-container {
+        justify-content: space-around;
+    }
+
+    #began, #ended {
+        width: 13rem;
+    }
+}
+
+.main-box {
+    padding: 5%;
+}

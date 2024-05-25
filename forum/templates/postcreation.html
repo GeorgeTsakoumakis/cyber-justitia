@@ -2,26 +2,20 @@
 {% load static %}
 
 {% block content %}
-<div class="main-box" style="text-align: center">
+<div class="main-box" style="text-align: center; margin-bottom: 5%; width: 70vw;">
     <h1>Create new post</h1>
     <br>
     <form method="POST" action="{% url 'create_post' %}">
         {% csrf_token %}
         <div class="input-group mb-3">
-            <input id="{{ form.title.id_for_label }}" name="{{ form.title.html_name }}"
-                   type="text" class="form-control" placeholder="Post title" aria-label="post-title"
-                   aria-describedby="basic-addon1">
-            {% if form.title.errors %}
-                <div class="text-danger">
-                    {{ form.title.errors }}
-                </div>
-            {% endif %}
+            <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px;"></span>
+            <input id="{{ form.title.id_for_label }}" name="{{ form.title.html_name }}" class="form-control" placeholder="Title" aria-label="post-title" aria-describedby="basic-addon1">
         </div>
 
         <div class="input-group mb-3">
             <textarea id="{{ form.text.id_for_label }}" name="{{ form.text.html_name }}"
                    class="form-control" placeholder="Enter your post here..."
-                   aria-label="post-body" aria-describedby="basic-addon1"></textarea>
+                   aria-label="post-body" aria-describedby="basic-addon1" style="height: 40vh"></textarea>
             {% if form.text.errors %}
                 <div class="text-danger">
                     {{ form.text.errors }}

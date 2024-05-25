@@ -2,134 +2,9 @@
 {% load static %}
 
 {% block styles %}
-    <!-- Custom styles for this template -->
-    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
-
-<style>
-    p, li, span, a {
-        color: white;
-    }
-
-    body {
-        font-family: 'Roboto Mono';
-        margin: 0;
-        padding: 0;
-    }
-
-    .wrap-container {
-        max-width: 1000px;
-        margin: 0 0;
-        padding: 20px;
-        width: 100%;
-    }
-
-    #chat-container {
-        border: 1px solid #ccc;
-        padding: 0;
-        padding: 20px;
-        margin-bottom: 1rem;
-        height: 60vh;
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-    }
-
-    #chat-messages {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        flex-grow: 1;
-        padding: 3%;
-        font-size: 0.8em;
-    }
-
-    #chat-messages-container {
-        flex: 1;
-        overflow-y: auto;
-    }
-
-    #submit-prompt {
-        position: absolute;
-        right: 10px;
-        background: none;
-        border: none;
-        padding: 0;
-        padding-left: 10%;
-    }
-
-    #submit-prompt img {
-        width: 85%;
-        height: 85%;
-    }
-
-    #user-input {
-        width: 100%;
-        width: calc(100% - 5px);
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px;
-        padding-right: 40px;
-        font-family: 'Roboto Mono';
-    }
-
-    .message {
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 10px;
-        max-width: 70%;
-        word-wrap: break-word;
-        color: white;
-    }
-
-    .user-message {
-        color: #1b1b1b;
-        align-self: flex-end;
-        background-color: #BE6FB4;
-        border: 1px solid #743E75;
-        border-radius: 6px 6px 0px 6px;
-        color: white;
-    }
-
-    .bot-message {
-        color: #ccc;
-        align-self: flex-start;
-        background-color: #695455;
-        border: 1px solid #453536;
-        border-radius: 6px 6px 6px 0px;
-        color: white;
-    }
-
-    .chat-input {
-        display: flex;
-        position: sticky;
-        bottom: 0;
-        background: #FDEFF2;
-        padding: 10px;
-        border-top: 1px solid #ccc;
-    }
-
-    .chat-input-container {
-        position: relative;
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-    }
-
-    .chat-input-container input {
-        flex: 1;
-        padding: 0.5rem;
-        margin-right: 0.5rem;
-    }
-    
-    .chat-input-container button {
-        padding: 0.5rem;
-    }
-
-    .main-box {
-        width: 100%;
-    }
-
-</style>
+<script type="module" src="https://md-block.verou.me/md-block.js"></script>
+<link rel="stylesheet" href="{% static 'chatbot/css/chatbot.css' %}">
+<script type="text/javascript" src="{% static 'chatbot/js/chatbot_session.js' %}"></script>
 {% endblock %}
 
 <!-- Error/info messages -->
@@ -147,13 +22,12 @@
         <div class="secondary-box" style="max-width: 869px; width: 90%">
             <h1 style="color: white">⚠️ DISCLAIMER! ⚠️</h1>
             <p style="color: white">Our AI chatbot can <b>NOT</b> replace the advice of an actual legal professional, so if you plan on taking serious legal action, <i>consult a real legal professional first</i> before proceeding.</p>
-            <p style="color: white">One way you can do this is by checking out our <a href=<!-- /forums --></a>>Forums</a> where you can ask real legal professionals advice on your case and reach out to them if further legal action is necessary.</p>
+            <p style="color: white">One way you can do this is by checking out our <a href="{% url 'forums' %}">Forums</a> where you can ask real legal professionals advice on your case and reach out to them if further legal action is necessary.</p>
         </div>
     </div>
 </div>
 
 <div class="wrap-container">
-
     <div class="row justify-content-center">
         <div class="col-3">
             <div class="session-box" style="padding-bottom: 5%; text-align: center">
@@ -202,11 +76,7 @@
 </div>
 
 <script>
-    document.getElementById('user-input').onkeydown = function(e){
-        if(e.keyCode === 13){
-            sendMessage();
-        }
-    };
+    // It seems this script only runs here so I'm keeping it here lol
 
     // Function to send user message and display it in the chat
     function sendMessage() {
@@ -235,28 +105,6 @@
 
             document.getElementById("user-input").value = ""; // Clear input field
         }
-    }
-
-    // Function to display messages in the chat container
-    function displayMessage(message, isUser) {
-        let chatContainer = document.getElementById("chat-container");
-        let chatMessages = document.getElementById("chat-messages");
-        let messageElement;
-        if (isUser) {
-            messageElement = document.createElement("div");
-        } else {
-            messageElement = document.createElement("md-block");
-        }
-        messageElement.textContent = message;
-        messageElement.classList.add('message');
-        if (isUser) {
-            messageElement.classList.add('user-message');
-        } else {
-            messageElement.classList.add('bot-message');
-        }
-
-        chatMessages.appendChild(messageElement);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 </script>
 
