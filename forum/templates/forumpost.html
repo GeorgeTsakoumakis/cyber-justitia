@@ -6,35 +6,35 @@
 <title>{{ post.title|title }} - Cyber Justitia</title>
 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'forum/css/postpage.css' %}">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
-<script type="text/javascript" src="{% static 'forum/js/forum.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'forum/css/postpage.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
+    <script type="text/javascript" src="{% static 'forum/js/forum.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
-<div class="post-box main-box">
-    <div class="vote-section" data-id="{{ post.id }}">
-        <button class="button_upvote">
-            <img src="{% static 'upvote.svg' %}" alt="upvote">
-        </button>
-        <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
-        <button class="button_downvote">
-            <img src="{% static 'downvote.svg' %}" alt="downvote">
-        </button>
+    <div class="post-box main-box">
+        <div class="vote-section" data-id="{{ post.id }}">
+            <button class="button_upvote">
+                <img src="{% static 'upvote.svg' %}" alt="upvote">
+            </button>
+            <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+            <button class="button_downvote">
+                <img src="{% static 'downvote.svg' %}" alt="downvote">
+            </button>
+        </div>
+        <div class="content-section">
+            <h2 class="post-title">{{ post.title|title }}</h2>
+            <p class="post-details">Post by {{ post.user.first_name }} {{ post.user.last_name }} •
+                on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
+            <p class="post-text">{{ post.text|safe }}</p>
+        </div>
+        {% if user.is_authenticated and user == post.user or user.is_staff %}
+            <a href="{% url 'delete_post' post.slug %}" class="delete-post">
+                <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
+            </a>
+        {% endif %}
     </div>
-    <div class="content-section">
-        <h2 class="post-title">{{ post.title|title }}</h2>
-        <p class="post-details">Post by {{ post.user.first_name }} {{ post.user.last_name }} •
-            on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
-        <p class="post-text">{{ post.text|safe }}</p>
-    </div>
-    {% if user.is_authenticated and user == post.user or user.is_staff %}
-        <a href="{% url 'delete_post' post.slug %}" class="delete-post">
-            <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
-        </a>
-    {% endif %}
-</div>
 
     <div class="row align-items-start" style="padding-bottom: 3%;">
         <div class="col">
@@ -59,34 +59,34 @@
         <div id="comment-container"></div>
     </div>
     {% for comment in comments %}
-    <div class="comment-box main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
-        <div class="vote-section" data-id="{{ comment.id }}">
-            <button class="button_upvote">
-                <img src="{% static 'upvote.svg' %}" alt="upvote">
-            </button>
-            <p class="upvote-count" id="upvote-count-1">{{ comment.votes }}</p>
-            <button class="button_downvote">
-                <img src="{% static 'downvote.svg' %}" alt="downvote">
-            </button>
-        </div>
-        <div class="comment-content-section">
-            <p style="color: #3d3d3d;">Comment by
-            <span class="comment-professional-name">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
-            •
-            on {{ comment.created_at }}</p>
-    
-            <!-- If user is professional, display flair -->
-            {% if comment.user.is_professional %}
-                <p class="comment-professional-flair">{{ comment.user.flair }}</p>
+        <div class="comment-box main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
+            <div class="vote-section" data-id="{{ comment.id }}">
+                <button class="button_upvote">
+                    <img src="{% static 'upvote.svg' %}" alt="upvote">
+                </button>
+                <p class="upvote-count" id="upvote-count-1">{{ comment.votes }}</p>
+                <button class="button_downvote">
+                    <img src="{% static 'downvote.svg' %}" alt="downvote">
+                </button>
+            </div>
+            <div class="comment-content-section">
+                <p style="color: #3d3d3d;">Comment by
+                    <span class="comment-professional-name">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
+                    •
+                    on {{ comment.created_at }}</p>
+
+                <!-- If user is professional, display flair -->
+                {% if comment.user.is_professional %}
+                    <p class="comment-professional-flair">{{ comment.user.flair }}</p>
+                {% endif %}
+                <p style="color: black; font-size: 12pt">{{ comment.text|safe }}</p>
+            </div>
+            {% if user.is_authenticated and user == comment.user or user.is_staff %}
+                <a href="{% url 'delete_comment' post.slug comment.comment_id %}" class="delete-post">
+                    <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
+                </a>
             {% endif %}
-            <p style="color: black; font-size: 12pt">{{ comment.text|safe }}</p>
         </div>
-        {% if user.is_authenticated and user == comment.user or user.is_staff %}
-            <a href="{% url 'delete_comment' post.slug comment.comment_id %}" class="delete-post">
-                <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
-            </a>
-        {% endif %}
-        </div>
-        {% endfor %}
+    {% endfor %}
     </div>
 {% endblock %}

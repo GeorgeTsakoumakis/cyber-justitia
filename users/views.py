@@ -277,8 +277,16 @@ def logout(request):
 def profile(request, username):
     """Renders the profile page at /profile/username"""
     user = CustomUser.objects.get(username=username)
-    recent_posts = Post.objects.filter(user=user).filter(is_deleted=False).order_by("-created_at")[:3]
-    recent_comments = Comment.objects.filter(user=user).filter(is_deleted=False).order_by("-created_at")[:3]
+    recent_posts = (
+        Post.objects.filter(user=user)
+        .filter(is_deleted=False)
+        .order_by("-created_at")[:3]
+    )
+    recent_comments = (
+        Comment.objects.filter(user=user)
+        .filter(is_deleted=False)
+        .order_by("-created_at")[:3]
+    )
     context = {
         "viewed_user": user,
         "recent_posts": recent_posts,

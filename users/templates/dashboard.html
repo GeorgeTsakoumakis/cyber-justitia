@@ -4,283 +4,318 @@
 <title>Dashboard - Cyber Justitia</title>
 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'users/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'users/css/dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-6">
-        <div class="main-box" style="text-align: center; background-color: #FCD6DD; width: 25vw; padding-bottom: 5%">
-            <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Update details</h1>
-            <form action="{% url 'dashboard' %}" method="post">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;">
+    <div class="row">
+        <div class="col-6">
+            <div class="main-box"
+                 style="text-align: center; background-color: #FCD6DD; width: 25vw; padding-bottom: 5%">
+                <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Update details</h1>
+                <form action="{% url 'dashboard' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"
+                          style="background-color: white; width: 64px; display: block;">
                         <img src="{% static 'user.svg' %}">
                     </span>
-                    <input placeholder="First Name" type="text" class="form-control"
-                       id="{{ update_details_form.first_name.id_for_label }}"
-                       name="{{ update_details_form.first_name.html_name }}"
-                       value="{{ update_details_form.first_name.value }}">
-                {% if update_details_form.first_name.errors %}
-                    <div class="text-danger">
-                        {{ update_details_form.first_name.errors }}
+                        <input placeholder="First Name" type="text" class="form-control"
+                               id="{{ update_details_form.first_name.id_for_label }}"
+                               name="{{ update_details_form.first_name.html_name }}"
+                               value="{{ update_details_form.first_name.value }}">
+                        {% if update_details_form.first_name.errors %}
+                            <div class="text-danger">
+                                {{ update_details_form.first_name.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;">
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"
+                          style="background-color: white; width: 64px; display: block;">
                         <img src="{% static 'user.svg' %}">
                     </span>
-                    <input placeholder="Last Name" type="text" class="form-control"
-                       id="{{ update_details_form.last_name.id_for_label }}"
-                       name="{{ update_details_form.last_name.html_name }}"
-                       value="{{ update_details_form.last_name.value }}">
-                {% if update_details_form.last_name.errors %}
-                    <div class="text-danger">
-                        {{ update_details_form.last_name.errors }}
+                        <input placeholder="Last Name" type="text" class="form-control"
+                               id="{{ update_details_form.last_name.id_for_label }}"
+                               name="{{ update_details_form.last_name.html_name }}"
+                               value="{{ update_details_form.last_name.value }}">
+                        {% if update_details_form.last_name.errors %}
+                            <div class="text-danger">
+                                {{ update_details_form.last_name.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; color: #FCD6DD;">
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"
+                          style="background-color: white; width: 64px; color: #FCD6DD;">
                         <img src="{% static 'mail.svg' %}" style="stroke: #FCD6DD">
                     </span>
-                    <input placeholder="Email" type="email" class="form-control"
-                       id="{{ update_details_form.email.id_for_label }}"
-                       name="{{ update_details_form.email.html_name }}" value="{{ update_details_form.email.value }}">
-                {% if update_details_form.email.errors %}
-                    <div class="text-danger">
-                        {{ update_details_form.email.errors }}
+                        <input placeholder="Email" type="email" class="form-control"
+                               id="{{ update_details_form.email.id_for_label }}"
+                               name="{{ update_details_form.email.html_name }}"
+                               value="{{ update_details_form.email.value }}">
+                        {% if update_details_form.email.errors %}
+                            <div class="text-danger">
+                                {{ update_details_form.email.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                    <button name="update_details" id="submitdets" type="submit" class="btn btn-primary"
+                            style="align-items: center;">Save changes
+                    </button>
+                </form>
             </div>
-                <button name="update_details" id="submitdets" type="submit" class="btn btn-primary" style="align-items: center;">Save changes</button>
-            </form>
         </div>
-    </div>
-    <div class="col-6">
-        <div class="main-box" style="text-align: center; width: 25vw; padding-bottom: 5%">
-            <h1 style=" font-family: 'Roboto Mono'; font-size: 24px;">Update password</h1>
-            <form action="{% url 'dashboard' %}" method="post">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;">
+        <div class="col-6">
+            <div class="main-box" style="text-align: center; width: 25vw; padding-bottom: 5%">
+                <h1 style=" font-family: 'Roboto Mono'; font-size: 24px;">Update password</h1>
+                <form action="{% url 'dashboard' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"
+                          style="background-color: white; width: 64px; display: block;">
                         <img src="{% static 'lock.svg' %}" style="border-radius: 1px;">
                     </span>
-                    <input placeholder="Old Password" type="password" class="form-control"
-                       id="{{ change_password_form.old_password.id_for_label }}" name="old_password">
-                {% if change_password_form.old_password.errors %}
-                    <div class="text-danger">
-                        {{ change_password_form.old_password.errors }}
+                        <input placeholder="Old Password" type="password" class="form-control"
+                               id="{{ change_password_form.old_password.id_for_label }}" name="old_password">
+                        {% if change_password_form.old_password.errors %}
+                            <div class="text-danger">
+                                {{ change_password_form.old_password.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;">
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"
+                          style="background-color: white; width: 64px; display: block;">
                         <img src="{% static 'lock.svg' %}" style="border-radius: 1px;">
                     </span>
-                    <input placeholder="New Password" type="password" class="form-control"
-                       id="{{ change_password_form.new_password1.id_for_label }}" name="new_password1">
-                {% if change_password_form.new_password1.errors %}
-                    <div class="text-danger">
-                        {{ change_password_form.new_password1.errors }}
+                        <input placeholder="New Password" type="password" class="form-control"
+                               id="{{ change_password_form.new_password1.id_for_label }}" name="new_password1">
+                        {% if change_password_form.new_password1.errors %}
+                            <div class="text-danger">
+                                {{ change_password_form.new_password1.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 64px; display: block;">
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"
+                          style="background-color: white; width: 64px; display: block;">
                         <img src="{% static 'lock.svg' %}" style="border-radius: 1px;">
                     </span>
-                    <input placeholder="Confirm New Password" type="password" class="form-control"
-                       id="{{ change_password_form.new_password2.id_for_label }}" name="new_password2">
-                {% if change_password_form.new_password2.errors %}
-                    <div class="text-danger">
-                        {{ change_password_form.new_password2.errors }}
+                        <input placeholder="Confirm New Password" type="password" class="form-control"
+                               id="{{ change_password_form.new_password2.id_for_label }}" name="new_password2">
+                        {% if change_password_form.new_password2.errors %}
+                            <div class="text-danger">
+                                {{ change_password_form.new_password2.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </div>
-                <button name="change_password" id="submitpass" type="submit" class="btn btn-primary" style="align-items: center;">Save changes</button>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col" style="padding-top: 5%">
-        <div class="main-box" style="text-align: center; width: 51vw;">
-            <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Description</h1>
-            <form action="{% url 'dashboard' %}" method="post">
-                {% csrf_token %}
-                <div class="input-group input-group-lg mb-3">
-                    <textarea placeholder="Description" class="form-control"
-                          id="{{ update_description_form.description.id_for_label }}"
-                          name="description">{{ user.description }}
-                    </textarea>
-                {% if update_description_form.description.errors %}
-                    <div class="text-danger">
-                        {{ update_description_form.description.errors }}
-                    </div>
-                {% endif %}
-                </div>
-                <button type="submit" class="btn btn-primary" name="update_description" style="align-items: center;">Save changes</button>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col" style="padding-top: 5%; padding-bottom: 3%">
-        <div class="main-box" style="text-align: center; width: 51vw; padding-bottom: 5%">
-            <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Delete account</h1>
-            <form action="{% url 'dashboard' %}" method="post">
-                {% csrf_token %}
-                <input type="checkbox" class="delete-checkbox" name="deactivate_profile" value="True" required {% if deactivate_account_form.deactivate_profile.value %}checked{% endif %}>
-                <label class="delete-label" for="delete" style="font-size: 1rem; padding-bottom: 5%">Are you sure you want to delete your account? Your profile and all of your posts will no longer be viewable</label>
-                <button name="deactivate_account" id="deletebutton" type="submit" class="btn btn-primary btn-lg" style="align-items: center;" disabled>DELETE!</button>
-                {% if deactivate_account_form.is_bound %}
-                    {% if deactivate_account_form.deactivate_profile.errors %}
-                        <div class="text-danger">
-                            {{ deactivate_account_form.deactivate_profile.errors }}
-                        </div>
-                    {% endif %}
-                {% endif %}
-            </form>
-        </div>
-    </div>
-</div>
-    {% if user.is_superuser %}
-    <div class="row">
-        <div class="col">
-            <div class="main-box admin-features" style="width: 51vw">
-                <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Access administrator features (visisble to admins only)</h1>
-                <form action="/admin">
-                    <input id="gotodash" type="submit" value="Go to Dashboard" class="btn btn-primary btn-lg">
+                    <button name="change_password" id="submitpass" type="submit" class="btn btn-primary"
+                            style="align-items: center;">Save changes
+                    </button>
                 </form>
             </div>
         </div>
     </div>
-    {% endif %}
-{% if user.is_professional %}
-<div class="row">
-    <div class="col" style="padding-top: 5%">
-        <div class="main-box flair" style="width: 51vw;">
-            <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Headline flair (visible to professionals only):</h1>
-            <form action="{% url 'dashboard' %}" method="post">
-                {% csrf_token %}
-                <input name="flair" type="text" class="form-control" placeholder="Enter flair" aria-label="flair" value="{{ request.user.professionaluser.flair }}">
-                <br>
-                <button name="update_flair" id="submitflair" type="submit" class="btn btn-primary" style="align-items: center;">Save changes</button>
-            </form>
+    <div class="row">
+        <div class="col" style="padding-top: 5%">
+            <div class="main-box" style="text-align: center; width: 51vw;">
+                <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Description</h1>
+                <form action="{% url 'dashboard' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group input-group-lg mb-3">
+                    <textarea placeholder="Description" class="form-control"
+                              id="{{ update_description_form.description.id_for_label }}"
+                              name="description">{{ user.description }}
+                    </textarea>
+                        {% if update_description_form.description.errors %}
+                            <div class="text-danger">
+                                {{ update_description_form.description.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="update_description"
+                            style="align-items: center;">Save changes
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-    <!-- TODO: Still need to implement interactive qualifications list -->
     <div class="row">
-        <div class="col" style="padding-top: 5%; padding-bottom: 5%">
-            <div class="main-box credentials" style="width: 51vw;">
-                <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Credentials (visible to professionals only)</h1>
-                <div class="form-container mt-4">
-                    <form action="{% url 'dashboard' %}" method="get" class="mb-3">
-                        <div class="list-group">
-                            {% for education in professionals %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="#" class="list-group-item-action">{{ education }}</a>
-                                <button id="deleteeduc" type="button" class="btn-close" aria-label="deleteeducation"></button>
+        <div class="col" style="padding-top: 5%; padding-bottom: 3%">
+            <div class="main-box" style="text-align: center; width: 51vw; padding-bottom: 5%">
+                <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Delete account</h1>
+                <form action="{% url 'dashboard' %}" method="post">
+                    {% csrf_token %}
+                    <input type="checkbox" class="delete-checkbox" name="deactivate_profile" value="True" required
+                           {% if deactivate_account_form.deactivate_profile.value %}checked{% endif %}>
+                    <label class="delete-label" for="delete" style="font-size: 1rem; padding-bottom: 5%">Are you sure
+                        you want to delete your account? Your profile and all of your posts will no longer be
+                        viewable</label>
+                    <button name="deactivate_account" id="deletebutton" type="submit" class="btn btn-primary btn-lg"
+                            style="align-items: center;" disabled>DELETE!
+                    </button>
+                    {% if deactivate_account_form.is_bound %}
+                        {% if deactivate_account_form.deactivate_profile.errors %}
+                            <div class="text-danger">
+                                {{ deactivate_account_form.deactivate_profile.errors }}
                             </div>
-                            {% endfor %}
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="school" class="form-control mb-2" placeholder="School">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="degree" class="form-control mb-2" placeholder="Degree Title">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="beganschool" class="form-control mb-2" placeholder="Began" onfocus="(this.type='date')" onblur="(this.type='text')">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="endedschool" class="form-control mb-2" placeholder="Ended" onfocus="(this.type='date')" onblur="(this.type='text')">
-                        </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="school_inprogress" name="school_inprogress" onchange="toggleEndedSchoolInput()">
-                            <label style="color: white" class="form-check-label" for="school_inprogress">In Progress</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                    <form action="{% url 'dashboard' %}" method="get" class="mb-3">
-                        <div class="list-group">
-                            {% for qualifications in professionals %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="#" class="list-group-item-action">{{ qualification }}</a>
-                                <button id="deletequali" type="button" class="btn-close" aria-label="deletequalification"></button>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="position" class="form-control mb-2" placeholder="Position">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="company" class="form-control mb-2" placeholder="Company">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="beganwork" class="form-control mb-2" placeholder="Began" onfocus="(this.type='date')" onblur="(this.type='text')">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="endedwork" class="form-control mb-2" placeholder="Ended" onfocus="(this.type='date')" onblur="(this.type='text')">
-                        </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="position_inprogress" name="position_inprogress" onchange="toggleEndedWorkInput()">
-                            <label style="color: white" class="form-check-label" for="position_inprogress">In Progress</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        {% endif %}
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if user.is_superuser %}
+        <div class="row">
+            <div class="col">
+                <div class="main-box admin-features" style="width: 51vw">
+                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Access administrator features
+                        (visisble to admins only)</h1>
+                    <form action="/admin">
+                        <input id="gotodash" type="submit" value="Go to Dashboard" class="btn btn-primary btn-lg">
                     </form>
                 </div>
             </div>
         </div>
-    </div>
     {% endif %}
-</div>
-</body>
+    {% if user.is_professional %}
+        <div class="row">
+            <div class="col" style="padding-top: 5%">
+                <div class="main-box flair" style="width: 51vw;">
+                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Headline flair (visible to
+                        professionals only):</h1>
+                    <form action="{% url 'dashboard' %}" method="post">
+                        {% csrf_token %}
+                        <input name="flair" type="text" class="form-control" placeholder="Enter flair"
+                               aria-label="flair" value="{{ request.user.professionaluser.flair }}">
+                        <br>
+                        <button name="update_flair" id="submitflair" type="submit" class="btn btn-primary"
+                                style="align-items: center;">Save changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- TODO: Still need to implement interactive qualifications list -->
+        <div class="row">
+            <div class="col" style="padding-top: 5%; padding-bottom: 5%">
+                <div class="main-box credentials" style="width: 51vw;">
+                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Credentials (visible to
+                        professionals only)</h1>
+                    <div class="form-container mt-4">
+                        <form action="{% url 'dashboard' %}" method="get" class="mb-3">
+                            <div class="list-group">
+                                {% for education in professionals %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <a href="#" class="list-group-item-action">{{ education }}</a>
+                                        <button id="deleteeduc" type="button" class="btn-close"
+                                                aria-label="deleteeducation"></button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="school" class="form-control mb-2" placeholder="School">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="degree" class="form-control mb-2" placeholder="Degree Title">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="beganschool" class="form-control mb-2" placeholder="Began"
+                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="endedschool" class="form-control mb-2" placeholder="Ended"
+                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="school_inprogress"
+                                       name="school_inprogress" onchange="toggleEndedSchoolInput()">
+                                <label style="color: white" class="form-check-label" for="school_inprogress">In
+                                    Progress</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                        <form action="{% url 'dashboard' %}" method="get" class="mb-3">
+                            <div class="list-group">
+                                {% for qualifications in professionals %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <a href="#" class="list-group-item-action">{{ qualification }}</a>
+                                        <button id="deletequali" type="button" class="btn-close"
+                                                aria-label="deletequalification"></button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="position" class="form-control mb-2" placeholder="Position">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="company" class="form-control mb-2" placeholder="Company">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="beganwork" class="form-control mb-2" placeholder="Began"
+                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="endedwork" class="form-control mb-2" placeholder="Ended"
+                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="position_inprogress"
+                                       name="position_inprogress" onchange="toggleEndedWorkInput()">
+                                <label style="color: white" class="form-check-label" for="position_inprogress">In
+                                    Progress</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+    </body>
 
-<!-- TODO: the in progress toggling doesn't work!!!! -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const deleteCheckboxes = document.querySelectorAll('.delete-checkbox');
-        const deleteButton = document.getElementById('deletebutton');
-    
-        deleteCheckboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                let enableButton = false;
-                deleteCheckboxes.forEach(function(cb) {
-                    if (cb.checked) {
-                        enableButton = true;
-                    }
+    <!-- TODO: the in progress toggling doesn't work!!!! -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteCheckboxes = document.querySelectorAll('.delete-checkbox');
+            const deleteButton = document.getElementById('deletebutton');
+
+            deleteCheckboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    let enableButton = false;
+                    deleteCheckboxes.forEach(function (cb) {
+                        if (cb.checked) {
+                            enableButton = true;
+                        }
+                    });
+                    deleteButton.disabled = !enableButton;
                 });
-                deleteButton.disabled = !enableButton;
             });
         });
-    });
 
-    function toggleEndedSchoolInput() {
-        var checkbox = document.getElementById("school_inprogress");
-        var endedInput = document.getElementById("endedschool");
-        
-        if (checkbox.checked) {
-            endedInput.style.display = "none";
-        } else {
-            endedInput.style.display = "block";
-        }
-    };
+        function toggleEndedSchoolInput() {
+            var checkbox = document.getElementById("school_inprogress");
+            var endedInput = document.getElementById("endedschool");
 
-    function toggleEndedWorkInput() {
-        var checkbox = document.getElementById("position_inprogress");
-        var endedInput = document.getElementById("endedwork");
-        
-        if (checkbox.checked) {
-            endedInput.style.display = "none";
-        } else {
-            endedInput.style.display = "block";
-        }
-    };
-</script>
+            if (checkbox.checked) {
+                endedInput.style.display = "none";
+            } else {
+                endedInput.style.display = "block";
+            }
+        };
+
+        function toggleEndedWorkInput() {
+            var checkbox = document.getElementById("position_inprogress");
+            var endedInput = document.getElementById("endedwork");
+
+            if (checkbox.checked) {
+                endedInput.style.display = "none";
+            } else {
+                endedInput.style.display = "block";
+            }
+        };
+    </script>
 
 {% endblock %}

@@ -7,6 +7,7 @@ class LatestPostsFeed(Feed):
     RSS Feed for the latest posts on Justitia.
     Install Feedly or another RSS reader extension to view and subscribe to this feed.
     """
+
     title = "Justitia - Latest Posts"
     link = "/forum/"
     description = "The latest posts on Justitia."
