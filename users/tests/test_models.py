@@ -7,7 +7,7 @@ from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 from ..models import ProfessionalUser
 from chatbot.models import Session, Message
-from forum.models import Post
+from forum.models import Post, Comment, PostVote, CommentVote
 
 # Get the CustomUser model
 CustomUser = get_user_model()
@@ -532,6 +532,60 @@ class PostModelTests(TestCase):
         self.assertTrue(post.is_deleted)
         self.assertEqual(post.text, '[deleted]')
         self.assertEqual(post.title, '[deleted]')
+
+
+class CommentModelTests(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='testpassword',
+            email='testuser@example.com'
+        )
+        self.post = Post.objects.create(
+            title='Valid Title',
+            text='Valid text.',
+            user=self.user
+        )
+
+    def test_create_comment_with_valid_data(self):
+        comment = Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            text='Valid comment text.'
+        )
+        self.assertEqual(comment.text, 'Valid comment text.')
+        self.assertEqual(comment.user, self.user)
+        self.assertEqual(comment.post, self.post)
+
+    def test_create_comment_with_empty_text(self):
+        comment = Comment(
+            post=self.post,
+            user=self.user,
+            text=''
+        )
+        with self.assertRaises(ValidationError):
+            comment.full_clean()
+
+    def test_create_comment_with_long_text(self):
+        long_text = 'a' * 40001
+        comment = Comment(
+            post=self.post,
+            user=self.user,
+            text=long_text
+        )
+        with self.assertRaises(ValidationError):
+            comment.full_clean()
+
+    def test_comment_delete(self):
+        comment = Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            text='Text to delete.'
+        )
+        comment.delete()
+        self.assertTrue(comment.is_deleted)
+        self.assertEqual(comment.text, '[deleted]')
 
 
 if __name__ == '__main__':
