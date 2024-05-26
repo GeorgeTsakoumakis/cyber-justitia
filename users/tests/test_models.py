@@ -457,7 +457,7 @@ class PostModelTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             username='testuser',
-            password='testpassword',
+            password='Password123!',
             email='testuser@example.com'
         )
 
@@ -539,7 +539,7 @@ class CommentModelTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             username='testuser',
-            password='testpassword',
+            password='Password123!',
             email='testuser@example.com'
         )
         self.post = Post.objects.create(
