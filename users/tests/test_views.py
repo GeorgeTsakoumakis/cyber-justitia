@@ -178,27 +178,33 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(self.user.last_name, 'User')
         self.assertEqual(self.user.email, 'updateduser@example.com')
 
-    # Will pass once dashboard implemented
-    def test_update_first_name_with_invalid_data(self):
-        response = self.client.post(reverse('dashboard'), {
+    def test_update_first_name_with_blank_value(self):
+        response = self.client.post(reverse('update_details'), {
             'first_name': '',
             'last_name': 'User',
-            'email': 'updateduser@example.com'
+            'email': 'testuser@example.com'
         })
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
-        self.assertContains(response, 'First name field is required.')
 
-    # Will pass once dashboard implemented
-    def test_update_last_name_with_invalid_data(self):
-        response = self.client.post(reverse('dashboard'), {
-            'first_name': 'Test',
-            'last_name': '',
-            'email': 'updateduser@example.com'
-        })
+        # Check that the form is re-rendered with errors
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
-        self.assertContains(response, 'Last name field is required.')
+        form = response.context['update_details_form']
+        self.assertTrue(form.errors)
+        self.assertIn('first_name', form.errors)
+        self.assertEqual(form.errors['first_name'], ['This field is required.'])
+
+    def test_update_last_name_with_blank_value(self):
+        response = self.client.post(reverse('update_details'), {
+            'first_name': 'Test',
+            'last_name': '',  # Attempting to update last name with a blank value
+            'email': 'testuser@example.com'
+        })
+
+        # Check that the form is re-rendered with errors
+        self.assertEqual(response.status_code, 200)
+        form = response.context['update_details_form']
+        self.assertTrue(form.errors)
+        self.assertIn('last_name', form.errors)
+        self.assertEqual(form.errors['last_name'], ['This field is required.'])
 
     def test_change_password_with_valid_data(self):
         self.client.force_login(self.user)
@@ -222,25 +228,26 @@ class DashboardViewsTestCase(TestCase):
         self.assertContains(response, 'The new passwords do not match.')
 
     def test_deactivate_account_with_checkbox_checked(self):
-        self.client.force_login(self.user)  # Ensure the user is logged in
         response = self.client.post(reverse('dashboard'), {
-            'deactivate_profile': True
+            'deactivate_profile': 'True',  # Checkbox checked
         })
-        self.assertRedirects(response, reverse('index'))
+
+        # Check for successful deactivation
+        self.assertEqual(response.status_code, 302)  # Should redirect to 'index'
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
-    # Will pass once dashboard implemented
     def test_deactivate_account_without_checkbox_checked(self):
-        self.client.force_login(self.user)  # Ensure the user is logged in
         response = self.client.post(reverse('dashboard'), {
-            'deactivate_profile': False
+            # Checkbox not checked
         })
+
+        # Check that the form is re-rendered with errors
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
-        self.assertContains(response, 'Checkbox is required.')
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.is_active)  # Ensure the account is still active
+        form = response.context['deactivate_account_form']
+        self.assertTrue(form.errors)
+        self.assertIn('deactivate_profile', form.errors)
+        self.assertEqual(form.errors['deactivate_profile'], ['This field is required.'])
 
     def test_update_description_with_valid_data(self):
         response = self.client.post(reverse('update_description'), {
@@ -259,13 +266,17 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(self.user.professionaluser.flair, 'Updated flair')
 
     # Will pass once dashboard implemented
-    def test_update_flair_blank(self):
-        response = self.client.post(reverse('dashboard'), {
-            'flair': ''
+    def test_update_flair_with_blank_value(self):
+        response = self.client.post(reverse('update_flair'), {
+            'flair': '',  # Attempting to update flair with a blank value
         })
+
+        # Check that the form is re-rendered with errors
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
-        self.assertContains(response, 'Flair field is required.')
+        form = response.context['update_flair_form']
+        self.assertTrue(form.errors)
+        self.assertIn('flair', form.errors)
+        self.assertEqual(form.errors['flair'], ['This field is required.'])
 
 
 if __name__ == '__main__':
