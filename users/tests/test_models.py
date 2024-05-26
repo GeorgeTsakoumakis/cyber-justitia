@@ -7,6 +7,7 @@ from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 from ..models import ProfessionalUser
 from chatbot.models import Session, Message
+from forum.models import Post
 
 # Get the CustomUser model
 CustomUser = get_user_model()
@@ -449,6 +450,88 @@ class ChatbotModelTests(TestCase):
         session = Session.objects.create(user=long_username_user)
         expected_str = f'{long_username_user.username}_{session.session_id}'
         self.assertEqual(str(session), expected_str)
+
+
+class PostModelTests(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='testpassword',
+            email='testuser@example.com'
+        )
+
+    def test_create_post_with_valid_data(self):
+        post = Post.objects.create(
+            title='Valid Title',
+            text='Valid text.',
+            user=self.user
+        )
+        self.assertEqual(post.title, 'Valid Title')
+        self.assertEqual(post.text, 'Valid text.')
+        self.assertEqual(post.user, self.user)
+
+    def test_create_post_with_empty_title(self):
+        post = Post(
+            title='',
+            text='Valid text.',
+            user=self.user
+        )
+        with self.assertRaises(ValidationError):
+            post.full_clean()
+
+    def test_create_post_with_long_title(self):
+        long_title = 'a' * 257
+        post = Post(
+            title=long_title,
+            text='Valid text.',
+            user=self.user
+        )
+        with self.assertRaises(ValidationError):
+            post.full_clean()
+
+    def test_create_post_with_empty_text(self):
+        post = Post(
+            title='Valid Title',
+            text='',
+            user=self.user
+        )
+        with self.assertRaises(ValidationError):
+            post.full_clean()
+
+    def test_create_post_with_long_text(self):
+        long_text = 'a' * 40001
+        post = Post(
+            title='Valid Title',
+            text=long_text,
+            user=self.user
+        )
+        with self.assertRaises(ValidationError):
+            post.full_clean()
+
+    def test_post_slug_is_unique(self):
+        post1 = Post.objects.create(
+            title='Unique Title',
+            text='Valid text.',
+            user=self.user
+        )
+        post2 = Post.objects.create(
+            title='Unique Title',
+            text='Another valid text.',
+            user=self.user
+        )
+        self.assertNotEqual(post1.slug, post2.slug)
+
+    def test_post_delete(self):
+        post = Post.objects.create(
+            title='Title to Delete',
+            text='Text to delete.',
+            user=self.user
+        )
+        post.delete()
+        self.assertTrue(post.is_deleted)
+        self.assertEqual(post.text, '[deleted]')
+        self.assertEqual(post.title, '[deleted]')
 
 
 if __name__ == '__main__':
