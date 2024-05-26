@@ -588,5 +588,60 @@ class CommentModelTests(TestCase):
         self.assertEqual(comment.text, '[deleted]')
 
 
+class PostVoteModelTests(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='Password123!',
+            email='testuser@example.com'
+        )
+        self.post = Post.objects.create(
+            title='Valid Title',
+            text='Valid text.',
+            user=self.user
+        )
+
+    def test_create_postvote_with_valid_data(self):
+        postvote = PostVote.objects.create(
+            post=self.post,
+            user=self.user,
+            vote_type=True
+        )
+        self.assertEqual(postvote.user, self.user)
+        self.assertEqual(postvote.post, self.post)
+        self.assertTrue(postvote.vote_type)
+
+    def test_create_postvote_without_user(self):
+        postvote = PostVote(
+            post=self.post,
+            vote_type=True
+        )
+        with self.assertRaises(ValidationError):
+            postvote.full_clean()
+
+    def test_create_postvote_without_post(self):
+        postvote = PostVote(
+            user=self.user,
+            vote_type=True
+        )
+        with self.assertRaises(ValidationError):
+            postvote.full_clean()
+
+    def test_create_duplicate_postvote(self):
+        PostVote.objects.create(
+            post=self.post,
+            user=self.user,
+            vote_type=True
+        )
+        duplicate_postvote = PostVote(
+            post=self.post,
+            user=self.user,
+            vote_type=True
+        )
+        with self.assertRaises(ValidationError):
+            duplicate_postvote.full_clean()
+
+
 if __name__ == '__main__':
     unittest.main()
