@@ -167,32 +167,26 @@ class DashboardViewsTestCase(TestCase):
 
     # Fails
     def test_update_details_with_valid_data(self):
-        valid_data = {
-            'first_name': 'UpdatedFirstName',
-            'last_name': 'UpdatedLastName',
-            'email': 'updatedemail@example.com'
-        }
-        response = self.client.post(reverse('dashboard'), valid_data)
+        new_first_name = 'UpdatedFirstName'
+        new_last_name = 'UpdatedLastName'
+        new_email = 'updatedemail@example.com'
 
-        # Check that the form did not contain errors and was processed correctly
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(reverse('dashboard'), {
+            'first_name': new_first_name,
+            'last_name': new_last_name,
+            'email': new_email,
+            'update_details': '1'
+        })
 
-        form = response.context['update_details_form']
-        if not form.is_valid():
-            print(form.errors)  # Print form errors for debugging purposes
-
-        self.assertTrue(form.is_valid())
-
-        # Check that the response redirects to the dashboard
+        # Check that the user is redirected to the dashboard after a successful update
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('dashboard'))
 
-        # Fetch the updated user from the database
+        # Fetch the updated user details from the database
         self.user.refresh_from_db()
-
-        # Check that the user's details were updated
-        self.assertEqual(self.user.first_name, 'UpdatedFirstName')
-        self.assertEqual(self.user.last_name, 'UpdatedLastName')
-        self.assertEqual(self.user.email, 'updatedemail@example.com')
+        self.assertEqual(self.user.first_name, new_first_name)
+        self.assertEqual(self.user.last_name, new_last_name)
+        self.assertEqual(self.user.email, new_email)
 
     def test_update_first_name_with_blank_value(self):
         response = self.client.post(reverse('update_details'), {
@@ -270,24 +264,29 @@ class DashboardViewsTestCase(TestCase):
     def test_deactivate_account_with_checkbox_checked(self):
         response = self.client.post(reverse('dashboard'), {
             'deactivate_profile': 'True',  # Checkbox checked
+            'deactivate_account': '1'
         })
 
-        # Check for successful deactivation
-        self.assertRedirects(response, reverse('index'))  # Should redirect to 'index'
+        # Check that the user is redirected to the index page after deactivation
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('index'))
+
+        # Fetch the updated user details from the database
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
     def test_deactivate_account_without_checkbox_checked(self):
         response = self.client.post(reverse('dashboard'), {
-            # Checkbox not checked
+            'deactivate_account': '1'  # Add this to identify which form is being submitted
         })
 
         # Check that the form is re-rendered with errors
         self.assertEqual(response.status_code, 200)
-        form = response.context['deactivate_account_form']
-        self.assertTrue(form.errors)
-        self.assertIn('deactivate_profile', form.errors)
-        self.assertEqual(form.errors['deactivate_profile'], ['This field is required.'])
+        self.assertContains(response, 'This field is required.')
+
+        # Fetch the updated user details from the database
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
 
     def test_update_description_with_valid_data(self):
         response = self.client.post(reverse('update_description'), {
