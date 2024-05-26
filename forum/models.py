@@ -221,7 +221,7 @@ class Vote(models.Model):
 
     def clean(self):
         cleaned_data = super().clean()
-        if not self.user:
+        if not self.user_id:
             raise ValidationError(_("User field is required."), code="invalid")
         if not self.vote_type:
             raise ValidationError(_("Vote type field is required."), code="invalid")
@@ -254,6 +254,10 @@ class PostVote(Vote):
             and not self.pk
         ):
             raise ValidationError("Post Vote with this User already exists.")
+        cleaned_data = super().clean()
+        if not self.post_id:
+            raise ValidationError(_("Post field is required."), code="invalid")
+        return cleaned_data
 
     def save(self, *args, **kwargs):
         """
