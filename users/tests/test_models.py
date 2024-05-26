@@ -643,5 +643,64 @@ class PostVoteModelTests(TestCase):
             duplicate_postvote.full_clean()
 
 
+class CommentVoteModelTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='Password123!',
+            email='testuser@example.com'
+        )
+        self.post = Post.objects.create(
+            title='Valid Title',
+            text='Valid text.',
+            user=self.user
+        )
+        self.comment = Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            text='Valid comment text.'
+        )
+
+    def test_create_commentvote_with_valid_data(self):
+        commentvote = CommentVote.objects.create(
+            comment=self.comment,
+            user=self.user,
+            vote_type=True
+        )
+        self.assertEqual(commentvote.user, self.user)
+        self.assertEqual(commentvote.comment, self.comment)
+        self.assertTrue(commentvote.vote_type)
+
+    def test_create_commentvote_without_user(self):
+        commentvote = CommentVote(
+            comment=self.comment,
+            vote_type=True
+        )
+        with self.assertRaises(ValidationError):
+            commentvote.full_clean()
+
+    def test_create_commentvote_without_comment(self):
+        commentvote = CommentVote(
+            user=self.user,
+            vote_type=True
+        )
+        with self.assertRaises(ValidationError):
+            commentvote.full_clean()
+
+    def test_create_duplicate_commentvote(self):
+        CommentVote.objects.create(
+            comment=self.comment,
+            user=self.user,
+            vote_type=True
+        )
+        duplicate_commentvote = CommentVote(
+            comment=self.comment,
+            user=self.user,
+            vote_type=True
+        )
+        with self.assertRaises(ValidationError):
+            duplicate_commentvote.full_clean()
+
+
 if __name__ == '__main__':
     unittest.main()
