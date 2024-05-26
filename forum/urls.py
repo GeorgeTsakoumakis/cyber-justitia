@@ -7,6 +7,7 @@ urlpatterns = [
     path("create_post/", views.create_post, name="create_post"),
     path("create_comment/<slug>/", views.create_comment, name="create_comment"),
     path("delete_post/<slug>/", views.delete_post, name="delete_post"),
+    path("vote_post/<slug>/", views.vote_post, name="vote_post"),
     path(
         "delete_comment/<slug>/<int:comment_id>/",
         views.delete_comment,

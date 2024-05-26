@@ -23,12 +23,15 @@ class Post(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
-    votes = models.IntegerField(default=0)
     hit_count_generic = GenericRelation(
         HitCount,
         object_id_field="object_pk",
         related_query_name="hit_count_generic_relation",
     )
+
+    @property
+    def votes(self):
+        return self.get_upvotes() - self.get_downvotes()
 
     def save(self, *args, **kwargs):
         """
@@ -86,32 +89,29 @@ class Post(models.Model):
             )
         return cleaned_data
 
-    def upvote(self):
-        self.votes += 1
-        # Check if the user has already voted on this post
-        if PostVote.objects.filter(user=self.user, post=self).exists():
-            # If the user has already voted, remove the previous vote
-            PostVote.objects.get(user=self.user, post=self).delete()
-        PostVote.objects.create(user=self.user, post=self, vote_type=True)
-        self.save()
+    def upvote(self, user):
+        try:
+            post_vote = PostVote.objects.get(user=user, post=self)
+            if post_vote.vote_type == PostVote.VoteType.DOWNVOTE:
+                post_vote.vote_type = PostVote.VoteType.UPVOTE
+                post_vote.save()
+        except PostVote.DoesNotExist:
+            PostVote.objects.create(user=user, post=self, vote_type=PostVote.VoteType.UPVOTE)
 
-    def downvote(self):
-        self.votes -= 1
-        # Check if the user has already voted on this post
-        if PostVote.objects.filter(user=self.user, post=self).exists():
-            # If the user has already voted, remove the previous vote
-            PostVote.objects.get(user=self.user, post=self).delete()
-        PostVote.objects.create(user=self.user, post=self, vote_type=False)
-        self.save()
-
-    def get_votes(self):
-        return self.votes
+    def downvote(self, user):
+        try:
+            post_vote = PostVote.objects.get(user=user, post=self)
+            if post_vote.vote_type == PostVote.VoteType.UPVOTE:
+                post_vote.vote_type = PostVote.VoteType.DOWNVOTE
+                post_vote.save()
+        except PostVote.DoesNotExist:
+            PostVote.objects.create(user=user, post=self, vote_type=PostVote.VoteType.DOWNVOTE)
 
     def get_upvotes(self):
-        return PostVote.objects.filter(post=self, vote_type=True).count()
+        return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.UPVOTE).count()
 
     def get_downvotes(self):
-        return PostVote.objects.filter(post=self, vote_type=False).count()
+        return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.DOWNVOTE).count()
 
 
 class Comment(models.Model):
@@ -126,7 +126,10 @@ class Comment(models.Model):
     text = models.TextField(max_length=4000)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
-    votes = models.IntegerField(default=0)
+
+    @property
+    def votes(self):
+        return self.get_upvotes() - self.get_downvotes()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -159,7 +162,6 @@ class Comment(models.Model):
         return self.text[:50]
 
     def upvote(self):
-        self.votes += 1
         # Check if the user has already voted on this comment
         if CommentVote.objects.filter(user=self.user, comment=self).exists():
             # If the user has already voted, remove the previous vote
@@ -168,16 +170,12 @@ class Comment(models.Model):
         self.save()
 
     def downvote(self):
-        self.votes -= 1
         # Check if the user has already voted on this comment
         if CommentVote.objects.filter(user=self.user, comment=self).exists():
             # If the user has already voted, remove the previous vote
             CommentVote.objects.get(user=self.user, comment=self).delete()
         CommentVote.objects.create(user=self.user, comment=self, vote_type=False)
         self.save()
-
-    def get_votes(self):
-        return self.votes
 
     def get_upvotes(self):
         return CommentVote.objects.filter(comment=self, vote_type=True).count()
@@ -190,10 +188,16 @@ class Vote(models.Model):
     class Meta:
         abstract = True
 
+    class VoteType(models.TextChoices):
+        UPVOTE = "up", _("Upvote")
+        DOWNVOTE = "down", _("Downvote")
+
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, unique=True
     )  # One vote per user
-    vote_type = models.BooleanField(default=True)  # True for upvote, False for downvote
+    vote_type = models.CharField(
+        max_length=4, choices=VoteType.choices, default=VoteType.UPVOTE
+    )
 
     def __str__(self):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"

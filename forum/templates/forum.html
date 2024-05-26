@@ -44,12 +44,17 @@
                 {% for post in page_obj %}
                     <div class="post-container">
                         <div class="vote-section" data-id="{{ post.post_id }}">
-                            <button class="button_upvote">
-                                <img src="{% static 'upvote.svg' %}" alt="upvote">
-                            </button>
-                            <button class="button_downvote">
-                                <img src="{% static 'downvote.svg' %}" alt="downvote">
-                            </button>
+                            <form action="{% url 'vote_post' post.slug %}" method="post">
+                                {% csrf_token %}
+                                <button class="button_upvote" name="{{ vote_form.vote_type.html_name }}"
+                                        id="{{ vote_form.vote_type.id_for_label }}" type="submit" value="up">
+                                    <img src="{% static 'upvote.svg' %}" alt="upvote">
+                                </button>
+                                <button class="button_downvote" name="{{ vote_form.vote_type.html_name }}"
+                                        id="{{ vote_form.vote_type.id_for_label }}" type="submit" value="down">
+                                    <img src="{% static 'downvote.svg' %}" alt="downvote">
+                                </button>
+                            </form>
                         </div>
                         <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
                         <a href="{{ post.get_url }}">
