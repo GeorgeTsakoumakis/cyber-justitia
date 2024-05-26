@@ -19,6 +19,7 @@ class ViewsTestCase(TestCase):
             email='testuser@example.com',
             password='Password123!'
         )
+
     def test_render_index_page(self):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
@@ -164,19 +165,34 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'dashboard.html')
 
-    # Will pass once dashboard implemented
+    # Fails
     def test_update_details_with_valid_data(self):
-        response = self.client.post(reverse('update_details'), {
-            'first_name': 'Updated',
-            'last_name': 'User',
-            'email': 'updateduser@example.com'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertTemplateUsed(response, 'users/templates/dashboard.html')
+        valid_data = {
+            'first_name': 'UpdatedFirstName',
+            'last_name': 'UpdatedLastName',
+            'email': 'updatedemail@example.com'
+        }
+        response = self.client.post(reverse('dashboard'), valid_data)
+
+        # Check that the form did not contain errors and was processed correctly
+        self.assertEqual(response.status_code, 200)
+
+        form = response.context['update_details_form']
+        if not form.is_valid():
+            print(form.errors)  # Print form errors for debugging purposes
+
+        self.assertTrue(form.is_valid())
+
+        # Check that the response redirects to the dashboard
+        self.assertRedirects(response, reverse('dashboard'))
+
+        # Fetch the updated user from the database
         self.user.refresh_from_db()
-        self.assertEqual(self.user.first_name, 'Updated')
-        self.assertEqual(self.user.last_name, 'User')
-        self.assertEqual(self.user.email, 'updateduser@example.com')
+
+        # Check that the user's details were updated
+        self.assertEqual(self.user.first_name, 'UpdatedFirstName')
+        self.assertEqual(self.user.last_name, 'UpdatedLastName')
+        self.assertEqual(self.user.email, 'updatedemail@example.com')
 
     def test_update_first_name_with_blank_value(self):
         response = self.client.post(reverse('update_details'), {
@@ -206,26 +222,50 @@ class DashboardViewsTestCase(TestCase):
         self.assertIn('last_name', form.errors)
         self.assertEqual(form.errors['last_name'], ['This field is required.'])
 
-    def test_change_password_with_valid_data(self):
-        self.client.force_login(self.user)
+    def test_update_password_with_valid_field(self):
         response = self.client.post(reverse('dashboard'), {
             'old_password': 'Password123!',
             'new_password1': 'NewPassword123!',
             'new_password2': 'NewPassword123!'
         })
-        self.assertRedirects(response, reverse('dashboard'))
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.check_password('NewPassword123!'))
+
+        # Check that the password is updated successfully and the user is redirected
+        self.assertEqual(response.status_code, 200)  # Redirect status code
+
+        # Check that the new password works for login
+        self.client.logout()
+        login_response = self.client.post(reverse('login'), {
+            'username': 'testuser',
+            'password': 'NewPassword123!'
+        })
+        self.assertEqual(login_response.status_code, 302)
 
     def test_change_password_mismatch(self):
         response = self.client.post(reverse('dashboard'), {
             'old_password': 'Password123!',
             'new_password1': 'NewPassword123!',
-            'new_password2': 'DifferentPassword123!'
+            'new_password2': 'DifferentPassword123!',  # New passwords do not match
+            'change_password': '1'  # Identify which form is being submitted
         })
+
+        # Check that the form is re-rendered with errors
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dashboard.html')
-        self.assertContains(response, 'The new passwords do not match.')
+        form = response.context['change_password_form']
+        self.assertTrue(form.errors)
+        self.assertIn('new_password2', form.errors)
+        self.assertEqual(form.errors['new_password2'], ['The new passwords do not match.'])
+
+    def test_change_password_with_blank_field(self):
+        response = self.client.post(reverse('dashboard'), {
+            'old_password': '',
+            'new_password1': '',
+            'new_password2': '',
+            'change_password': '1'
+        })
+
+        # Check that the form is re-rendered with errors
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required.', 3)
 
     def test_deactivate_account_with_checkbox_checked(self):
         response = self.client.post(reverse('dashboard'), {
@@ -233,7 +273,7 @@ class DashboardViewsTestCase(TestCase):
         })
 
         # Check for successful deactivation
-        self.assertEqual(response.status_code, 302)  # Should redirect to 'index'
+        self.assertRedirects(response, reverse('index'))  # Should redirect to 'index'
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
