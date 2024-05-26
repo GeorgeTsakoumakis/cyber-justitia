@@ -25,7 +25,9 @@
         </div>
         <div class="content-section">
             <h2 class="post-title">{{ post.title|title }}</h2>
-            <p class="post-details">Post by {{ post.user.first_name }} {{ post.user.last_name }} •
+            <p class="post-details">Post by <a
+                    href="{% url 'profile' post.user.username %}">{{ post.user.first_name }} {{ post.user.last_name }}</a>
+                •
                 on {{ post.created_at|date }} • (Read {% get_hit_count for post %} times)</p>
             <p class="post-text">{{ post.text|safe }}</p>
         </div>
