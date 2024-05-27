@@ -6,7 +6,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.views.defaults import page_not_found
-from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
 from forum.models import Post, Comment
 from .forms import (
