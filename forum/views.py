@@ -132,3 +132,6 @@ def vote_comment(request, slug, comment_id):
             # 400 Bad Request
             return render(request, "errors/400.html", status=400)
     return redirect("post_detail", slug=slug)
+
+def search(request):
+    return render(request, "search.html")

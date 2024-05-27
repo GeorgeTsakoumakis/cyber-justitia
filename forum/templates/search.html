@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% load forum_extras %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'forum/css/forummainpage.css' %}">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
+<script type="text/javascript" src="{% static 'forum/js/forum.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col header" style="padding-bottom: 2%; justify-content: center; flex-wrap: wrap;">
+            <h1>Search: {{query}} --> {{objects|length}} Result(s) Found</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="posts">
+                {% for post in objects %}
+                <div class="post-container">
+                    <div class="vote-section" data-id="{{ post.post_id }}">
+                        <button class="button_upvote">
+                            <img src="{% static 'upvote.svg' %}" alt="upvote">
+                        </button>
+                        <button class="button_downvote">
+                            <img src="{% static 'downvote.svg' %}" alt="downvote">
+                        </button>
+                    </div>
+                    <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+                    <a href="{{ post.get_url }}">
+                        <div class="post">
+                            <h2>{{ post.title|title }}</h2>
+                            <p style="font-weight: bold;">{{ post.text|first_line }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination" style="padding-bottom: 2%; text-align: center;">
+        <span class="step-links">
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+        </span>
+    </div>
+{% endblock %}

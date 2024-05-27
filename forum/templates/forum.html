@@ -20,11 +20,16 @@
 
             <h1>Posts</h1>
             <a href="{% url 'create_post' %}" class="button_addpost">+ Create new post</a>
-            <form action="#"> <!-- TODO: Implement search functionality -->
-                <img src="{% static 'admin/img/search.svg' %}" alt="Search" class="search_icon">
-                <label>
-                    <input type="text" placeholder="Search...">
-                </label>
+
+           <form action="{% url 'search' %}" role="form" method="GET">
+                <div class="search-box">
+                    <div>
+                        <input type="text" name="q" placeholder="search ...">
+                        <button type="submit" name="search" class="search-button">
+                            <img src="{% static 'admin/img/search.svg' %}" alt="Search" class="search-button">
+                        </button>
+                    </div>
+                </div>
             </form>
             <a href="/latest/feed">
                 <img src="{% static 'rss.svg' %}" style="width: 3rem; margin-left: 1.875rem;" alt="rss feed">
