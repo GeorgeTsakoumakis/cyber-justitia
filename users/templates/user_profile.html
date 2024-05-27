@@ -4,82 +4,116 @@
 <title>User Profile - Cyber Justitia</title>
 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'users/css/user_profile.css' %}">
+    <link rel="stylesheet" href="{% static 'users/css/user_profile.css' %}">
 {% endblock %}
 
 {% block content %}
-<br>
-<div class="row">
-    <div class="col">
-        <div class="main-box {% if user.is_professional %}professional{% endif %}{% if user.is_superuser %}admin{% endif %}" style="border-radius: 6px 6px 0px 0px; width: 75vw; background-color: #FCD6DD">
-            <p {% if user.is_professional %}class="professional"{% endif %} {% if user.is_superuser %}class="admin-text"{% endif %} style="font-size: 3em; color: black;">{{ first_name }} {{ last_name }}</p>
-        <div class="email-container">
-            <span><img style="padding-bottom: 1%" {% if user.is_superuser %} src="{% static 'mail.svg'%}" {% else %} src="{% static 'mail_dark.svg'%}" {% endif %}></span>
-            <a {% if user.is_professional %}class="professional"{% endif %} {% if user.is_superuser %}class="admin-text"{% endif %}href="mailto:{{ email }}">{{ email }}</a>
-        </div>
-        <div class="line-sep" {% if user.is_superuser %}style="filter: invert(100%)"{% endif %}></div>
-        {% if user.is_superuser %}
-            <form action="/admin_dashboard" style="text-align: right">
-                <input id="gotodash" type="submit" value="Admin" class="btn btn-primary btn-lg">
-            </form>
-        {% endif %}
-        </div>
-        <div class="main-box {% if user.is_superuser %}admin-secondary{% endif %}" style="border-radius: 0px 0px 6px 6px; width: 75vw;">
-            <h3 style="color: black; font-weight: bold; {% if user.is_superuser %}filter: invert(100%);{% endif %}">Description</h3>
-            <p style="color: #3D3D3D {% if not user.is_superuser %}filter: invert(100%);{% endif %}">{{ description }}</p>
-            {% if description == None %}
-                <p style="color: #3D3D3D; font-style: italic; {% if user.is_superuser %}filter: invert(100%);{% endif %}">There is no description.</p>
-            {% endif %}
-            
-            <!-- TODO: Implement and display credentials for professionals -->
-            {% if user.is_professional %}
-                <h3 style="color: black; font-weight: bold;">Qualifications</h3>
-                    <p style="color: black;">{{ user.qualifications }}</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<div class="row" style="padding: 2%;">
-    <div class="col">
-        <div class="main-box post-comment-box" style="width: 34.7vw; {% if user.is_superuser %}filter: invert(100%);{% endif %}">
-            <h3 {% if user.is_superuser %}style="filter: invert(100%);"{% endif %}><b>Recent posts</b></h3>
-            <div style="max-width: 90%; {% if user.is_superuser %}filter: invert(100%);{% endif %}" class="line-sep"></div>
-            {% for post in recent_posts %}
-                <!-- or if current_user.id == user_id  -->
-                {% if not user.is_superuser %}
-                <!-- Add actual delete functionality here -->
-                    <img src="{% static 'backspace.svg' %}" style="max-width: 2rem" class="top-right-icon">
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="main-box {% if viewed_user.is_professional %}professional{% endif %}{% if viewed_user.is_superuser %}admin{% endif %}"
+                 style="border-radius: 6px 6px 0px 0px; width: 75vw; background-color: #FCD6DD">
+                <p {% if viewed_user.is_professional %}class="professional"{% endif %}
+                   {% if viewed_user.is_superuser %}class="admin-text"{% endif %}
+                   style="font-size: 3em; color: black;">{{ viewed_user.first_name }} {{ viewed_user.last_name }}</p>
+                <div class="email-container">
+                    <span><img style="padding-bottom: 1%" {% if viewed_user.is_superuser %}
+                               src="{% static 'mail.svg' %}" {% else %} src="{% static 'mail_dark.svg' %}" {% endif %}></span>
+                    <a {% if viewed_user.is_professional %}class="professional"{% endif %}
+                       {% if viewed_user.is_superuser %}class="admin-text" {% endif %}
+                       href="mailto:{{ viewed_user.email }}">{{ viewed_user.email }}</a>
+                </div>
+                <div class="line-sep" {% if viewed_user.is_superuser %}style="filter: invert(100%)"{% endif %}></div>
+                {% if viewed_user.is_professional %}
+                    <p>{{ viewed_user.flair }}</p>
                 {% endif %}
-                <h3 {% if user.is_superuser %}style="filter: invert(100%);"{% endif %}>{{ post.title }}</h3>
-                <p {% if user.is_superuser %}style="filter: invert(100%);"{% endif %}>{{ post.text }}</p>
+                {% if user.is_superuser %}
+                    <form action="/admin" style="text-align: right">
+                        <input id="gotodash" type="submit" value="Admin" class="btn btn-primary btn-lg">
+                    </form>
+                {% endif %}
             </div>
-            {% empty %}
-            <br>
-                <p style="color: #3D3D3D; font-style: italic; {% if user.is_superuser %}filter: invert(100%);{% endif %}">No recent posts.</p>
-            {% endfor %}
+            <div class="main-box {% if viewed_user.is_superuser %}admin-secondary{% endif %}"
+                 style="border-radius: 0px 0px 6px 6px; width: 75vw;">
+                <h3 style="color: black; font-weight: bold; {% if viewed_user.is_superuser %}filter: invert(100%);{% endif %}">
+                    Description</h3>
+                {% if viewed_user.description == None %}
+                    <p style="color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">There is no
+                        description.</p>
+                {% else %}
+                    <p style="color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">{{ viewed_user.description }}</p>
+                {% endif %}
+
+                <!-- TODO: Implement and display credentials for professionals -->
+                {#            {% if user.is_professional %}#}
+                {#                <h3 style="color: black; font-weight: bold;">Qualifications</h3>#}
+                {#                    <p style="color: black;">{{ user.qualifications }}</p>#}
+                {#            {% endif %}#}
+            </div>
         </div>
-        <br>
     </div>
-    <div class="col">
-        <div class="main-box post-comment-box" style="width: 34.7vw;">
-            <h3 {% if user.is_superuser %}style="filter: invert(100%);"{% endif %}><b>Recent comments</b></h3>
-            <div style="max-width: 90%" class="line-sep"></div>
-            {% for comment in recent_comments %}
-                <div>
-                    <h3 {% if user.is_superuser %}style="filter: invert(100%);"{% endif %}>{{ comment.question }}</h3>
-                    <p {% if user.is_superuser %}style="filter: invert(100%);"{% endif %}>{{ comment.content }}</p>
+
+    <div class="row" style="padding: 2%;">
+        <div class="col">
+            <div class="main-box post-comment-box {% if viewed_user.is_superuser %}admin-secondary{% endif %}"
+                 style="width: 34.7vw;">
+                <h3 {% if viewed_user.is_superuser %}style="filter: invert(100%);"{% endif %}><b>Recent posts</b></h3>
+                <div style="max-width: 90%; {% if viewed_user.is_superuser %}filter: invert(100%);{% endif %}"
+                     class="line-sep"></div>
+                     {% for post in recent_posts %}
+                        <div style="{% if viewed_user.is_superuser %}background-color: #94608D;{% endif %}position: relative; border: 0.06rem solid rgb(151, 132, 144); border-radius: 0.3rem; padding: 2%; margin-bottom: 0.5rem;">
+                            {% if user.is_authenticated and user == post.user or user.is_superuser %}
+                                <a href="{% url 'delete_post' post.slug %}" class="delete-post" style="position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.5rem; {% if viewed_user.is_superuser %}filter: invert(1);{% endif %}">
+                                    <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace">
+                                </a>
+                            {% endif %}
+                            <div style="padding: 1rem;">
+                                <a href="{% url 'post_detail' post.slug %}" style="text-decoration: none;">
+                                    <h3 style="{% if viewed_user.is_superuser %} filter: invert(100%); text-overflow: ellipsis;{% endif %}">{{ post.title }}</h3>
+                                </a>
+                                <p style="{% if viewed_user.is_superuser %} filter: invert(100%); text-overflow: ellipsis;{% endif %}; margin-right: 2.5rem;">{{ post.text }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <br>
+                        <p style="font-style: italic; color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">
+                            No recent posts.
+                        </p>
+                    {% endfor %}
+            </div>
+            <br>
+        </div>
+        <div class="col">
+            <div class="main-box post-comment-box {% if viewed_user.is_superuser %}admin-secondary{% endif %}"
+                 style="width: 34.7vw;">
+                <h3 {% if viewed_user.is_superuser %}style="filter: invert(100%);"{% endif %}><b>Recent comments</b>
+                </h3>
+                <div style="max-width: 90%; {% if viewed_user.is_superuser %}filter: invert(100%); background-color: #94608D;{% endif %}" class="line-sep"></div>
+                {% for comment in recent_comments %}
+                <div style="{% if viewed_user.is_superuser %}background-color: #94608D;{% endif %} position: relative; border: 0.1rem solid rgb(151, 132, 144); border-radius: 5px; padding: 0; margin-bottom: 0.5rem;">
+                    {% if user.is_authenticated and user == comment.user or user.is_superuser %}
+                        <a href="{% url 'delete_comment' comment.post.slug comment.comment_id %}" class="delete-post" style="position: absolute; top: 0; right: 0; padding: 0.5rem; {% if viewed_user.is_superuser %}filter: invert(1);{% endif %}">
+                            <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace" style="width: 1.5rem; height: 1.5rem;">
+                        </a>
+                    {% endif %}
+                    <div style="padding: 1rem; position: relative;">
+                        <a href="{% url 'post_detail' comment.post.slug %}" style="text-decoration: none;">
+                            <h3 {% if viewed_user.is_superuser %}style="filter: invert(100%);"{% endif %}>{{ comment.post.title }}</h3>
+                        </a>
+                        <p {% if viewed_user.is_superuser %}style="filter: invert(100%);"{% endif %}>{{ comment.text }}</p>
+                    </div>
                 </div>
             {% empty %}
+                <br>
+                <p style="font-style: italic; color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">
+                    No recent comments.
+                </p>
+            {% endfor %}            
+            </div>
             <br>
-                <p style="color: #3D3D3D; font-style: italic; {% if user.is_superuser %}filter: invert(100%);{% endif %}">No recent comments.</p>
-            {% endfor %}
-            
         </div>
-        <br>
     </div>
-</div>
-<br>
+    <br>
 
 {% endblock %}
 

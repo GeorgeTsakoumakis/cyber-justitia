@@ -65,12 +65,14 @@ pip install -r requirements.txt
 SECRET_KEY=your_secret_key
 DEBUG=False
 DB_NAME=postgresql_db_name
-DB_USER = postgresql_user
-DB_PASSWORD = postgresql_password
+DB_USER=postgresql_user
+DB_PASSWORD=postgresql_password
 DB_HOST=postgresql_host
-DB_PORT='5432'
-PROJECT_ID=your_gcloud_project_id
-LOCATION=your_gcloud_project_location
+DB_PORT=5432
+PROJECT_ID="your_gcloud_project_id"
+LOCATION="your_gcloud_project_location"
+GOOGLE_CLOUD_PROJECT="your_gcloud_project_id"
+JSON_AUTH_DETAILS={insert_json_credential_key_here}
 ```
 
 8. Run the following command to create a db migration:
@@ -144,9 +146,9 @@ coverage html
 
 This will generate a directory called `htmlcov` which contains the HTML files for the coverage report. Open the `index.html` file in a web browser to view the report.
 
-### Running from Docker
+### Building with Docker
 
-A Dockerfile and .dockerignore file have been provided for local app deployment, as no full-scale deployment has been planned for Cyber Justitia due to time constraints.
+A Dockerfile, docker-compose.yml, entrypoint and .dockerignore file have been provided for local app deployment, as no full-scale deployment has been planned for Cyber Justitia due to time constraints.
 
 To begin, make sure that you are signed in to Docker Hub by running the following command:
 
@@ -156,21 +158,13 @@ docker login
 
 Follow the instructions and input your credentials.
 
-If you've done that or are already logged in, you can now build the Docker  image. In order to build the image, run the following command:
+If you've done that or are already logged in, you can now build the Docker  image. In order to build and run the containers, run the following command:
 
 ```bash
-docker build --tag cyber-justitia .
+docker-compose up
 ```
 
-If this is the first time you're deploying this app, this process may take a while, as important image files are being downloaded. This command will build the Docker image.
-
-Once this is done, you will need to create the container for the image to run the application. To do this, run the following command:
-
-```bash
-docker run --publish 8000:8000 cyber-justitia
-```
-
-Allow for any administrator priviledges from Docker that may be required. You can now visit and use Cyber Justitia using the following address:
+You can now visit and use Cyber Justitia using the following address:
 
 ```url
 127.0.0.1:8000

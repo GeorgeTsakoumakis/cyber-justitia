@@ -1,13 +1,34 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
+# Project variables
+PROJECT_ID="civil-hash-421214"
+SA_NAME="cyber-justitia-docker"
+KEY_FILE_PATH="/app/key.json"
+SA_EMAIL="$SA_NAME@$PROJECT_ID.iam.gserviceaccount.com"
 
-mkdir -p /app/credentials
+# Confirms file path and loads credentials from env to json file
+echo "Key file path: $KEY_FILE_PATH"
+JSON_STRING="$JSON_AUTH_DETAILS"
 
-gcloud auth activate-service-account --key-file=/run/secrets/gcloud-key
+mkdir -p "$(dirname "$KEY_FILE_PATH")"
 
-gcloud secrets versions access latest --secret="ai-cloud-key" --project="$PROJECT_ID" > /app/credentials/credentials.json
+echo "$JSON_STRING" > "$KEY_FILE_PATH"
 
-export GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/credentials.json
+# Ensure the active account has necessary permissions
+gcloud auth activate-service-account --key-file=$KEY_FILE_PATH
+
+# Sets service account
+gcloud config set account cyber-justitia-docker@civil-hash-421214.iam.gserviceaccount.com
+
+# Checks the active account
+gcloud auth list
+
+# Sets credential file path for gcloud to find
+export GOOGLE_APPLICATION_CREDENTIALS=$KEY_FILE_PATH
+
+# Perform database migrations and collect static files
+python manage.py makemigrations
+python manage.py migrate
+python manage.py collectstatic --noinput
 
 exec "$@"

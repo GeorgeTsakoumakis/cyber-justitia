@@ -66,7 +66,7 @@
                 </div>
                 <div class="chat-input">
                     <div class="chat-input-container">
-                        <input type="text" id="user-input" placeholder="Type your message here..." class="form-control">
+                        <textarea rows="1" id="user-input" placeholder="Type your message here..." class="form-control"></textarea>
                         <button id="submit-prompt" onclick="sendMessage()"><img src="{% static 'sendmes.svg' %}" alt="Send"></button>
                     </div>
                 </div>
@@ -77,7 +77,23 @@
 
 <script>
     // It seems this script only runs here so I'm keeping it here lol
+    
+    let input = document.getElementById('user-input');
 
+    input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();  // Prevent the default action
+            sendMessage();
+        } else if (event.key === 'Enter' && event.shiftKey) {
+            // Shift + Enter pressed, insert a newline
+            let cursorPosition = input.selectionStart;
+            let value = input.value;
+            input.value = value.slice(0, cursorPosition) + '\n' + value.slice(cursorPosition);
+            input.selectionStart = input.selectionEnd = cursorPosition + 1;
+            event.preventDefault();  // Prevent the default action (new line is already inserted)
+            input.scrollTop = input.scrollHeight;
+        }
+    });
     // Function to send user message and display it in the chat
     function sendMessage() {
         let userInput = document.getElementById("user-input").value;
@@ -90,18 +106,19 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ message: userInput, session_id: {{ current_session }}
+                body: JSON.stringify({
+                    message: userInput, session_id: {{ current_session }}
                 })
             })
-            .then(response => {
+                .then(response => {
                     return response.json();
-            })
-            .then(data => {
-                displayMessage(data.response, false); // Display bot response
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                })
+                .then(data => {
+                    displayMessage(data.response, false); // Display bot response
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
             document.getElementById("user-input").value = ""; // Clear input field
         }

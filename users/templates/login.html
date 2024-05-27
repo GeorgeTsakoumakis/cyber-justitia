@@ -7,10 +7,10 @@
         <ul>
             {% for message in messages %}
                 <li>{{ message }}</li> <!-- customisable style - just add class name -->
-                {% endfor %}
+            {% endfor %}
         </ul>
     {% endif %}
-    
+
     <br>
     <br>
     <div class="main-box" style="width: 484px; text-align: center;">
@@ -19,20 +19,26 @@
         <form method="POST" action="login">
             {% csrf_token %}
             <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" style="background-color: white; width: 52px; color: #FCD6DD;"><img src="../static/user.svg"></span>
-                <input name="username" type="text" class="form-control" placeholder="Username" required aria-label="username" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1"
+                      style="background-color: white; width: 52px; color: #FCD6DD;"><img
+                        src="../static/user.svg"></span>
+                <input name="username" type="text" class="form-control" placeholder="Username" required
+                       aria-label="username" aria-describedby="basic-addon1">
             </div>
 
             <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" style="background-color: white;  display: block;"><img src="../static/lock.svg" style="border-radius: 1px;"></span>
-                <input name="password" type="password" class="form-control" placeholder="Password" required aria-label="password" aria-describedby="basic-addon1" id="inputPassword3">
+                <span class="input-group-text" id="basic-addon1" style="background-color: white;  display: block;"><img
+                        src="../static/lock.svg" style="border-radius: 1px;"></span>
+                <input name="password" type="password" class="form-control" placeholder="Password" required
+                       aria-label="password" aria-describedby="basic-addon1" id="inputPassword3">
             </div>
-        <br>
+            <br>
             <button type="submit" class="btn btn-primary" style="align-items: center;">Log in</button>
 
         </form>
-        </div>
-        <p style="color: black; padding-top: 2%;">Haven’t created an account? <a href="{% url 'register' %}">Register here!</a></p>
+    </div>
+    <p style="color: black; padding-top: 2%;">Haven’t created an account? <a href="{% url 'register' %}">Register
+        here!</a></p>
     <br>
     <br>
 

@@ -3,14 +3,19 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
-from .models import CustomUser, ProfessionalUser
+from django.core.exceptions import ObjectDoesNotExist
+from .models import CustomUser, ProfessionalUser, Education, Employments
+from django.views.defaults import page_not_found
 from chatbot.models import Session
+from forum.models import Post, Comment
 from .forms import (
     UpdateDetailsForm,
     UpdatePasswordForm,
     DeactivateAccountForm,
     UpdateDescriptionForm,
     UpdateFlairForm,
+    UpdateEducationForm,
+    UpdateEmploymentsFrom,
 )
 
 
@@ -131,11 +136,23 @@ def dashboard(request):
     to handle the respective form submissions (update details, change password,
     deactivate account, update description)."""
     # Initialize forms with the current user's data
+    professional_user = ProfessionalUser.objects.get(user=request.user)
+    try:
+        education = Education.objects.get(prof_id=professional_user)
+    except Education.DoesNotExist:
+        education = None
+    try:
+        employments = Employments.objects.get(prof_id=professional_user)
+    except Employments.DoesNotExist:
+        employments = None
+
     update_details_form = UpdateDetailsForm(instance=request.user)
     update_password_form = UpdatePasswordForm(instance=request.user)
     deactivate_account_form = DeactivateAccountForm(instance=request.user)
     update_description_form = UpdateDescriptionForm(instance=request.user)
     update_flair_form = UpdateFlairForm(instance=request.user)
+    update_education_form = UpdateEducationForm(instance=education)
+    update_employments_form = UpdateEmploymentsFrom(instance=employments)
 
     if request.method == "POST":
         if "update_details" in request.POST:
@@ -148,6 +165,10 @@ def dashboard(request):
             return update_description(request)
         elif "update_flair" in request.POST:
             return update_flair(request)
+        elif "update_education" in request.POST:
+            return update_education(request)
+        elif "update_employments" in request.POST:
+            return update_employments(request)
 
     # Pass the forms to the context for rendering in the template
     context = {
@@ -156,6 +177,8 @@ def dashboard(request):
         "deactivate_account": deactivate_account_form,
         "update_description_form": update_description_form,
         "update_flair_form": update_flair_form,
+        "update_education_form": update_education_form,
+        "update_employments_form": update_employments_form,
     }
 
     return render(request, "dashboard.html", context)
@@ -264,6 +287,61 @@ def update_flair(request):
             return render(request, "dashboard.html", {"update_flair_form": form})
 
 
+def update_education(request):
+    """
+    Handles the update education form submission.
+
+    If the form is valid, the user's education is updated, and a success message is displayed.
+    The user is then redirected to the dashboard.
+    """
+    if request.method == "POST":
+        professional_user = ProfessionalUser.objects.get(user=request.user)
+        try:
+            # Try to get an existing Education instance
+            education = Education.objects.get(prof_id=professional_user)
+            # If an instance exists, create a form with the POST data and the existing instance
+            form = UpdateEducationForm(request.POST, instance=education)
+        except ObjectDoesNotExist:
+            # If no instance exists, create a new form with the POST data
+            form = UpdateEducationForm(request.POST)
+        if form.is_valid():
+            # Save the form data to the instance
+            education = form.save(commit=False)
+            education.prof_id = professional_user
+            education.save()
+            messages.success(request, "Education updated successfully")
+            return redirect("dashboard")
+        else:
+            return render(request, "dashboard.html", {"update_education_form": form})
+
+
+def update_employments(request):
+    """
+    Handles the update employments form submission.
+
+    If the form is valid, the user's employments are updated, and a success message is displayed.
+    The user is then redirected to the dashboard.
+    """
+    if request.method == "POST":
+        professional_user = ProfessionalUser.objects.get(user=request.user)
+        try:
+            # Try to get an existing Employment instance
+            employment = Employments.objects.get(prof_id=professional_user)
+            # If an instance exists, create a form with the POST data and the existing instance
+            form = UpdateEmploymentsFrom(request.POST, instance=employment)
+        except ObjectDoesNotExist:
+            # If no instance exists, create a new form with the POST data
+            form = UpdateEmploymentsFrom(request.POST)
+        if form.is_valid():
+            # Save the form data to the instance
+            employment = form.save(commit=False)
+            employment.prof_id = professional_user
+            employment.save()
+            messages.success(request, "Employment updated successfully")
+            return redirect("dashboard")
+        else:
+            return render(request, "dashboard.html", {"update_employments_form": form})
+
 @login_required
 def logout(request):
     """Logs out the user"""
@@ -273,15 +351,25 @@ def logout(request):
 
 
 @login_required
-def profile(request):
-    first_name = request.user.first_name
-    last_name = request.user.last_name
-    email = request.user.email
-    return render(
-        request,
-        "user_profile.html",
-        {"first_name": first_name, "last_name": last_name, "email": email},
+def profile(request, username):
+    """Renders the profile page at /profile/username"""
+    user = CustomUser.objects.get(username=username)
+    recent_posts = (
+        Post.objects.filter(user=user)
+        .filter(is_deleted=False)
+        .order_by("-created_at")[:3]
     )
+    recent_comments = (
+        Comment.objects.filter(user=user)
+        .filter(is_deleted=False)
+        .order_by("-created_at")[:3]
+    )
+    context = {
+        "viewed_user": user,
+        "recent_posts": recent_posts,
+        "recent_comments": recent_comments,
+    }
+    return render(request, "user_profile.html", context)
 
 
 def codeofconduct(request):
@@ -299,9 +387,9 @@ def handler403(request, *args, **argv):
     return render(request, "errors/403.html", status=403)
 
 
-def handler404(request, *args, **argv):
+def handler404(request, exception):
     """Custom error handlers not found"""
-    return render(request, "errors/404.html", status=404)
+    return page_not_found(request, exception, template_name="errors/404.html")
 
 
 def handler500(request, *args, **argv):

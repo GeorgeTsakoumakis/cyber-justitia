@@ -85,6 +85,7 @@ p, li, span {
 
 .post-comment-box div:nth-child(odd) {
   background-color: #EAD4D9;
+  margin: auto;
 }
 
 .secondary-box {

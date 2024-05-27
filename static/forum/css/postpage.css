@@ -18,8 +18,8 @@
 
 }
 
-.backspace img:hover {
-    filter: brightness(45%);
+.backspace:hover {
+    filter: brightness(25%);
 }
 
 .flex-container {

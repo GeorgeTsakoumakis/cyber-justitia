@@ -1,6 +1,7 @@
 .line-sep {
     max-width: 40vw;
-    border: 2px solid #000000;
+    border: 0.125rem solid #000000;
+    margin-bottom: 1%
 }
 
 .professional {
@@ -29,4 +30,50 @@ p, h2, h3 {
     right: 1vw;
     width: 5vw;
     height: auto;
+}
+
+.backspace {
+    float: right;
+    width: 2rem;
+    height: 2rem;
+    position: relative;
+}
+
+.backspace:hover {
+    filter: brightness(25%);
+}
+
+.delete-post {
+    float: right;
+    display: flex;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    padding: 0.5rem;
+    z-index: 1;
+}
+
+@media (max-width: 1132px) {
+    .top-right-icon {
+        width: 8vw;
+        right: 2vw;
+    }
+
+    .backspace {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .delete-post {
+        margin-top: 0.3rem;
+        margin-right: 0.3rem;
+        padding: 0.3rem;
+    }
+
+    .post-comment-box h3 {
+        font-size: 1em;
+    }
+
+    .post-comment-box p {
+        font-size: 0.6em;
+    }
 }

@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.shortcuts import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 
 CustomUser = get_user_model()
 
@@ -23,12 +24,15 @@ class Post(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
-    votes = models.IntegerField(default=0)
     hit_count_generic = GenericRelation(
         HitCount,
         object_id_field="object_pk",
         related_query_name="hit_count_generic_relation",
     )
+
+    @property
+    def votes(self):
+        return self.get_upvotes() - self.get_downvotes()
 
     def save(self, *args, **kwargs):
         """
@@ -64,7 +68,11 @@ class Post(models.Model):
         Get all comments for this post in descending order of creation
         :return:  QuerySet of Comment objects
         """
-        return Comment.objects.filter(post=self).filter(is_deleted=False).order_by("-created_at")
+        return (
+            Comment.objects.filter(post=self)
+            .filter(is_deleted=False)
+            .order_by("-created_at")
+        )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -82,6 +90,26 @@ class Post(models.Model):
             )
         return cleaned_data
 
+    def upvote(self, user):
+        with transaction.atomic():
+            post_vote, created = PostVote.objects.select_for_update().get_or_create(user=user, post=self)
+            if not created and post_vote.vote_type != PostVote.VoteType.UPVOTE:
+                post_vote.vote_type = PostVote.VoteType.UPVOTE
+                post_vote.save()
+
+    def downvote(self, user):
+        with transaction.atomic():
+            post_vote, created = PostVote.objects.select_for_update().get_or_create(user=user, post=self)
+            if not created and post_vote.vote_type != PostVote.VoteType.DOWNVOTE:
+                post_vote.vote_type = PostVote.VoteType.DOWNVOTE
+                post_vote.save()
+
+    def get_upvotes(self):
+        return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.UPVOTE).count()
+
+    def get_downvotes(self):
+        return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.DOWNVOTE).count()
+
 
 class Comment(models.Model):
     class Meta:
@@ -95,7 +123,10 @@ class Comment(models.Model):
     text = models.TextField(max_length=4000)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
-    votes = models.IntegerField(default=0)
+
+    @property
+    def votes(self):
+        return self.get_upvotes() - self.get_downvotes()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -123,3 +154,110 @@ class Comment(models.Model):
         self.is_deleted = True
         self.save()
         return self
+
+    def __str__(self):
+        return self.text[:50]
+
+    def upvote(self, user):
+        with transaction.atomic():
+            comment_vote, created = CommentVote.objects.select_for_update().get_or_create(user=user, comment=self)
+            if not created and comment_vote.vote_type != CommentVote.VoteType.UPVOTE:
+                comment_vote.vote_type = CommentVote.VoteType.UPVOTE
+                comment_vote.save()
+
+    def downvote(self, user):
+        with transaction.atomic():
+            comment_vote, created = CommentVote.objects.select_for_update().get_or_create(user=user, comment=self)
+            if not created and comment_vote.vote_type != CommentVote.VoteType.DOWNVOTE:
+                comment_vote.vote_type = CommentVote.VoteType.DOWNVOTE
+                comment_vote.save()
+
+    def get_upvotes(self):
+        return CommentVote.objects.filter(comment=self, vote_type=CommentVote.VoteType.UPVOTE).count()
+
+    def get_downvotes(self):
+        return CommentVote.objects.filter(comment=self, vote_type=CommentVote.VoteType.DOWNVOTE).count()
+
+
+class Vote(models.Model):
+    class Meta:
+        abstract = True
+
+    class VoteType(models.TextChoices):
+        UPVOTE = "up", _("Upvote")
+        DOWNVOTE = "down", _("Downvote")
+
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, unique=True
+    )  # One vote per user
+    vote_type = models.CharField(
+        max_length=4, choices=VoteType.choices, default=VoteType.UPVOTE
+    )
+
+    def __str__(self):
+        return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not self.user:
+            raise ValidationError(_("User field is required."), code="invalid")
+        if not self.vote_type:
+            raise ValidationError(_("Vote type field is required."), code="invalid")
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        """
+        Save the vote and perform validation checks before saving
+        """
+        self.full_clean()
+        super(Vote, self).save(*args, **kwargs)
+
+
+class PostVote(Vote):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    # Compose primary key from user and post, one vote per user per post
+    class Meta:
+        unique_together = ["user", "post"]
+        verbose_name = "Post Vote"
+        verbose_name_plural = "Post Votes"
+        db_table = "post_votes"
+
+    def __str__(self):
+        return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
+
+    def clean(self):
+        if PostVote.objects.filter(user=self.user, post=self.post).exists() and not self.pk:
+            raise ValidationError("Post Vote with this User already exists.")
+
+    def save(self, *args, **kwargs):
+        """
+        Save the vote and perform validation checks before saving
+        """
+        self.full_clean()
+        super(PostVote, self).save(*args, **kwargs)
+
+
+class CommentVote(Vote):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+
+    # Compose primary key from user and comment, one vote per user per comment
+    class Meta:
+        unique_together = ["user", "comment"]
+        verbose_name = "Comment Vote"
+        verbose_name_plural = "Comment Votes"
+        db_table = "comment_votes"
+
+    def __str__(self):
+        return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
+
+    def clean(self):
+        if CommentVote.objects.filter(user=self.user, comment=self.comment).exists() and not self.pk:
+            raise ValidationError("Comment Vote with this User already exists.")
+
+    def save(self, *args, **kwargs):
+        """
+        Save the vote and perform validation checks before saving
+        """
+        self.full_clean()
+        super(CommentVote, self).save(*args, **kwargs)

@@ -8,11 +8,15 @@ urlpatterns = [
     path("login", views.login, name="login"),
     path("logout", views.logout, name="logout"),
     path("codeofconduct", views.codeofconduct, name="codeofconduct"),
-    path("profile/", views.profile, name="profile"),
+    path("profile/<str:username>/", views.profile, name="profile"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("update_details/", views.update_details, name="update_details"),
     path("update_description/", views.update_description, name="update_description"),
     path("update_flair/", views.update_flair, name="update_flair"),
+    path('update_education/', views.update_education, name='update_education'),
+    path('update_employments/', views.update_employments, name='update_employments'),
+
+
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
     ),
