@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser, ProfessionalUser
+from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.utils.translation import gettext_lazy as _
 
 
@@ -7,6 +7,33 @@ class UpdateDetailsForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["first_name", "last_name", "email"]
+
+    first_name = forms.CharField(
+        label=_("First name"),
+        max_length=150,
+        error_messages={
+            "required": _("First name field is required."),
+            "max_length": _("First name is too long."),
+        },
+    )
+
+    last_name = forms.CharField(
+        label=_("Last name"),
+        max_length=150,
+        error_messages={
+            "required": _("Last name field is required."),
+            "max_length": _("Last name is too long."),
+        },
+    )
+
+    email = forms.EmailField(
+        label=_("Email address"),
+        max_length=320,
+        error_messages={
+            "required": _("Email field is required."),
+            "invalid": _("Invalid email address."),
+        },
+    )
 
     def clean_email(self):
         # Check if the email is already in use
@@ -45,48 +72,62 @@ class UpdateDetailsForm(forms.ModelForm):
 class UpdatePasswordForm(forms.ModelForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"autocomplete": "current-password", "autofocus": True}
-        )
+            attrs={"autocomplete": "current-password", "autofocus": True}),
+
+        error_messages={
+            "required": _("Old password field is required."),
+            "invalid": _("Invalid old password."),
+        },
     )
     new_password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         label="New password",
+        error_messages={
+            "required": _("New password field is required."),
+            "invalid": _("Invalid new password."),
+        },
     )
     new_password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         label="Confirm new password",
+        error_messages={
+            "required": _("Confirm new password field is required."),
+            "invalid": _("Invalid new password."),
+        },
     )
 
     class Meta:
         model = CustomUser
         fields = ["old_password", "new_password1", "new_password2"]
 
-    def clean(self):
-        cleaned_data = super().clean()
-        old_password = cleaned_data.get("old_password")
-        new_password1 = cleaned_data.get("new_password1")
-        new_password2 = cleaned_data.get("new_password2")
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get("old_password")
 
-        # Check if the old password feild is empty
-        if old_password:
-            # Check if the old password is correct
-            if not self.instance.check_password(old_password):
-                self.add_error("old_password", "The old password is incorrect.")
+        # Check if the old password is correct
+        if not self.instance.check_password(old_password):
+            raise forms.ValidationError("The old password is incorrect.")
 
-        # Check if the new password1 field is empty
-        if new_password1:
-            # Check if the new password is the same as the old password
-            if old_password == new_password1:
-                self.add_error(
-                    "new_password1",
-                    "The new password cannot be the same as the old password.",
-                )
+        return old_password
+
+    def clean_new_password1(self):
+        old_password = self.cleaned_data.get("old_password")
+        new_password1 = self.cleaned_data.get("new_password1")
+
+        # Check if the new password is the same as the old password
+        if old_password and new_password1 == old_password:
+            raise forms.ValidationError("The new password cannot be the same as the old password.")
+
+        return new_password1
+
+    def clean_new_password2(self):
+        new_password1 = self.cleaned_data.get("new_password1")
+        new_password2 = self.cleaned_data.get("new_password2")
 
         # Check if the new passwords match
-        if new_password1 != new_password2:
-            self.add_error("new_password2", "The new passwords do not match.")
+        if new_password1 and new_password2 and new_password1 != new_password2:
+            raise forms.ValidationError("The new passwords do not match.")
 
-        return cleaned_data
+        return new_password2
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -116,6 +157,12 @@ class UpdateFlairForm(forms.ModelForm):
     class Meta:
         model = ProfessionalUser
         fields = ["flair"]
+        error_messages = {
+            'flair': {
+                'required': "Flair field is required.",
+                'invalid': "Invalid input.",
+            },
+        }
 
     def clean_flair(self):
         # Check if the flair is empty
@@ -126,3 +173,110 @@ class UpdateFlairForm(forms.ModelForm):
         if len(flair) > 100:
             raise forms.ValidationError(_("Flair is too long."), code="invalid")
         return flair
+
+
+class UpdateEmploymentsFrom(forms.ModelForm):
+    class Meta:
+        model = Employments
+        fields = ["company", "position", "start_date", "end_date"]
+        error_messages = {
+            'company': {
+                'required': "Company field is required.",
+                'invalid': "Invalid input.",
+            },
+            'position': {
+                'required': "Position field is required.",
+                'invalid': "Invalid input.",
+            },
+            'start_date': {
+                'required': "Start date field is required.",
+                'invalid': "Invalid input.",
+            },
+        }
+
+    def clean_company(self):
+        company = self.cleaned_data["company"]
+        if not company:
+            raise forms.ValidationError(_("Company field is required."), code="invalid")
+        return company
+
+    def clean_employments(self):
+        employments = self.cleaned_data["employments"]
+        if not employments:
+            raise forms.ValidationError(_("Employments field is required."), code="invalid")
+        return employments
+
+    def clean_position(self):
+        position = self.cleaned_data["position"]
+        if not position:
+            raise forms.ValidationError(_("Position field is required."), code="invalid")
+        return position
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data["start_date"]
+        if not start_date:
+            raise forms.ValidationError(_("Start date field is required."), code="invalid")
+        return start_date
+
+
+class UpdateEducationForm(forms.ModelForm):
+    class Meta:
+        model = Education
+        fields = ["school_name", "degree", "start_date", "end_date"]
+        error_messages = {
+            'school_name': {
+                'required': "School name field is required.",
+                'invalid': "Invalid input.",
+            },
+            'degree': {
+                'required': "Degree field is required.",
+                'invalid': "Invalid input.",
+            },
+            'start_date': {
+                'required': "Start date field is required.",
+                'invalid': "Invalid input.",
+            },
+        }
+
+        school_name = forms.CharField(
+            label=_("School name"),
+            max_length=100,
+            error_messages={
+                "required": _("School name field is required."),
+                "max_length": _("School name is too long."),
+            },
+        )
+
+        degree = forms.CharField(
+            label=_("Degree"),
+            max_length=100,
+            error_messages={
+                "required": _("Degree field is required."),
+                "max_length": _("Degree is too long."),
+            },
+        )
+
+        start_date = forms.DateField(
+            label=_("Start date"),
+            error_messages={
+                "required": _("Start date field is required."),
+            },
+        )
+
+    def clean_school_name(self):
+        school_name = self.cleaned_data["school_name"]
+        if not school_name:
+            raise forms.ValidationError(_("School name field is required"), code="invalid")
+        return school_name
+
+    def clean_degree(self):
+        degree = self.cleaned_data["degree"]
+        if not degree:
+            raise forms.ValidationError(_("Degree field is required"), code="invalid")
+        return degree
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data["start_date"]
+        if not start_date:
+            raise forms.ValidationError(_("Start date is required"), code="invalid")
+        return start_date

@@ -170,8 +170,8 @@
         <div class="row">
             <div class="col">
                 <div class="main-box admin-features" style="width: 51vw">
-                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Access administrator features
-                        (visisble to admins only)</h1>
+                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: 
+                    white;">Access administrator features</h1>
                     <form action="/admin">
                         <input id="gotodash" type="submit" value="Go to Dashboard" class="btn btn-primary btn-lg">
                     </form>
@@ -183,12 +183,18 @@
         <div class="row">
             <div class="col" style="padding-top: 5%">
                 <div class="main-box flair" style="width: 51vw;">
-                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Headline flair (visible to
-                        professionals only):</h1>
+                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Headline flair:</h1>
                     <form action="{% url 'dashboard' %}" method="post">
                         {% csrf_token %}
                         <input name="flair" type="text" class="form-control" placeholder="Enter flair"
-                               aria-label="flair" value="{{ request.user.professionaluser.flair }}">
+                               value="{{ request.user.professionaluser.flair }}">
+                        
+                        {% for field, errors in update_flair_form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+
                         <br>
                         <button name="update_flair" id="submitflair" type="submit" class="btn btn-primary"
                                 style="align-items: center;">Save changes
@@ -201,72 +207,126 @@
         <div class="row">
             <div class="col" style="padding-top: 5%; padding-bottom: 5%">
                 <div class="main-box credentials" style="width: 51vw;">
-                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Credentials (visible to
-                        professionals only)</h1>
+                    <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Credentials</h1>
                     <div class="form-container mt-4">
-                        <form action="{% url 'dashboard' %}" method="get" class="mb-3">
-                            <div class="list-group">
-                                {% for education in professionals %}
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="#" class="list-group-item-action">{{ education }}</a>
-                                        <button id="deleteeduc" type="button" class="btn-close"
-                                                aria-label="deleteeducation"></button>
+                        <form action="{% url 'dashboard' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input placeholder="School Name" type="text" class="form-control mb-2"
+                                       id="{{ update_education_form.school_name.id_for_label }}"
+                                       name="{{ update_education_form.school_name.html_name }}"
+                                       value="{% if update_education_form.school_name.value %}{{ update_education_form.school_name.value }}{% endif %}">
+
+                                {% if update_education_form.school_name.errors %}
+                                    <div class="text-danger">
+                                        {{ update_education_form.school_name.errors }}
                                     </div>
-                                {% endfor %}
+                                {% endif %}
+
                             </div>
                             <div class="form-group">
-                                <input type="text" name="school" class="form-control mb-2" placeholder="School">
+                                <input placeholder="Degree" type="text" class="form-control mb-2"
+                                       id="{{ update_education_form.degree.id_for_label }}"
+                                       name="{{ update_education_form.degree.html_name }}"
+                                       value="{% if update_education_form.degree.value %}{{ update_education_form.degree.value }} {% endif %}">
+                                {% if update_education_form.degree.errors %}
+                                    <div class="text-danger">
+                                        {{ update_education_form.degree.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="form-group">
-                                <input type="text" name="degree" class="form-control mb-2" placeholder="Degree Title">
+                                <input placeholder="Start Date" type="date" class="form-control mb-2"
+                                       id="{{ update_education_form.start_date.id_for_label }}"
+                                       name="{{ update_education_form.start_date.html_name }}"
+                                       value="{{ update_education_form.start_date.value|date:'Y-m-d' }}">
+                                {% if update_education_form.start_date.errors %}
+                                    <div class="text-danger">
+                                        {{ update_education_form.start_date.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="form-group">
-                                <input type="text" name="beganschool" class="form-control mb-2" placeholder="Began"
-                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                                <input placeholder="End Date" type="date" class="form-control mb-2"
+                                       id="{{ update_education_form.end_date.id_for_label }}"
+                                       name="{{ update_education_form.end_date.html_name }}"
+                                       value="{{ update_education_form.end_date.value|date:'Y-m-d'  }}">
+                                {% if update_education_form.end_date.errors %}
+                                    <div class="text-danger">
+                                        {{ update_education_form.end_date.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="form-group">
-                                <input type="text" name="endedschool" class="form-control mb-2" placeholder="Ended"
-                                       onfocus="(this.type='date')" onblur="(this.type='text')">
-                            </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="school_inprogress"
-                                       name="school_inprogress" onchange="toggleEndedSchoolInput()">
-                                <label style="color: white" class="form-check-label" for="school_inprogress">In
-                                    Progress</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                               <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="position_inprogress"
+                                           name="position_inprogress" onchange="toggleEndedWorkInput()">
+                                    <label style="color: white" class="form-check-label" for="position_inprogress">In
+                                        Progress</label>
+                                </div>
+                            <button name="update_education" type="submit" class="btn btn-primary">Save changes</button>
                         </form>
-                        <form action="{% url 'dashboard' %}" method="get" class="mb-3">
-                            <div class="list-group">
-                                {% for qualifications in professionals %}
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="#" class="list-group-item-action">{{ qualification }}</a>
-                                        <button id="deletequali" type="button" class="btn-close"
-                                                aria-label="deletequalification"></button>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="position" class="form-control mb-2" placeholder="Position">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="company" class="form-control mb-2" placeholder="Company">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="beganwork" class="form-control mb-2" placeholder="Began"
-                                       onfocus="(this.type='date')" onblur="(this.type='text')">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="endedwork" class="form-control mb-2" placeholder="Ended"
-                                       onfocus="(this.type='date')" onblur="(this.type='text')">
-                            </div>
+                        <form action="{% url 'dashboard' %}" method="post">
+                            {% csrf_token %}
+{#                            <div class="list-group">#}
+{#                                {% for qualifications in professionals %}#}
+{#                                    <div class="list-group-item d-flex justify-content-between align-items-center">#}
+{#                                        <a href="#" class="list-group-item-action">{{ qualification }}</a>#}
+{#                                        <button id="deletequali" type="button" class="btn-close"#}
+{#                                                aria-label="deletequalification"></button>#}
+{#                                    </div>#}
+{#                                {% endfor %}#}
+{#                            </div>#}
+                               <div class="form-group">
+                                <input placeholder="Company Name" type="text" class="form-control mb-2"
+                                       id="{{ update_employments_form.company.id_for_label }}"
+                                       name="{{ update_employments_form.company.html_name }}"
+                                       value="{% if update_employments_form.company.value %} {{ update_employments_form.company.value }} {% endif %}">
+                                   {% if update_employments_form.company.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.company.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="Position" type="text" class="form-control mb-2"
+                                           id="{{ update_employments_form.position.id_for_label }}"
+                                           name="{{ update_employments_form.position.html_name }}"
+                                           value="{% if update_employments_form.position.value %} {{ update_employments_form.position.value }} {% endif %}">
+                                    {% if update_employments_form.position.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.position.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="Start Date" type="date" class="form-control mb-2"
+                                           id="{{ update_employments_form.start_date.id_for_label }}"
+                                           name="{{ update_employments_form.start_date.html_name }}"
+                                           value="{{ update_employments_form.start_date.value|date:'Y-m-d' }}">
+                                     {% if update_employments_form.start_date.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.start_date.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="End Date" type="date" class="form-control mb-2"
+                                           id="{{ update_employments_form.end_date.id_for_label }}"
+                                           name="{{ update_employments_form.end_date.html_name }}"
+                                           value="{{ update_employments_form.end_date.value|date:'Y-m-d' }}">
+                                    {% if update_employments_form.end_date.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.end_date.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="position_inprogress"
                                        name="position_inprogress" onchange="toggleEndedWorkInput()">
                                 <label style="color: white" class="form-check-label" for="position_inprogress">In
                                     Progress</label>
                             </div>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button name="update_employments" type="submit" class="btn btn-primary">Save changes</button>
                         </form>
                     </div>
                 </div>

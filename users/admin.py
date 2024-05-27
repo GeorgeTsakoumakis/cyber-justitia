@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, ProfessionalUser
+from .models import CustomUser, ProfessionalUser, Education, Employments
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -30,3 +30,5 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(ProfessionalUser)
+admin.site.register(Education)
+admin.site.register(Employments)
