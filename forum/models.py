@@ -89,23 +89,23 @@ class Post(models.Model):
             )
         return cleaned_data
 
-    def upvote(self, user):
+    def upvote(self):
         try:
-            post_vote = PostVote.objects.get(user=user, post=self)
+            post_vote = PostVote.objects.get(user=self.user, post=self)
             if post_vote.vote_type == PostVote.VoteType.DOWNVOTE:
                 post_vote.vote_type = PostVote.VoteType.UPVOTE
                 post_vote.save()
         except PostVote.DoesNotExist:
-            PostVote.objects.create(user=user, post=self, vote_type=PostVote.VoteType.UPVOTE)
+            PostVote.objects.create(user=self.user, post=self, vote_type=PostVote.VoteType.UPVOTE)
 
-    def downvote(self, user):
+    def downvote(self):
         try:
-            post_vote = PostVote.objects.get(user=user, post=self)
+            post_vote = PostVote.objects.get(user=self.user, post=self)
             if post_vote.vote_type == PostVote.VoteType.UPVOTE:
                 post_vote.vote_type = PostVote.VoteType.DOWNVOTE
                 post_vote.save()
         except PostVote.DoesNotExist:
-            PostVote.objects.create(user=user, post=self, vote_type=PostVote.VoteType.DOWNVOTE)
+            PostVote.objects.create(user=self.user, post=self, vote_type=PostVote.VoteType.DOWNVOTE)
 
     def get_upvotes(self):
         return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.UPVOTE).count()
@@ -162,20 +162,22 @@ class Comment(models.Model):
         return self.text[:50]
 
     def upvote(self):
-        # Check if the user has already voted on this comment
-        if CommentVote.objects.filter(user=self.user, comment=self).exists():
-            # If the user has already voted, remove the previous vote
-            CommentVote.objects.get(user=self.user, comment=self).delete()
-        CommentVote.objects.create(user=self.user, comment=self, vote_type=True)
-        self.save()
+        try:
+            comment_vote = CommentVote.objects.get(user=self.user, comment=self)
+            if comment_vote.vote_type == CommentVote.VoteType.DOWNVOTE:
+                comment_vote.vote_type = CommentVote.VoteType.UPVOTE
+                comment_vote.save()
+        except CommentVote.DoesNotExist:
+            CommentVote.objects.create(user=self.user, comment=self, vote_type=CommentVote.VoteType.UPVOTE)
 
     def downvote(self):
-        # Check if the user has already voted on this comment
-        if CommentVote.objects.filter(user=self.user, comment=self).exists():
-            # If the user has already voted, remove the previous vote
-            CommentVote.objects.get(user=self.user, comment=self).delete()
-        CommentVote.objects.create(user=self.user, comment=self, vote_type=False)
-        self.save()
+        try:
+            comment_vote = CommentVote.objects.get(user=self.user, comment=self)
+            if comment_vote.vote_type == CommentVote.VoteType.UPVOTE:
+                comment_vote.vote_type = CommentVote.VoteType.DOWNVOTE
+                comment_vote.save()
+        except CommentVote.DoesNotExist:
+            CommentVote.objects.create(user=self.user, comment=self, vote_type=CommentVote.VoteType.DOWNVOTE)
 
     def get_upvotes(self):
         return CommentVote.objects.filter(comment=self, vote_type=True).count()

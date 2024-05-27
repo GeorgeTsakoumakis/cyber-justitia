@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from .models import Post, PostVote
+from .models import Post, PostVote, CommentVote
 
 
 class CreatePostForm(forms.ModelForm):
@@ -106,7 +106,7 @@ class VoteForm(forms.Form):
     )
 
     class Meta:
-        model = PostVote
+        abstract = True
         fields = ['vote_type']
 
     def clean_vote_type(self):
@@ -118,3 +118,23 @@ class VoteForm(forms.Form):
         if vote_type not in [choice[0] for choice in self.VOTE_CHOICES]:
             raise forms.ValidationError(_("Invalid vote type."), code="invalid")
         return vote_type
+
+
+class PostVoteForm(VoteForm):
+    """
+    Form for voting on a post. It includes a field for the vote type.
+    """
+
+    class Meta:
+        model = PostVote
+        fields = ['vote_type']
+
+
+class CommentVoteForm(VoteForm):
+    """
+    Form for voting on a comment. It includes a field for the vote type.
+    """
+
+    class Meta:
+        model = CommentVote
+        fields = ['vote_type']

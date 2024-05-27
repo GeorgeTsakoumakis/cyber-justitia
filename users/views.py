@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
 from .models import CustomUser, ProfessionalUser, Education, Employments
+from django.views.defaults import page_not_found
+from .models import CustomUser, ProfessionalUser
 from chatbot.models import Session
 from forum.models import Post, Comment
 from .forms import (
@@ -386,9 +388,9 @@ def handler403(request, *args, **argv):
     return render(request, "errors/403.html", status=403)
 
 
-def handler404(request, *args, **argv):
+def handler404(request, exception):
     """Custom error handlers not found"""
-    return render(request, "errors/404.html", status=404)
+    return page_not_found(request, exception, template_name="errors/404.html")
 
 
 def handler500(request, *args, **argv):

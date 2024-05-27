@@ -14,14 +14,19 @@
 {% block content %}
 
     <div class="post-box main-box">
-        <div class="vote-section" data-id="{{ post.id }}">
-            <button class="button_upvote">
-                <img src="{% static 'upvote.svg' %}" alt="upvote">
-            </button>
-            <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
-            <button class="button_downvote">
-                <img src="{% static 'downvote.svg' %}" alt="downvote">
-            </button>
+        <div class="vote-section" data-id="{{ post.post_id }}">
+            <form action="{% url 'vote_post' post.slug %}" method="post">
+                {% csrf_token %}
+                <button class="button_upvote" name="{{ post_vote_form.vote_type.html_name }}"
+                        id="{{ post_vote_form.vote_type.id_for_label }}" type="submit" value="up">
+                    <img src="{% static 'upvote.svg' %}" alt="upvote">
+                </button>
+                <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+                <button class="button_downvote" name="{{ post_vote_form.vote_type.html_name }}"
+                        id="{{ post_vote_form.vote_type.id_for_label }}" type="submit" value="down">
+                    <img src="{% static 'downvote.svg' %}" alt="downvote">
+                </button>
+            </form>
         </div>
         <div class="content-section">
             <h2 class="post-title">{{ post.title|title }}</h2>
@@ -62,14 +67,19 @@
     </div>
     {% for comment in comments %}
         <div class="comment-box main-box" style="background-color: #FCD6DD; margin-bottom: 1.5rem;">
-            <div class="vote-section" data-id="{{ comment.id }}">
-                <button class="button_upvote">
-                    <img src="{% static 'upvote.svg' %}" alt="upvote">
-                </button>
-                <p class="upvote-count" id="upvote-count-1">{{ comment.votes }}</p>
-                <button class="button_downvote">
-                    <img src="{% static 'downvote.svg' %}" alt="downvote">
-                </button>
+            <div class="vote-section" data-id="{{ post.post_id }}">
+                <form action="{% url 'vote_comment' post.slug comment.comment_id %}" method="post">
+                    {% csrf_token %}
+                    <button class="button_upvote" name="{{ comment_vote_form.vote_type.html_name }}"
+                            id="{{ comment_vote_form.vote_type.id_for_label }}" type="submit" value="up">
+                        <img src="{% static 'upvote.svg' %}" alt="upvote">
+                    </button>
+                    <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+                    <button class="button_downvote" name="{{ comment_vote_form.vote_type.html_name }}"
+                            id="{{ comment_vote_form.vote_type.id_for_label }}" type="submit" value="down">
+                        <img src="{% static 'downvote.svg' %}" alt="downvote">
+                    </button>
+                </form>
             </div>
             <div class="comment-content-section">
                 <p style="color: #3d3d3d;">Comment by
