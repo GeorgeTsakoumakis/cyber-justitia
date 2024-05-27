@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment, PostVote
+from .models import Post, Comment, PostVote, CommentVote
 from .utils import update_views
 from .forms import CreatePostForm, CreateCommentForm, PostVoteForm, CommentVoteForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -29,6 +29,9 @@ def forums(request):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.get_comments()
+    # print comment votes
+    for comment in comments:
+        print(comment.votes)
     # Comment creation form
     comment_form = CreateCommentForm()
     post_vote_form = PostVoteForm()
@@ -101,9 +104,9 @@ def vote_post(request, slug):
         if vote_form.is_valid():
             vote_type = vote_form.cleaned_data["vote_type"]
             if vote_type == PostVote.VoteType.UPVOTE:
-                post.upvote()
+                post.upvote(request.user)
             elif vote_type == PostVote.VoteType.DOWNVOTE:
-                post.downvote()
+                post.downvote(request.user)
         else:
             # 400 Bad Request
             return render(request, "errors/400.html", status=400)
@@ -117,10 +120,14 @@ def vote_comment(request, slug, comment_id):
         vote_form = CommentVoteForm(request.POST)
         if vote_form.is_valid():
             vote_type = vote_form.cleaned_data["vote_type"]
-            if vote_type == PostVote.VoteType.UPVOTE:
-                comment.upvote()
-            elif vote_type == PostVote.VoteType.DOWNVOTE:
-                comment.downvote()
+            if vote_type == CommentVote.VoteType.UPVOTE:
+                print("Before ", comment.votes)
+                comment.upvote(request.user)
+                print("After ", comment.votes)
+            elif vote_type == CommentVote.VoteType.DOWNVOTE:
+                print("Before ", comment.votes)
+                comment.downvote(request.user)
+                print("After ", comment.votes)
         else:
             # 400 Bad Request
             return render(request, "errors/400.html", status=400)

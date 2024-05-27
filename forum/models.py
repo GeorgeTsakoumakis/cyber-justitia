@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.shortcuts import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 
 CustomUser = get_user_model()
 
@@ -89,23 +90,19 @@ class Post(models.Model):
             )
         return cleaned_data
 
-    def upvote(self):
-        try:
-            post_vote = PostVote.objects.get(user=self.user, post=self)
-            if post_vote.vote_type == PostVote.VoteType.DOWNVOTE:
+    def upvote(self, user):
+        with transaction.atomic():
+            post_vote, created = PostVote.objects.select_for_update().get_or_create(user=user, post=self)
+            if not created and post_vote.vote_type != PostVote.VoteType.UPVOTE:
                 post_vote.vote_type = PostVote.VoteType.UPVOTE
                 post_vote.save()
-        except PostVote.DoesNotExist:
-            PostVote.objects.create(user=self.user, post=self, vote_type=PostVote.VoteType.UPVOTE)
 
-    def downvote(self):
-        try:
-            post_vote = PostVote.objects.get(user=self.user, post=self)
-            if post_vote.vote_type == PostVote.VoteType.UPVOTE:
+    def downvote(self, user):
+        with transaction.atomic():
+            post_vote, created = PostVote.objects.select_for_update().get_or_create(user=user, post=self)
+            if not created and post_vote.vote_type != PostVote.VoteType.DOWNVOTE:
                 post_vote.vote_type = PostVote.VoteType.DOWNVOTE
                 post_vote.save()
-        except PostVote.DoesNotExist:
-            PostVote.objects.create(user=self.user, post=self, vote_type=PostVote.VoteType.DOWNVOTE)
 
     def get_upvotes(self):
         return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.UPVOTE).count()
@@ -161,29 +158,25 @@ class Comment(models.Model):
     def __str__(self):
         return self.text[:50]
 
-    def upvote(self):
-        try:
-            comment_vote = CommentVote.objects.get(user=self.user, comment=self)
-            if comment_vote.vote_type == CommentVote.VoteType.DOWNVOTE:
+    def upvote(self, user):
+        with transaction.atomic():
+            comment_vote, created = CommentVote.objects.select_for_update().get_or_create(user=user, comment=self)
+            if not created and comment_vote.vote_type != CommentVote.VoteType.UPVOTE:
                 comment_vote.vote_type = CommentVote.VoteType.UPVOTE
                 comment_vote.save()
-        except CommentVote.DoesNotExist:
-            CommentVote.objects.create(user=self.user, comment=self, vote_type=CommentVote.VoteType.UPVOTE)
 
-    def downvote(self):
-        try:
-            comment_vote = CommentVote.objects.get(user=self.user, comment=self)
-            if comment_vote.vote_type == CommentVote.VoteType.UPVOTE:
+    def downvote(self, user):
+        with transaction.atomic():
+            comment_vote, created = CommentVote.objects.select_for_update().get_or_create(user=user, comment=self)
+            if not created and comment_vote.vote_type != CommentVote.VoteType.DOWNVOTE:
                 comment_vote.vote_type = CommentVote.VoteType.DOWNVOTE
                 comment_vote.save()
-        except CommentVote.DoesNotExist:
-            CommentVote.objects.create(user=self.user, comment=self, vote_type=CommentVote.VoteType.DOWNVOTE)
 
     def get_upvotes(self):
-        return CommentVote.objects.filter(comment=self, vote_type=True).count()
+        return CommentVote.objects.filter(comment=self, vote_type=CommentVote.VoteType.UPVOTE).count()
 
     def get_downvotes(self):
-        return CommentVote.objects.filter(comment=self, vote_type=False).count()
+        return CommentVote.objects.filter(comment=self, vote_type=CommentVote.VoteType.DOWNVOTE).count()
 
 
 class Vote(models.Model):
@@ -234,10 +227,8 @@ class PostVote(Vote):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
-        cleaned_data = super().clean()
-        if not self.post:
-            raise ValidationError(_("Post field is required."), code="invalid")
-        return cleaned_data
+        if PostVote.objects.filter(user=self.user, post=self.post).exists() and not self.pk:
+            raise ValidationError("Post Vote with this User already exists.")
 
     def save(self, *args, **kwargs):
         """
@@ -261,10 +252,8 @@ class CommentVote(Vote):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
-        cleaned_data = super().clean()
-        if not self.comment:
-            raise ValidationError(_("Comment field is required."), code="invalid")
-        return cleaned_data
+        if CommentVote.objects.filter(user=self.user, comment=self.comment).exists() and not self.pk:
+            raise ValidationError("Comment Vote with this User already exists.")
 
     def save(self, *args, **kwargs):
         """

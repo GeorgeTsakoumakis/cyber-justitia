@@ -74,7 +74,7 @@
                             id="{{ comment_vote_form.vote_type.id_for_label }}" type="submit" value="up">
                         <img src="{% static 'upvote.svg' %}" alt="upvote">
                     </button>
-                    <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+                    <p class="upvote-count" id="upvote-count-1">{{ comment.votes }}</p>
                     <button class="button_downvote" name="{{ comment_vote_form.vote_type.html_name }}"
                             id="{{ comment_vote_form.vote_type.id_for_label }}" type="submit" value="down">
                         <img src="{% static 'downvote.svg' %}" alt="downvote">
