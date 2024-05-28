@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block styles %}
-<script type="module" src="https://md-block.verou.me/md-block.js"></script>
-<link rel="stylesheet" href="{% static 'chatbot/css/chatbot.css' %}">
-<script type="text/javascript" src="{% static 'chatbot/js/chatbot_session.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'chatbot/css/chatbot.css' %}">
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+
 {% endblock %}
 
 <!-- Error/info messages -->
@@ -13,116 +13,110 @@
         <ul>
             {% for message in messages %}
                 <li>{{ message }}</li> <!-- customisable style - just add class name -->
-                {% endfor %}
+            {% endfor %}
         </ul>
     {% endif %}
 
-<div class="row" style="padding-top: 5%; padding-bottom: 2%">
-    <div class="col">
-        <div class="secondary-box" style="max-width: 869px; width: 90%">
-            <h1 style="color: white">⚠️ DISCLAIMER! ⚠️</h1>
-            <p style="color: white">Our AI chatbot can <b>NOT</b> replace the advice of an actual legal professional, so if you plan on taking serious legal action, <i>consult a real legal professional first</i> before proceeding.</p>
-            <p style="color: white">One way you can do this is by checking out our <a href="{% url 'forums' %}">Forums</a> where you can ask real legal professionals advice on your case and reach out to them if further legal action is necessary.</p>
-        </div>
-    </div>
-</div>
-
-<div class="wrap-container">
-    <div class="row justify-content-center">
-        <div class="col-3">
-            <div class="session-box" style="padding-bottom: 5%; text-align: center">
-                <h2 style="text-align: center; color: black; background-color: #FDEFF2; padding: 3%;">Sessions</h2>
-                <div class="list-group">
-                    {% if user_sessions %}
-                        {% for session in user_sessions %}
-                            {% if session != current_session %}
-                                <a href="{% url 'chatbot_session' session %}" class="list-group-item list-group-item-action" style="background-color: #FDEFF2; color: #3d3d3d;">Session {{ forloop.counter }}</a>
-                            {% else %}
-                                <a class="list-group-item list-group-item-action active" style="background-color: #FCD6DD; color: #3d3d3d;">Session {{ forloop.counter }}</a>
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        <a class="list-group-item list-group-item-action disabled" style="background-color: #FDEFF2; color: #3d3d3d;">No sessions available</a>
-                    {% endif %}
-                </div>
-                <form method="post" action="{% url 'create_session' %}" style="margin-top: 1rem;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary" style="font-size: 14px">+ Start new session</button>
-                </form>
-            </div>
-        </div>
-        <div class="col-9">
-            <div id="chat-container" class="main-box">
-                <div id="chat-messages-container">
-                    <div id="chat-messages">
-                        {% for message in chat_messages %}
-                            {% if message.role == "user" %}
-                                <div class="message user-message">{{ message.text }}</div>
-                            {% elif message.role == "bot" %}
-                                <md-block class="message bot-message">{{ message.text }}</md-block>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="chat-input">
-                    <div class="chat-input-container">
-                        <textarea rows="1" id="user-input" placeholder="Type your message here..." class="form-control"></textarea>
-                        <button id="submit-prompt" onclick="sendMessage()"><img src="{% static 'sendmes.svg' %}" alt="Send"></button>
-                    </div>
-                </div>
+    <div class="row" style="padding-top: 5%; padding-bottom: 2%">
+        <div class="col">
+            <div class="secondary-box" style="max-width: 869px; width: 90%">
+                <h1 style="color: white">⚠️ DISCLAIMER! ⚠️</h1>
+                <p style="color: white">Our AI chatbot can <b>NOT</b> replace the advice of an actual legal
+                    professional, so if you plan on taking serious legal action, <i>consult a real legal professional
+                        first</i> before proceeding.</p>
+                <p style="color: white">One way you can do this is by checking out our <a href="{% url 'forums' %}">Forums</a>
+                    where you can ask real legal professionals advice on your case and reach out to them if further
+                    legal action is necessary.</p>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // It seems this script only runs here so I'm keeping it here lol
-    
-    let input = document.getElementById('user-input');
+    <div class="wrap-container">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <div class="session-box" style="padding-bottom: 5%; text-align: center">
+                    <h2 style="text-align: center; color: black; background-color: #FDEFF2; padding: 3%;">Sessions</h2>
+                    <div class="list-group">
+                        {% if user_sessions %}
+                            {% for session in user_sessions %}
+                                {% if session != current_session %}
+                                    <a href="{% url 'chatbot_session' session %}"
+                                       class="list-group-item list-group-item-action"
+                                       style="background-color: #FDEFF2; color: #3d3d3d;">Session {{ forloop.counter }}</a>
+                                {% else %}
+                                    <a class="list-group-item list-group-item-action active"
+                                       style="background-color: #FCD6DD; color: #3d3d3d;">Session {{ forloop.counter }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <a class="list-group-item list-group-item-action disabled"
+                               style="background-color: #FDEFF2; color: #3d3d3d;">No sessions available</a>
+                        {% endif %}
+                    </div>
+                    <form method="post" action="{% url 'create_session' %}" style="margin-top: 1rem;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" style="font-size: 14px">+ Start new session
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-9">
+                <div id="chat-container" class="main-box">
+                    <div id="chat-messages-container">
+                        <div id="chat-messages">
+                            {% for message in chat_messages %}
+                                {% if message.role == "user" %}
+                                    <div class="message user-message">{{ message.text }}</div>
+                                {% elif message.role == "bot" %}
+                                    <md-block class="message bot-message">{{ message.text }}</md-block>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <div class="chat-input-container">
+                            <textarea rows="1" id="user-input" placeholder="Type your message here..."
+                                      class="form-control"></textarea>
+                            <button id="submit-prompt" onclick="sendMessage()"><img src="{% static 'sendmes.svg' %}"
+                                                                                    alt="Send"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    input.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();  // Prevent the default action
-            sendMessage();
-        } else if (event.key === 'Enter' && event.shiftKey) {
-            // Shift + Enter pressed, insert a newline
-            let cursorPosition = input.selectionStart;
-            let value = input.value;
-            input.value = value.slice(0, cursorPosition) + '\n' + value.slice(cursorPosition);
-            input.selectionStart = input.selectionEnd = cursorPosition + 1;
-            event.preventDefault();  // Prevent the default action (new line is already inserted)
-            input.scrollTop = input.scrollHeight;
+    <script>
+        // Function to send user message and display it in the chat
+        function sendMessage() {
+            let userInput = document.getElementById("user-input").value;
+            if (userInput.trim() !== "") {
+                displayMessage(userInput, true); // Display user message
+                // Send to backend for processing
+                fetch('/chatbot/process/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        message: userInput, session_id: {{ current_session }}
+                    })
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        displayMessage(data.response, false); // Display bot response
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                document.getElementById("user-input").value = ""; // Clear input field
+            }
         }
-    });
-    // Function to send user message and display it in the chat
-    function sendMessage() {
-        let userInput = document.getElementById("user-input").value;
-        if (userInput.trim() !== "") {
-            displayMessage(userInput, true); // Display user message
-            // Send to backend for processing
-            fetch('/chatbot/process/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({
-                    message: userInput, session_id: {{ current_session }}
-                })
-            })
-                .then(response => {
-                    return response.json();
-                })
-                .then(data => {
-                    displayMessage(data.response, false); // Display bot response
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
-            document.getElementById("user-input").value = ""; // Clear input field
-        }
-    }
-</script>
+    </script>
+    <script type="text/javascript" src="{% static 'chatbot/js/chatbot.js' %}"></script>
 
 {% endblock %}
