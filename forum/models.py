@@ -282,10 +282,11 @@ class CommentVote(Vote):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
-        if (
-            CommentVote.objects.filter(user=self.user, comment=self.comment).exists()
-            and not self.pk
-        ):
+        if not self.user_id:
+            raise ValidationError(_("User field is required."), code="invalid")
+        if not self.comment_id:
+            raise ValidationError(_("Comment field is required."), code="invalid")
+        if CommentVote.objects.filter(user=self.user, comment=self.comment).exists() and not self.pk:
             raise ValidationError("Comment Vote with this User already exists.")
 
     def save(self, *args, **kwargs):
