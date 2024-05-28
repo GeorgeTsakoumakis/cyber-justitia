@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
-from users.models import ProfessionalUser, Education
+from users.models import ProfessionalUser, Education, Employments
 import datetime
 
 # Get the CustomUser model
@@ -430,6 +430,119 @@ class EducationModelTest(TestCase):
             self.fail('This should not happen.')
 
 
+class EmploymentModelTest(TestCase):
+
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username='testuser',
+            password='Password123!',
+            email='testuser@example.com',
+            first_name='Test',
+            last_name='User'
+        )
+        self.professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair='Initial Flair'
+        )
+
+    def test_valid_employment_creation(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='Test Company',
+            position='Software Engineer',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        employment.full_clean()  # Should not raise any errors
+
+    def test_company_cannot_be_blank(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='',
+            position='Software Engineer',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            employment.full_clean()
+        self.assertIn('company', context.exception.message_dict)
+
+    def test_position_cannot_be_blank(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='Test Company',
+            position='',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            employment.full_clean()
+        self.assertIn('position', context.exception.message_dict)
+
+    def test_start_date_cannot_be_blank(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='Test Company',
+            position='Software Engineer',
+            start_date=None,
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            employment.full_clean()
+        self.assertIn('start_date', context.exception.message_dict)
+
+    def test_company_cannot_exceed_max_length(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='A' * 101,
+            position='Software Engineer',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            employment.full_clean()
+        self.assertIn('company', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['company'], ['Ensure this value has at most 100 characters (it has 101).'])
+
+    def test_position_cannot_exceed_max_length(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='Test Company',
+            position='A' * 101,
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            employment.full_clean()
+        self.assertIn('position', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['position'], ['Ensure this value has at most 100 characters (it has 101).'])
+
+    def test_start_date_cannot_be_in_future(self):
+        future_date = datetime.date.today() + datetime.timedelta(days=100)
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='Test Company',
+            position='Software Engineer',
+            start_date=future_date,
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            employment.full_clean()
+        self.assertIn('start_date', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['start_date'], ['Start date cannot be in the future.'])
+
+    def test_end_date_can_be_blank(self):
+        employment = Employments(
+            prof_id=self.professional_user,
+            company='Test Company',
+            position='Software Engineer',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=None
+        )
+        try:
+            employment.full_clean()  # Should not raise any errors
+        except ValidationError:
+            self.fail('This should not happen.')
 
 if __name__ == '__main__':
     unittest.main()
