@@ -8,9 +8,15 @@ from ..models import ProfessionalUser
 CustomUser = get_user_model()
 
 
-class ViewsTestCase(TestCase):
+class AuthViewsTestCase(TestCase):
+    """
+    Test case for authentication views.
+    """
 
     def setUp(self):
+        """
+        TUV1: Set up a test client and user for use in the tests.
+        """
         self.client = Client()
         self.user = CustomUser.objects.create_user(
             username='testuser',
@@ -21,21 +27,33 @@ class ViewsTestCase(TestCase):
         )
 
     def test_render_index_page(self):
+        """
+        TUV2: Test that the index page renders correctly.
+        """
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index.html')
 
     def test_unauthenticated_user_accesses_register_page(self):
+        """
+        TUV3: Test that an unauthenticated user can access the register page.
+        """
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'register.html')
 
     def test_authenticated_user_accesses_register_page(self):
+        """
+        TUV4: Test that an authenticated user is redirected from the register page.
+        """
         self.client.force_login(self.user)
         response = self.client.get(reverse('register'))
         self.assertRedirects(response, '/chatbot/', target_status_code=302)
 
     def test_register_new_standard_user_with_valid_data(self):
+        """
+        TUV5: Test that a new standard user can register with valid data.
+        """
         response = self.client.post(reverse('register'), {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -49,6 +67,9 @@ class ViewsTestCase(TestCase):
         self.assertTrue(CustomUser.objects.filter(username='johndoe').exists())
 
     def test_register_new_professional_user_with_valid_data(self):
+        """
+        TUV6: Test that a new professional user can register with valid data.
+        """
         response = self.client.post(reverse('register'), {
             'first_name': 'Jane',
             'last_name': 'Doe',
@@ -64,6 +85,9 @@ class ViewsTestCase(TestCase):
         self.assertTrue(ProfessionalUser.objects.filter(user__username='janedoe').exists())
 
     def test_register_user_with_weak_password(self):
+        """
+        TUV7: Test that a weak password prevents registration.
+        """
         response = self.client.post(reverse('register'), {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -77,6 +101,9 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, 'Password not strong enough')
 
     def test_register_user_with_non_matching_passwords(self):
+        """
+        TUV8: Test that non-matching passwords prevent registration.
+        """
         response = self.client.post(reverse('register'), {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -90,6 +117,9 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, 'Password not matching')
 
     def test_register_user_with_existing_username(self):
+        """
+        TUV9: Test that an existing username prevents registration.
+        """
         response = self.client.post(reverse('register'), {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -103,6 +133,9 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, 'Username already exists')
 
     def test_register_user_with_existing_email(self):
+        """
+        TUV10: Test that an existing email prevents registration.
+        """
         response = self.client.post(reverse('register'), {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -116,16 +149,25 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, 'Email already exists')
 
     def test_unauthenticated_user_accesses_login_page(self):
+        """
+        TUV11: Test that an unauthenticated user can access the login page.
+        """
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
     def test_authenticated_user_accesses_login_page(self):
+        """
+        TUV12: Test that an authenticated user is redirected from the login page.
+        """
         self.client.force_login(self.user)
         response = self.client.get(reverse('login'))
         self.assertRedirects(response, '/chatbot/', target_status_code=302)
 
     def test_login_with_valid_credentials(self):
+        """
+        TUV13: Test that a user can log in with valid credentials.
+        """
         response = self.client.post(reverse('login'), {
             'username': 'testuser',
             'password': 'Password123!'
@@ -133,6 +175,9 @@ class ViewsTestCase(TestCase):
         self.assertRedirects(response, '/chatbot/', target_status_code=302)
 
     def test_login_with_invalid_credentials(self):
+        """
+        TUV14: Test that logging in with invalid credentials fails.
+        """
         response = self.client.post(reverse('login'), {
             'username': 'testuser',
             'password': 'wrongpassword'
@@ -141,6 +186,9 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, 'Invalid credentials')
 
     def test_authenticated_user_logs_out(self):
+        """
+        TUV15: Test that an authenticated user can log out.
+        """
         self.client.force_login(self.user)
         response = self.client.get(reverse('logout'))
         self.assertRedirects(response, '/')
@@ -148,8 +196,14 @@ class ViewsTestCase(TestCase):
 
 
 class DashboardViewsTestCase(TestCase):
+    """
+    Test case for dashboard views.
+    """
 
     def setUp(self):
+        """
+        TUV16: Set up a test client and user for use in the tests.
+        """
         self.client = Client()
         self.user = CustomUser.objects.create_user(
             username='testuser',
@@ -161,12 +215,17 @@ class DashboardViewsTestCase(TestCase):
         self.client.force_login(self.user)
 
     def test_dashboard_page_access(self):
+        """
+        TUV17: Test that the dashboard page is accessible.
+        """
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'dashboard.html')
 
-    # Fails
     def test_update_details_with_valid_data(self):
+        """
+        TUV18: Test updating user details with valid data.
+        """
         new_first_name = 'UpdatedFirstName'
         new_last_name = 'UpdatedLastName'
         new_email = 'updatedemail@example.com'
@@ -189,6 +248,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(self.user.email, new_email)
 
     def test_update_first_name_with_blank_value(self):
+        """
+        TUV19: Test that updating first name with a blank value fails.
+        """
         response = self.client.post(reverse('update_details'), {
             'first_name': '',
             'last_name': 'User',
@@ -203,6 +265,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(form.errors['first_name'], ['First name field is required.'])
 
     def test_update_last_name_with_blank_value(self):
+        """
+        TUV20: Test that updating last name with a blank value fails.
+        """
         response = self.client.post(reverse('update_details'), {
             'first_name': 'Test',
             'last_name': '',  # Attempting to update last name with a blank value
@@ -217,6 +282,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(form.errors['last_name'], ['Last name field is required.'])
 
     def test_update_password_with_valid_field(self):
+        """
+        TUV21: Test updating the password with valid data.
+        """
         response = self.client.post(reverse('dashboard'), {
             'old_password': 'Password123!',
             'new_password1': 'NewPassword123!',
@@ -235,6 +303,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(login_response.status_code, 302)
 
     def test_change_password_mismatch(self):
+        """
+        TUV22: Test that changing the password with mismatched new passwords fails.
+        """
         response = self.client.post(reverse('dashboard'), {
             'old_password': 'Password123!',
             'new_password1': 'NewPassword123!',
@@ -250,6 +321,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(form.errors['new_password2'], ['The new passwords do not match.'])
 
     def test_change_password_with_blank_field(self):
+        """
+        TUV23: Test that changing the password with blank fields fails.
+        """
         response = self.client.post(reverse('dashboard'), {
             'old_password': '',
             'new_password1': '',
@@ -263,6 +337,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(len(form.errors), 3)
 
     def test_deactivate_account_with_checkbox_checked(self):
+        """
+        TUV24: Test deactivating the account when the checkbox is checked.
+        """
         response = self.client.post(reverse('dashboard'), {
             'deactivate_account': '1'
         })
@@ -276,6 +353,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertFalse(self.user.is_active)
 
     def test_deactivate_account_without_checkbox_checked(self):
+        """
+        TUV25: Test that deactivating the account without checking the checkbox fails.
+        """
         response = self.client.post(reverse('dashboard'), {
             'deactivate_account': '1'  # Add this to identify which form is being submitted
         })
@@ -289,6 +369,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertTrue(self.user.is_active)
 
     def test_update_description_with_valid_data(self):
+        """
+        TUV26: Test updating the user description with valid data.
+        """
         response = self.client.post(reverse('update_description'), {
             'description': 'Updated description'
         })
@@ -297,6 +380,9 @@ class DashboardViewsTestCase(TestCase):
         self.assertEqual(self.user.description, 'Updated description')
 
     def test_update_flair_with_valid_data(self):
+        """
+        TUV27: Test updating the user flair with valid data.
+        """
         response = self.client.post(reverse('update_flair'), {
             'flair': 'Updated flair'
         })
@@ -304,8 +390,10 @@ class DashboardViewsTestCase(TestCase):
         self.user.professionaluser.refresh_from_db()
         self.assertEqual(self.user.professionaluser.flair, 'Updated flair')
 
-    # Will pass once dashboard implemented
     def test_update_flair_with_blank_value(self):
+        """
+        TUV28: Test that updating the flair with a blank value fails.
+        """
         response = self.client.post(reverse('update_flair'), {
             'flair': '',  # Attempting to update flair with a blank value
         })
