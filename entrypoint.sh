@@ -28,7 +28,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=$KEY_FILE_PATH
 
 # Perform database migrations and collect static files
 python manage.py makemigrations
-python manage.py migrate
+python manage.py migrate --fake
 python manage.py collectstatic --noinput
 
 exec "$@"
