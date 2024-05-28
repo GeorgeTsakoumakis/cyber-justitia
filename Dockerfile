@@ -39,6 +39,7 @@ RUN ls -la /app
 # Free port 8000
 EXPOSE 8000
 
+# Set entry point
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Run WSGI for production
