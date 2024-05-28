@@ -73,6 +73,7 @@ PROJECT_ID="your_gcloud_project_id"
 LOCATION="your_gcloud_project_location"
 GOOGLE_CLOUD_PROJECT="your_gcloud_project_id"
 JSON_AUTH_DETAILS={insert_json_credential_key_here}
+VM_IP="your_vm_instance_external_ip_here"
 ```
 
 8. Run the following command to create a db migration:

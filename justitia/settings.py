@@ -30,6 +30,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
+vm_ip_string = os.getenv("VM_IP")
+if vm_ip_string is None:
+    vm_ip_string = "0.0.0.0"
+
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", os.getenv("VM_IP")]
 
 # Application definition
@@ -155,4 +159,4 @@ LOGIN_REDIRECT_URL = "home"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1:8000", os.getenv("VM_IP")]
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1:8000", "http://" + vm_ip_string]
