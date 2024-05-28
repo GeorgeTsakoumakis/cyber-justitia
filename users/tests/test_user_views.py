@@ -259,7 +259,8 @@ class DashboardViewsTestCase(TestCase):
 
         # Check that the form is re-rendered with errors
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'This field is required.', 3)
+        form = response.context['change_password_form']
+        self.assertEqual(len(form.errors), 3)
 
     def test_deactivate_account_with_checkbox_checked(self):
         response = self.client.post(reverse('dashboard'), {
