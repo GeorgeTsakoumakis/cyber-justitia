@@ -16,7 +16,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
 
     def test_handler_400(self):
         """
-        Test the 400 error handler.
+        TEH1: Test the 400 error handler.
         """
         response = self.client.get("/400/")
         self.assertContains(response, "Bad request", status_code=400)
@@ -30,14 +30,14 @@ class TestCustomErrorHandlers(SimpleTestCase):
 
     def test_handler_403(self):
         """
-        Test the 403 error handler.
+        TEH2: Test the 403 error handler.
         """
         response = self.client.get("/403/")
         self.assertContains(response, "Forbidden", status_code=403)
 
     def test_handler_404(self):
         """
-        Test the 404 error handler.
+        TEH3: Test the 404 error handler.
         """
         response = self.client.get("/404/")
         # Make assertions on the response here. For example:
@@ -52,7 +52,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
 
     def test_handler_500(self):
         """
-        Test the 500 error handler.
+        TEH4: Test the 500 error handler.
         """
         response = self.client.get("/500/")
         self.assertContains(response, "Internal server error", status_code=500)
@@ -66,7 +66,7 @@ class TestCustomErrorHandlers(SimpleTestCase):
 
     def test_handler_503(self):
         """
-        Test the 503 error handler.
+        TEH5: Test the 503 error handler.
         """
         response = self.client.get("/503/")
         self.assertContains(response, "Service unavailable", status_code=503)
