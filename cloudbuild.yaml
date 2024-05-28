@@ -1,0 +1,53 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args: 
+    - '-c'
+    - |
+      DB_HOST=$(gcloud secrets versions access latest --secret=DB_HOST)
+      echo "DB_HOST=$DB_HOST" >> .env
+      
+      DB_NAME=$(gcloud secrets versions access latest --secret=DB_NAME)
+      echo "DB_NAME=$DB_NAME" >> .env
+      
+      DB_PASSWORD=$(gcloud secrets versions access latest --secret=DB_PASSWORD)
+      echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+      
+      DB_PORT=$(gcloud secrets versions access latest --secret=DB_PORT)
+      echo "DB_PORT=$DB_PORT" >> .env
+      
+      DB_USER=$(gcloud secrets versions access latest --secret=DB_USER)
+      echo "DB_USER=$DB_USER" >> .env
+      
+      DEBUG=$(gcloud secrets versions access latest --secret=DEBUG)
+      echo "DEBUG=$DEBUG" >> .env
+      
+      GOOGLE_CLOUD_PROJECT=$(gcloud secrets versions access latest --secret=GOOGLE_CLOUD_PROJECT)
+      echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> .env
+      
+      JSON_AUTH_DETAILS=$(gcloud secrets versions access latest --secret=JSON_AUTH_DETAILS)
+      echo "JSON_AUTH_DETAILS=$JSON_AUTH_DETAILS" >> .env
+      
+      LOCATION=$(gcloud secrets versions access latest --secret=LOCATION)
+      echo "LOCATION=$LOCATION" >> .env
+      
+      PROJECT_ID=$(gcloud secrets versions access latest --secret=PROJECT_ID)
+      echo "PROJECT_ID=$PROJECT_ID" >> .env
+      
+      SECRET_KEY=$(gcloud secrets versions access latest --secret=SECRET_KEY)
+      echo "SECRET_KEY=$SECRET_KEY" >> .env
+      
+      VM_IP=$(gcloud secrets versions access latest --secret=VM_IP)
+      echo "VM_IP=$VM_IP" >> .env
+
+      echo "Secrets retrieved and stored in .env file"
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['compose', 'build']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['compose', 'push']
+
+images:
+- 'gcr.io/corded-cortex-394318/web:$COMMIT_SHA'
+- 'gcr.io/corded-cortex-394318/db:$COMMIT_SHA'
