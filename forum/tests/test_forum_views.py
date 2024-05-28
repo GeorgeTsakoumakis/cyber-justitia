@@ -3,7 +3,7 @@ import unittest
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from forum.models import Post, Comment
+from forum.models import Post, Comment, PostVote, CommentVote
 
 CustomUser = get_user_model()
 
@@ -92,7 +92,7 @@ class ForumViewsTestCase(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'forumpost.html')
-        self.assertContains(response, 'Comment field is required.')  # Assuming the form has this validation message
+        self.assertContains(response, 'Comment field is required.')
         self.assertFalse(Comment.objects.filter(post=self.post, user=self.user).exists())
 
     def test_create_comment_when_not_logged_in(self):
@@ -158,6 +158,58 @@ class ForumViewsTestCase(TestCase):
         self.assertRedirects(response, reverse('post_detail', kwargs={'slug': self.post.slug}))
         self.comment.refresh_from_db()
         self.assertFalse(self.comment.is_deleted)
+
+    def test_vote_post_upvote(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('vote_post', args=[self.post.slug]), {
+            'vote_type': PostVote.VoteType.UPVOTE
+        })
+        self.assertRedirects(response, reverse('post_detail', args=[self.post.slug]))
+        self.assertTrue(
+            PostVote.objects.filter(user=self.user, post=self.post, vote_type=PostVote.VoteType.UPVOTE).exists())
+
+    def test_vote_post_downvote(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('vote_post', args=[self.post.slug]), {
+            'vote_type': PostVote.VoteType.DOWNVOTE
+        })
+        self.assertRedirects(response, reverse('post_detail', args=[self.post.slug]))
+        self.assertTrue(
+            PostVote.objects.filter(user=self.user, post=self.post, vote_type=PostVote.VoteType.DOWNVOTE).exists())
+
+    def test_vote_post_invalid_form(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('vote_post', args=[self.post.slug]), {
+            'vote_type': 'invalid_vote_type'
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'errors/400.html')
+
+    def test_vote_comment_upvote(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('vote_comment', args=[self.post.slug, self.comment.comment_id]), {
+            'vote_type': CommentVote.VoteType.UPVOTE
+        })
+        self.assertRedirects(response, reverse('post_detail', args=[self.post.slug]))
+        self.assertTrue(CommentVote.objects.filter(user=self.user, comment=self.comment,
+                                                   vote_type=CommentVote.VoteType.UPVOTE).exists())
+
+    def test_vote_comment_downvote(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('vote_comment', args=[self.post.slug, self.comment.comment_id]), {
+            'vote_type': CommentVote.VoteType.DOWNVOTE
+        })
+        self.assertRedirects(response, reverse('post_detail', args=[self.post.slug]))
+        self.assertTrue(CommentVote.objects.filter(user=self.user, comment=self.comment,
+                                                   vote_type=CommentVote.VoteType.DOWNVOTE).exists())
+
+    def test_vote_comment_invalid_form(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('vote_comment', args=[self.post.slug, self.comment.comment_id]), {
+            'vote_type': 'invalid_vote_type'
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'errors/400.html')
 
 
 if __name__ == '__main__':
