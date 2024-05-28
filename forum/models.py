@@ -249,10 +249,11 @@ class PostVote(Vote):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
-        if (
-            PostVote.objects.filter(user=self.user, post=self.post).exists()
-            and not self.pk
-        ):
+        if not self.user_id:
+            raise ValidationError(_("User field is required."), code="invalid")
+        if not self.post_id:
+            raise ValidationError(_("Post field is required."), code="invalid")
+        if PostVote.objects.filter(user=self.user, post=self.post).exists() and not self.pk:
             raise ValidationError("Post Vote with this User already exists.")
         cleaned_data = super().clean()
         if not self.post_id:
