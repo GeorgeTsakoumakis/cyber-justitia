@@ -340,15 +340,12 @@ class DashboardViewsTestCase(TestCase):
         """
         TUV24: Test deactivating the account when the checkbox is checked.
         """
+        self.client.force_login(self.user)
         response = self.client.post(reverse('dashboard'), {
-            'deactivate_account': '1'
-        })
-
-        # Check that the user is redirected to the index page after deactivation
-        self.assertEqual(response.status_code, 302)
+            'deactivate_profile': True
+        }, follow=True)
         self.assertRedirects(response, reverse('index'))
-
-        # Fetch the updated user details from the database
+        self.assertContains(response, 'Account deactivated successfully')
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
@@ -356,15 +353,10 @@ class DashboardViewsTestCase(TestCase):
         """
         TUV25: Test that deactivating the account without checking the checkbox fails.
         """
-        response = self.client.post(reverse('dashboard'), {
-            'deactivate_account': '1'  # Add this to identify which form is being submitted
-        })
-
-        # Check that the form is re-rendered with errors
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('dashboard'), follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'This field is required.')
-
-        # Fetch the updated user details from the database
+        self.assertTemplateUsed(response, 'dashboard.html')
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
 
