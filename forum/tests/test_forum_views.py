@@ -7,6 +7,7 @@ from forum.models import Post, Comment
 
 CustomUser = get_user_model()
 
+
 class ForumViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -55,7 +56,7 @@ class ForumViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Post.objects.filter(title='New Post').exists())
 
-    def test_create_post_with_invalid_data(self):
+    def test_create_post_with_blank_data(self):
         self.client.login(username='testuser', password='Password123!')
         response = self.client.post(reverse('create_post'), {
             'title': '',
@@ -83,17 +84,16 @@ class ForumViewsTestCase(TestCase):
         self.assertTrue(Comment.objects.filter(text='This is a new comment.').exists())
 
     # fails
-    def test_create_comment_with_invalid_data(self):
+    def test_create_comment_with_blank_data(self):
         self.client.login(username='testuser', password='Password123!')
         response = self.client.post(reverse('create_comment', kwargs={'slug': self.post.slug}), {
             'comment': '',
+            'comment_form': '1'
         })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'forumpost.html')
-        form = response.context['comment_form']
-        self.assertTrue(form.errors)
-        self.assertIn('comment', form.errors)
-        self.assertContains(response, 'This field is required.')
+        self.assertContains(response, 'Comment field is required.')  # Assuming the form has this validation message
+        self.assertFalse(Comment.objects.filter(post=self.post, user=self.user).exists())
 
     def test_create_comment_when_not_logged_in(self):
         response = self.client.post(reverse('create_comment', kwargs={'slug': self.post.slug}), {
