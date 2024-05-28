@@ -133,5 +133,28 @@ def vote_comment(request, slug, comment_id):
             return render(request, "errors/400.html", status=400)
     return redirect("post_detail", slug=slug)
 
+
+@login_required
 def search(request):
-    return render(request, "search.html")
+    query = request.GET.get('q')
+
+    # Check if a query was provided
+    if query:
+        all_posts = Post.objects.filter(title__icontains=query).order_by('-created_at')
+    else:
+        all_posts = Post.objects.none()  # Return an empty queryset if no query
+
+    paginator = Paginator(all_posts, 5)  # Show 5 posts per page.
+    page_number = request.GET.get('page')
+
+    try:
+        # Get the posts for the requested page
+        page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        # If page_number is not an integer, deliver the first page
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # If the page is out of range, deliver the last page of results
+        page_obj = paginator.page(paginator.num_pages)
+
+    return render(request, 'search.html', {'page_obj': page_obj, 'query': query})

@@ -287,6 +287,7 @@ def update_flair(request):
             return render(request, "dashboard.html", {"update_flair_form": form})
 
 
+@login_required
 def update_education(request):
     """
     Handles the update education form submission.
@@ -315,6 +316,7 @@ def update_education(request):
             return render(request, "dashboard.html", {"update_education_form": form})
 
 
+@login_required
 def update_employments(request):
     """
     Handles the update employments form submission.

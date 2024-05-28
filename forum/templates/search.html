@@ -11,14 +11,27 @@
 {% block content %}
     <div class="row">
         <div class="col header" style="padding-bottom: 2%; justify-content: center; flex-wrap: wrap;">
-            <h1>Search: {{query}} --> {{objects|length}} Result(s) Found</h1>
+
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="button_leftarrow">
+                    <img src="{% static 'arrow.svg' %}" alt="button_leftarrow" class="button_leftarrow">
+                </a>
+            {% endif %}
+
+            <h1>Search: {{ query }} --> {{ page_obj.paginator.count }} Result(s) Found</h1>
+
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="button_rightarrow">
+                    <img src="{% static 'arrow.svg' %}" alt="button_rightarrow" class="button_rightarrow">
+                </a>
+            {% endif %}
         </div>
     </div>
 
     <div class="row">
         <div class="col">
             <div class="posts">
-                {% for post in objects %}
+                {% for post in page_obj %}
                 <div class="post-container">
                     <div class="vote-section" data-id="{{ post.post_id }}">
                         <button class="button_upvote">
@@ -28,7 +41,7 @@
                             <img src="{% static 'downvote.svg' %}" alt="downvote">
                         </button>
                     </div>
-                    <p class="upvote-count" id="upvote-count-1">{{ post.votes }}</p>
+                    <p class="upvote-count" id="upvote-count-{{ post.post_id }}">{{ post.votes }}</p>
                     <a href="{{ post.get_url }}">
                         <div class="post">
                             <h2>{{ post.title|title }}</h2>
@@ -40,9 +53,6 @@
             </div>
         </div>
     </div>
-
-    <div class="pagination" style="padding-bottom: 2%; text-align: center;">
-        <span class="step-links">
             <span class="current">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
             </span>
