@@ -77,7 +77,9 @@ class Employments(models.Model):
         verbose_name_plural = "Employments"
 
     employment_id = models.AutoField(primary_key=True)
-    prof_id = models.ForeignKey(ProfessionalUser, on_delete=models.CASCADE, related_name='employments')
+    prof_id = models.ForeignKey(
+        ProfessionalUser, on_delete=models.CASCADE, related_name="employments"
+    )
     company = models.CharField(_("company"), max_length=100, null=False)
     position = models.CharField(_("position"), max_length=100, null=False)
     start_date = models.DateField(_("start date"), null=False)
@@ -104,7 +106,9 @@ class Employments(models.Model):
         if not start_date:
             raise ValidationError(_("Start date field is required."), code="invalid")
         if start_date > datetime.date.today():
-            raise ValidationError(_("Start date cannot be in the future."), code="invalid")
+            raise ValidationError(
+                _("Start date cannot be in the future."), code="invalid"
+            )
         return start_date
 
 
@@ -115,7 +119,9 @@ class Education(models.Model):
         verbose_name_plural = "Educations"
 
     education_id = models.AutoField(primary_key=True)
-    prof_id = models.ForeignKey(ProfessionalUser, on_delete=models.CASCADE, related_name='educations')
+    prof_id = models.ForeignKey(
+        ProfessionalUser, on_delete=models.CASCADE, related_name="educations"
+    )
     school_name = models.CharField(_("institution"), max_length=100, null=False)
     degree = models.CharField(_("degree"), max_length=100, null=False)
     start_date = models.DateField(_("start date"), null=False)
@@ -142,5 +148,7 @@ class Education(models.Model):
         if not start_date:
             raise ValidationError(_("Start date field is required."), code="invalid")
         if start_date > datetime.date.today():
-            raise ValidationError(_("Start date cannot be in the future."), code="invalid")
+            raise ValidationError(
+                _("Start date cannot be in the future."), code="invalid"
+            )
         return start_date

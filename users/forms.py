@@ -72,8 +72,8 @@ class UpdateDetailsForm(forms.ModelForm):
 class UpdatePasswordForm(forms.ModelForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"autocomplete": "current-password", "autofocus": True}),
-
+            attrs={"autocomplete": "current-password", "autofocus": True}
+        ),
         error_messages={
             "required": _("Old password field is required."),
             "invalid": _("Invalid old password."),
@@ -115,7 +115,9 @@ class UpdatePasswordForm(forms.ModelForm):
 
         # Check if the new password is the same as the old password
         if old_password and new_password1 == old_password:
-            raise forms.ValidationError("The new password cannot be the same as the old password.")
+            raise forms.ValidationError(
+                "The new password cannot be the same as the old password."
+            )
 
         return new_password1
 
@@ -158,9 +160,9 @@ class UpdateFlairForm(forms.ModelForm):
         model = ProfessionalUser
         fields = ["flair"]
         error_messages = {
-            'flair': {
-                'required': "Flair field is required.",
-                'invalid': "Invalid input.",
+            "flair": {
+                "required": "Flair field is required.",
+                "invalid": "Invalid input.",
             },
         }
 
@@ -180,17 +182,17 @@ class UpdateEmploymentsFrom(forms.ModelForm):
         model = Employments
         fields = ["company", "position", "start_date", "end_date"]
         error_messages = {
-            'company': {
-                'required': "Company field is required.",
-                'invalid': "Invalid input.",
+            "company": {
+                "required": "Company field is required.",
+                "invalid": "Invalid input.",
             },
-            'position': {
-                'required': "Position field is required.",
-                'invalid': "Invalid input.",
+            "position": {
+                "required": "Position field is required.",
+                "invalid": "Invalid input.",
             },
-            'start_date': {
-                'required': "Start date field is required.",
-                'invalid': "Invalid input.",
+            "start_date": {
+                "required": "Start date field is required.",
+                "invalid": "Invalid input.",
             },
         }
 
@@ -203,19 +205,25 @@ class UpdateEmploymentsFrom(forms.ModelForm):
     def clean_employments(self):
         employments = self.cleaned_data["employments"]
         if not employments:
-            raise forms.ValidationError(_("Employments field is required."), code="invalid")
+            raise forms.ValidationError(
+                _("Employments field is required."), code="invalid"
+            )
         return employments
 
     def clean_position(self):
         position = self.cleaned_data["position"]
         if not position:
-            raise forms.ValidationError(_("Position field is required."), code="invalid")
+            raise forms.ValidationError(
+                _("Position field is required."), code="invalid"
+            )
         return position
 
     def clean_start_date(self):
         start_date = self.cleaned_data["start_date"]
         if not start_date:
-            raise forms.ValidationError(_("Start date field is required."), code="invalid")
+            raise forms.ValidationError(
+                _("Start date field is required."), code="invalid"
+            )
         return start_date
 
 
@@ -224,17 +232,17 @@ class UpdateEducationForm(forms.ModelForm):
         model = Education
         fields = ["school_name", "degree", "start_date", "end_date"]
         error_messages = {
-            'school_name': {
-                'required': "School name field is required.",
-                'invalid': "Invalid input.",
+            "school_name": {
+                "required": "School name field is required.",
+                "invalid": "Invalid input.",
             },
-            'degree': {
-                'required': "Degree field is required.",
-                'invalid': "Invalid input.",
+            "degree": {
+                "required": "Degree field is required.",
+                "invalid": "Invalid input.",
             },
-            'start_date': {
-                'required': "Start date field is required.",
-                'invalid': "Invalid input.",
+            "start_date": {
+                "required": "Start date field is required.",
+                "invalid": "Invalid input.",
             },
         }
 
@@ -266,7 +274,9 @@ class UpdateEducationForm(forms.ModelForm):
     def clean_school_name(self):
         school_name = self.cleaned_data["school_name"]
         if not school_name:
-            raise forms.ValidationError(_("School name field is required"), code="invalid")
+            raise forms.ValidationError(
+                _("School name field is required"), code="invalid"
+            )
         return school_name
 
     def clean_degree(self):

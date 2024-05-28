@@ -92,23 +92,31 @@ class Post(models.Model):
 
     def upvote(self, user):
         with transaction.atomic():
-            post_vote, created = PostVote.objects.select_for_update().get_or_create(user=user, post=self)
+            post_vote, created = PostVote.objects.select_for_update().get_or_create(
+                user=user, post=self
+            )
             if not created and post_vote.vote_type != PostVote.VoteType.UPVOTE:
                 post_vote.vote_type = PostVote.VoteType.UPVOTE
                 post_vote.save()
 
     def downvote(self, user):
         with transaction.atomic():
-            post_vote, created = PostVote.objects.select_for_update().get_or_create(user=user, post=self)
+            post_vote, created = PostVote.objects.select_for_update().get_or_create(
+                user=user, post=self
+            )
             if not created and post_vote.vote_type != PostVote.VoteType.DOWNVOTE:
                 post_vote.vote_type = PostVote.VoteType.DOWNVOTE
                 post_vote.save()
 
     def get_upvotes(self):
-        return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.UPVOTE).count()
+        return PostVote.objects.filter(
+            post=self, vote_type=PostVote.VoteType.UPVOTE
+        ).count()
 
     def get_downvotes(self):
-        return PostVote.objects.filter(post=self, vote_type=PostVote.VoteType.DOWNVOTE).count()
+        return PostVote.objects.filter(
+            post=self, vote_type=PostVote.VoteType.DOWNVOTE
+        ).count()
 
 
 class Comment(models.Model):
@@ -160,23 +168,37 @@ class Comment(models.Model):
 
     def upvote(self, user):
         with transaction.atomic():
-            comment_vote, created = CommentVote.objects.select_for_update().get_or_create(user=user, comment=self)
+            (
+                comment_vote,
+                created,
+            ) = CommentVote.objects.select_for_update().get_or_create(
+                user=user, comment=self
+            )
             if not created and comment_vote.vote_type != CommentVote.VoteType.UPVOTE:
                 comment_vote.vote_type = CommentVote.VoteType.UPVOTE
                 comment_vote.save()
 
     def downvote(self, user):
         with transaction.atomic():
-            comment_vote, created = CommentVote.objects.select_for_update().get_or_create(user=user, comment=self)
+            (
+                comment_vote,
+                created,
+            ) = CommentVote.objects.select_for_update().get_or_create(
+                user=user, comment=self
+            )
             if not created and comment_vote.vote_type != CommentVote.VoteType.DOWNVOTE:
                 comment_vote.vote_type = CommentVote.VoteType.DOWNVOTE
                 comment_vote.save()
 
     def get_upvotes(self):
-        return CommentVote.objects.filter(comment=self, vote_type=CommentVote.VoteType.UPVOTE).count()
+        return CommentVote.objects.filter(
+            comment=self, vote_type=CommentVote.VoteType.UPVOTE
+        ).count()
 
     def get_downvotes(self):
-        return CommentVote.objects.filter(comment=self, vote_type=CommentVote.VoteType.DOWNVOTE).count()
+        return CommentVote.objects.filter(
+            comment=self, vote_type=CommentVote.VoteType.DOWNVOTE
+        ).count()
 
 
 class Vote(models.Model):
@@ -227,7 +249,10 @@ class PostVote(Vote):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
-        if PostVote.objects.filter(user=self.user, post=self.post).exists() and not self.pk:
+        if (
+            PostVote.objects.filter(user=self.user, post=self.post).exists()
+            and not self.pk
+        ):
             raise ValidationError("Post Vote with this User already exists.")
 
     def save(self, *args, **kwargs):
@@ -252,7 +277,10 @@ class CommentVote(Vote):
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
-        if CommentVote.objects.filter(user=self.user, comment=self.comment).exists() and not self.pk:
+        if (
+            CommentVote.objects.filter(user=self.user, comment=self.comment).exists()
+            and not self.pk
+        ):
             raise ValidationError("Comment Vote with this User already exists.")
 
     def save(self, *args, **kwargs):

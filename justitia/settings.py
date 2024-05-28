@@ -86,7 +86,11 @@ ROOT_URLCONF = "justitia.urls"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # Postgres
-if "test" in sys.argv or os.getenv("GITHUB_TEST") == "True" or os.getenv("EXPERIMENTAL") == "True":
+if (
+    "test" in sys.argv
+    or os.getenv("GITHUB_TEST") == "True"
+    or os.getenv("EXPERIMENTAL") == "True"
+):
     print("Using SQLite for testing")
     DATABASES = {
         "default": {
@@ -146,7 +150,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 # if DEBUG:
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # else:
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
@@ -159,4 +163,8 @@ LOGIN_REDIRECT_URL = "home"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1:8000", "http://" + vm_ip_string]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1:8000",
+    "http://" + vm_ip_string,
+]

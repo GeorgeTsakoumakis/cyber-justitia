@@ -342,6 +342,7 @@ def update_employments(request):
         else:
             return render(request, "dashboard.html", {"update_employments_form": form})
 
+
 @login_required
 def logout(request):
     """Logs out the user"""

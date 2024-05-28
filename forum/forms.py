@@ -91,10 +91,7 @@ class VoteForm(forms.Form):
     Form for voting on a post or comment. It includes a field for the vote type.
     """
 
-    VOTE_CHOICES = [
-        ('up', 'Upvote'),
-        ('down', 'Downvote')
-    ]
+    VOTE_CHOICES = [("up", "Upvote"), ("down", "Downvote")]
 
     vote_type = forms.ChoiceField(
         label=_("Vote"),
@@ -107,7 +104,7 @@ class VoteForm(forms.Form):
 
     class Meta:
         abstract = True
-        fields = ['vote_type']
+        fields = ["vote_type"]
 
     def clean_vote_type(self):
         """
@@ -127,7 +124,7 @@ class PostVoteForm(VoteForm):
 
     class Meta:
         model = PostVote
-        fields = ['vote_type']
+        fields = ["vote_type"]
 
 
 class CommentVoteForm(VoteForm):
@@ -137,4 +134,4 @@ class CommentVoteForm(VoteForm):
 
     class Meta:
         model = CommentVote
-        fields = ['vote_type']
+        fields = ["vote_type"]
