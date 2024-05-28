@@ -5,7 +5,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
-from ..models import ProfessionalUser
+from users.models import ProfessionalUser, Education
+import datetime
 
 # Get the CustomUser model
 CustomUser = get_user_model()
@@ -312,6 +313,122 @@ class ProfessionalUserModelTest(TestCase):
         self.user.delete()
         with self.assertRaises(ProfessionalUser.DoesNotExist):
             ProfessionalUser.objects.get(pk=professional_user.prof_id)
+
+
+class EducationModelTest(TestCase):
+
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username='testuser',
+            password='Password123!',
+            email='testuser@example.com',
+            first_name='Test',
+            last_name='User'
+        )
+        self.professional_user = ProfessionalUser.objects.create(
+            user=self.user,
+            flair='Initial Flair'
+        )
+
+    def test_valid_education_creation(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='Test University',
+            degree='Bachelor of Science',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        education.full_clean()  # Should not raise any errors
+
+    def test_school_name_cannot_be_blank(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='',
+            degree='Bachelor of Science',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            education.full_clean()
+        self.assertIn('school_name', context.exception.message_dict)
+
+    def test_degree_cannot_be_blank(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='Test University',
+            degree='',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            education.full_clean()
+        self.assertIn('degree', context.exception.message_dict)
+
+    def test_start_date_cannot_be_blank(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='Test University',
+            degree='Bachelor of Science',
+            start_date=None,
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            education.full_clean()
+        self.assertIn('start_date', context.exception.message_dict)
+
+    def test_school_name_cannot_exceed_max_length(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='A' * 101,
+            degree='Bachelor of Science',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            education.full_clean()
+        self.assertIn('school_name', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['school_name'], ['Ensure this value has at most 100 characters (it has 101).'])
+
+    def test_degree_cannot_exceed_max_length(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='Test University',
+            degree='A' * 101,
+            start_date=datetime.date(2015, 9, 1),
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            education.full_clean()
+        self.assertIn('degree', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['degree'], ['Ensure this value has at most 100 characters (it has 101).'])
+
+    def test_start_date_cannot_be_in_future(self):
+        future_date = datetime.date.today() + datetime.timedelta(days=100)
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='Test University',
+            degree='Bachelor of Science',
+            start_date=future_date,
+            end_date=datetime.date(2019, 6, 30)
+        )
+        with self.assertRaises(ValidationError) as context:
+            education.full_clean()
+        self.assertIn('start_date', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['start_date'], ['Start date cannot be in the future.'])
+
+    def test_end_date_can_be_blank(self):
+        education = Education(
+            prof_id=self.professional_user,
+            school_name='Test University',
+            degree='Bachelor of Science',
+            start_date=datetime.date(2015, 9, 1),
+            end_date=None
+        )
+        try:
+            education.full_clean()  # Should not raise any errors
+        except ValidationError:
+            self.fail('This should not happen.')
+
 
 
 if __name__ == '__main__':
