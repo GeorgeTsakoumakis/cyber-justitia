@@ -44,6 +44,14 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    def clean(self):
+        # Updated clean function because default Django doesn't recognize whitespace as blank
+        super().clean()
+        if not self.first_name.strip():
+            raise ValidationError({'first_name': "First name cannot be blank or whitespace only."})
+        if not self.last_name.strip():
+            raise ValidationError({'last_name': "Last name cannot be blank or whitespace only."})
+
     @property
     def is_professional(self):
         """
