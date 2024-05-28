@@ -76,6 +76,8 @@ JSON_AUTH_DETAILS={insert_json_credential_key_here}
 VM_IP="your_vm_instance_external_ip_here"
 ```
 
+If you are running locally this project locally, you won't need to input a VM IP as this is added for production uses only.
+
 8. Run the following command to create a db migration:
 
 ```bash
