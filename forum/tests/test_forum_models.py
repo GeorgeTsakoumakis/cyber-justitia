@@ -162,7 +162,7 @@ class PostVoteModelTests(TestCase):
         postvote = PostVote.objects.create(
             post=self.post,
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         self.assertEqual(postvote.user, self.user)
         self.assertEqual(postvote.post, self.post)
@@ -171,7 +171,7 @@ class PostVoteModelTests(TestCase):
     def test_create_postvote_without_user(self):
         postvote = PostVote(
             post=self.post,
-            vote_type=True
+            vote_type="up"
         )
         with self.assertRaises(ValidationError):
             postvote.full_clean()
@@ -179,7 +179,7 @@ class PostVoteModelTests(TestCase):
     def test_create_postvote_without_post(self):
         postvote = PostVote(
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         with self.assertRaises(ValidationError):
             postvote.full_clean()
@@ -188,12 +188,12 @@ class PostVoteModelTests(TestCase):
         PostVote.objects.create(
             post=self.post,
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         duplicate_postvote = PostVote(
             post=self.post,
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         with self.assertRaises(ValidationError):
             duplicate_postvote.full_clean()
@@ -221,7 +221,7 @@ class CommentVoteModelTests(TestCase):
         commentvote = CommentVote.objects.create(
             comment=self.comment,
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         self.assertEqual(commentvote.user, self.user)
         self.assertEqual(commentvote.comment, self.comment)
@@ -230,7 +230,7 @@ class CommentVoteModelTests(TestCase):
     def test_create_commentvote_without_user(self):
         commentvote = CommentVote(
             comment=self.comment,
-            vote_type=True
+            vote_type="up"
         )
         with self.assertRaises(ValidationError):
             commentvote.full_clean()
@@ -238,7 +238,7 @@ class CommentVoteModelTests(TestCase):
     def test_create_commentvote_without_comment(self):
         commentvote = CommentVote(
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         with self.assertRaises(ValidationError):
             commentvote.full_clean()
@@ -247,12 +247,12 @@ class CommentVoteModelTests(TestCase):
         CommentVote.objects.create(
             comment=self.comment,
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         duplicate_commentvote = CommentVote(
             comment=self.comment,
             user=self.user,
-            vote_type=True
+            vote_type="up"
         )
         with self.assertRaises(ValidationError):
             duplicate_commentvote.full_clean()
