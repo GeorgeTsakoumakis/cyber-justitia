@@ -18,7 +18,7 @@ Names are listed in alphabetical order by last name.
 
 ### Project Description
 
-Fill later
+Cyber Justitia is a web application designed to provide free and informal legal advice to users through its two main services: the AI chatbot, which can be used to ask legal questions and receive information suited to the users' needs, and the forums, allowing users to post their legal enquiries publicly and have real legal professionals respond with general advice. Inspired by the U.N. Sustainable Development Goal #16: Peace, Justice and Strong Institutions, Cyber Justitia was designed to provide users the means to communicate their legal troubles and get started on sorting them out, pro bono. Cyber Justitia is **not** designed to replace proper legal counsel, instead it gives users way to seek options and enquire on some of the more verbose aspects of law. Designed in Django.
 
 ### Installation Instructions
 
@@ -76,7 +76,7 @@ JSON_AUTH_DETAILS={insert_json_credential_key_here}
 VM_IP="your_vm_instance_external_ip_here"
 ```
 
-If you are running locally this project locally, you won't need to input a VM IP as this is added for production uses only.
+If you are running locally this project locally, you won't need to input a VM IP as this is added for production uses only. If you want to deploy the app, make sure the external IP of your hosted VM is added to your environment variables as shown above.
 
 8. Run the following command to create a db migration:
 
@@ -151,9 +151,9 @@ This will generate a directory called `htmlcov` which contains the HTML files fo
 
 ### Building with Docker
 
-A Dockerfile, docker-compose.yml, entrypoint and .dockerignore file have been provided for local app deployment, as no full-scale deployment has been planned for Cyber Justitia due to time constraints.
+A Dockerfile, docker-compose.yml, entrypoint and .dockerignore file have been provided for local app deployment, as no full-scale deployment has been planned for Cyber Justitia due to time constraints. The docker-compose.yml will build build containers for both the web application and the external database, allowing for seemless communication between the two.
 
-To begin, make sure that you are signed in to Docker Hub by running the following command:
+To begin, make sure that the Docker daemon is running and you are signed in to Docker Hub by running the following command:
 
 ```bash
 docker login
@@ -161,13 +161,13 @@ docker login
 
 Follow the instructions and input your credentials.
 
-If you've done that or are already logged in, you can now build the Docker  image. In order to build and run the containers, run the following command:
+If you've done that or are already logged in, you can now build the application. In order to build and run the containers, run the following command:
 
 ```bash
 docker-compose up
 ```
 
-You can now visit and use Cyber Justitia using the following address:
+You can now visit and use Cyber Justitia using the following address (if you're running locally):
 
 ```url
 127.0.0.1:8000
