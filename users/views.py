@@ -1,9 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
+
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.views.defaults import page_not_found
 from chatbot.models import Session
@@ -15,7 +18,7 @@ from .forms import (
     UpdateDescriptionForm,
     UpdateFlairForm,
     UpdateEducationForm,
-    UpdateEmploymentsFrom,
+    UpdateEmploymentsFrom, BanForm,
 )
 
 
@@ -135,24 +138,28 @@ def dashboard(request):
     Depending on the action in the POST request, different functions are called
     to handle the respective form submissions (update details, change password,
     deactivate account, update description)."""
+
     # Initialize forms with the current user's data
-    professional_user = ProfessionalUser.objects.get(user=request.user)
-    try:
-        education = Education.objects.get(prof_id=professional_user)
-    except Education.DoesNotExist:
-        education = None
-    try:
-        employments = Employments.objects.get(prof_id=professional_user)
-    except Employments.DoesNotExist:
-        employments = None
+    user = CustomUser.objects.get(username=request.user.username)
+    if user.is_professional:
+        professional_user = ProfessionalUser.objects.get(user=request.user)
+        try:
+            education = Education.objects.get(prof_id=professional_user)
+        except Education.DoesNotExist:
+            education = None
+        try:
+            employments = Employments.objects.get(prof_id=professional_user)
+        except Employments.DoesNotExist:
+            employments = None
+
+        update_education_form = UpdateEducationForm(instance=education)
+        update_employments_form = UpdateEmploymentsFrom(instance=employments)
 
     update_details_form = UpdateDetailsForm(instance=request.user)
     update_password_form = UpdatePasswordForm(instance=request.user)
     deactivate_account_form = DeactivateAccountForm(instance=request.user)
     update_description_form = UpdateDescriptionForm(instance=request.user)
     update_flair_form = UpdateFlairForm(instance=request.user)
-    update_education_form = UpdateEducationForm(instance=education)
-    update_employments_form = UpdateEmploymentsFrom(instance=employments)
 
     if request.method == "POST":
         if "update_details" in request.POST:
@@ -171,15 +178,24 @@ def dashboard(request):
             return update_employments(request)
 
     # Pass the forms to the context for rendering in the template
-    context = {
-        "update_details_form": update_details_form,
-        "update_password_form": update_password_form,
-        "deactivate_account": deactivate_account_form,
-        "update_description_form": update_description_form,
-        "update_flair_form": update_flair_form,
-        "update_education_form": update_education_form,
-        "update_employments_form": update_employments_form,
-    }
+    if user.is_professional:
+        context = {
+            "update_details_form": update_details_form,
+            "update_password_form": update_password_form,
+            "deactivate_account": deactivate_account_form,
+            "update_description_form": update_description_form,
+            "update_flair_form": update_flair_form,
+            "update_education_form": update_education_form,
+            "update_employments_form": update_employments_form,
+        }
+    else:
+        context = {
+            "update_details_form": update_details_form,
+            "update_password_form": update_password_form,
+            "deactivate_account": deactivate_account_form,
+            "update_description_form": update_description_form,
+            "update_flair_form": update_flair_form,
+        }
 
     return render(request, "dashboard.html", context)
 
@@ -373,6 +389,33 @@ def profile(request, username):
         "recent_comments": recent_comments,
     }
     return render(request, "user_profile.html", context)
+
+
+@login_required
+def ban_user(request, username):
+    """
+    Bans a user from the platform. Only superusers can ban users.
+    Banned users cannot access any part of the platform, including the chatbot and forum.
+    :param request: Request object
+    :param username: Username of the user to ban
+    """
+    if request.user.is_superuser:
+        selected_user = get_object_or_404(CustomUser, username=username)
+        if request.method == "POST":
+            form = BanForm(request.POST, instance=selected_user)
+            if form.is_valid():
+                selected_user.is_banned = True
+                selected_user.reason_banned = form.cleaned_data["reason_banned"]
+                selected_user.save()
+                messages.success(request, f"User {selected_user.username} has been banned")
+                return redirect("profile", username=selected_user.username)
+        else:
+            form = BanForm(instance=selected_user)
+        context = {"form": form, "selected_user": selected_user}
+        return render(request, "banpage.html", context)
+    else:
+        # Return 403 Forbidden
+        return render(request, "errors/403.html", status=403)
 
 
 def codeofconduct(request):

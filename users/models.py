@@ -22,6 +22,14 @@ class CustomUser(AbstractUser):
     )
     is_banned = models.BooleanField(default=False)
 
+    reason_banned = models.CharField(
+        _("reason for getting banned"),
+        max_length=150,
+        null=True,
+        blank=True,
+        help_text="Reason for banning this user",
+    )
+
     email = models.EmailField(
         _("email address"), null=False, blank=False, unique=True, max_length=320
     )
@@ -60,13 +68,6 @@ class ProfessionalUser(models.Model):
         max_length=100,
         null=False,
         help_text="Short text that best describes your professional skills",
-    )
-    reason_banned = models.CharField(
-        _("reason for getting banned"),
-        max_length=150,
-        null=True,
-        blank=True,
-        help_text="Reason for banning this professional user",
     )
 
 

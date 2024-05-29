@@ -8,6 +8,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
     <br>
     <div class="row">
         <div class="col">
@@ -27,7 +35,7 @@
                 {% if viewed_user.is_professional %}
                     <p>{{ viewed_user.flair }}</p>
                 {% endif %}
-                {% if user.is_superuser %}
+                {% if viewed_user.is_superuser %}
                     <form action="/admin" style="text-align: right">
                         <input id="gotodash" type="submit" value="Admin" class="btn btn-primary btn-lg">
                     </form>
@@ -108,7 +116,7 @@
                 <p style="font-style: italic; color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">
                     No recent comments.
                 </p>
-            {% endfor %}            
+            {% endfor %}
             </div>
             <br>
         </div>

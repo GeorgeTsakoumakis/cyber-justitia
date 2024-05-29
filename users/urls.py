@@ -15,6 +15,7 @@ urlpatterns = [
     path("update_flair/", views.update_flair, name="update_flair"),
     path("update_education/", views.update_education, name="update_education"),
     path("update_employments/", views.update_employments, name="update_employments"),
+    path("ban/<str:username>/", views.ban_user, name="ban_user"),
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
     ),

@@ -126,8 +126,8 @@
                     <div class="input-group input-group-lg mb-3">
                     <textarea placeholder="Description" class="form-control"
                               id="{{ update_description_form.description.id_for_label }}"
-                              name="description">{{ user.description }}
-                    </textarea>
+                              name="description">{% if update_description_form.description.value %}
+                        {{ update_description_form.description.value }}{% endif %}</textarea>
                         {% if update_description_form.description.errors %}
                             <div class="text-danger">
                                 {{ update_description_form.description.errors }}
@@ -188,7 +188,7 @@
                         {% csrf_token %}
                         <input name="flair" type="text" class="form-control" placeholder="Enter flair"
                                value="{{ request.user.professionaluser.flair }}">
-                        
+
                         {% for field, errors in update_flair_form.errors.items %}
                             {% for error in errors %}
                                 <p>{{ error }}</p>
@@ -257,12 +257,12 @@
                                     </div>
                                 {% endif %}
                             </div>
-                               <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="position_inprogress"
-                                           name="position_inprogress" onchange="toggleEndedWorkInput()">
-                                    <label style="color: white" class="form-check-label" for="position_inprogress">In
-                                        Progress</label>
-                                </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="position_inprogress"
+                                       name="position_inprogress" onchange="toggleEndedWorkInput()">
+                                <label style="color: white" class="form-check-label" for="position_inprogress">In
+                                    Progress</label>
+                            </div>
                             <button name="update_education" type="submit" class="btn btn-primary">Save changes</button>
                         </form>
                         <form action="{% url 'dashboard' %}" method="post">
@@ -281,52 +281,53 @@
                                        id="{{ update_employments_form.company.id_for_label }}"
                                        name="{{ update_employments_form.company.html_name }}"
                                        value="{% if update_employments_form.company.value %} {{ update_employments_form.company.value }} {% endif %}">
-                                   {% if update_employments_form.company.errors %}
-                                        <div class="text-danger">
-                                            {{ update_employments_form.company.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group">
-                                    <input placeholder="Position" type="text" class="form-control mb-2"
-                                           id="{{ update_employments_form.position.id_for_label }}"
-                                           name="{{ update_employments_form.position.html_name }}"
-                                           value="{% if update_employments_form.position.value %} {{ update_employments_form.position.value }} {% endif %}">
-                                    {% if update_employments_form.position.errors %}
-                                        <div class="text-danger">
-                                            {{ update_employments_form.position.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group">
-                                    <input placeholder="Start Date" type="date" class="form-control mb-2"
-                                           id="{{ update_employments_form.start_date.id_for_label }}"
-                                           name="{{ update_employments_form.start_date.html_name }}"
-                                           value="{{ update_employments_form.start_date.value|date:'Y-m-d' }}">
-                                     {% if update_employments_form.start_date.errors %}
-                                        <div class="text-danger">
-                                            {{ update_employments_form.start_date.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group">
-                                    <input placeholder="End Date" type="date" class="form-control mb-2"
-                                           id="{{ update_employments_form.end_date.id_for_label }}"
-                                           name="{{ update_employments_form.end_date.html_name }}"
-                                           value="{{ update_employments_form.end_date.value|date:'Y-m-d' }}">
-                                    {% if update_employments_form.end_date.errors %}
-                                        <div class="text-danger">
-                                            {{ update_employments_form.end_date.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
+                                {% if update_employments_form.company.errors %}
+                                    <div class="text-danger">
+                                        {{ update_employments_form.company.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <input placeholder="Position" type="text" class="form-control mb-2"
+                                       id="{{ update_employments_form.position.id_for_label }}"
+                                       name="{{ update_employments_form.position.html_name }}"
+                                       value="{% if update_employments_form.position.value %} {{ update_employments_form.position.value }} {% endif %}">
+                                {% if update_employments_form.position.errors %}
+                                    <div class="text-danger">
+                                        {{ update_employments_form.position.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <input placeholder="Start Date" type="date" class="form-control mb-2"
+                                       id="{{ update_employments_form.start_date.id_for_label }}"
+                                       name="{{ update_employments_form.start_date.html_name }}"
+                                       value="{{ update_employments_form.start_date.value|date:'Y-m-d' }}">
+                                {% if update_employments_form.start_date.errors %}
+                                    <div class="text-danger">
+                                        {{ update_employments_form.start_date.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <input placeholder="End Date" type="date" class="form-control mb-2"
+                                       id="{{ update_employments_form.end_date.id_for_label }}"
+                                       name="{{ update_employments_form.end_date.html_name }}"
+                                       value="{{ update_employments_form.end_date.value|date:'Y-m-d' }}">
+                                {% if update_employments_form.end_date.errors %}
+                                    <div class="text-danger">
+                                        {{ update_employments_form.end_date.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="position_inprogress"
                                        name="position_inprogress" onchange="toggleEndedWorkInput()">
                                 <label style="color: white" class="form-check-label" for="position_inprogress">In
                                     Progress</label>
                             </div>
-                            <button name="update_employments" type="submit" class="btn btn-primary">Save changes</button>
+                            <button name="update_employments" type="submit" class="btn btn-primary">Save changes
+                            </button>
                         </form>
                     </div>
                 </div>

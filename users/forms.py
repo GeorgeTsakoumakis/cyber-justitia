@@ -290,3 +290,55 @@ class UpdateEducationForm(forms.ModelForm):
         if not start_date:
             raise forms.ValidationError(_("Start date is required"), code="invalid")
         return start_date
+
+
+class BanForm(forms.ModelForm):
+    """
+    Form for banning a user.
+    Renders a textarea for the reason for banning the user and a checkbox to confirm the ban.
+    """
+    class Meta:
+        model = CustomUser
+        fields = ["reason_banned"]
+        widgets = {
+            "reason_banned": forms.Textarea(attrs={"placeholder": "Reason for banning"}),
+        }
+        error_messages = {
+            "reason_banned": {
+                "required": "Reason field is required.",
+                "invalid": "Invalid input.",
+            },
+        }
+
+    confirm_ban = forms.BooleanField(
+        required=True,
+        label="Confirm ban",
+        error_messages={
+            "required": "You must confirm you want to ban the user.",
+        },
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        reason_banned = cleaned_data.get('reason_banned')
+
+        if not reason_banned:
+            self.add_error('reason_banned', _('You must provide a reason for banning the user.'))
+
+        # Can't ban an already banned user
+        if self.instance.is_banned:
+            self.add_error(None, 'This user is already banned.')
+
+        # Can't ban an admin
+        if self.instance.is_superuser:
+            self.add_error(None, 'You can\'t ban an admin.')
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if self.cleaned_data.get('confirm_ban'):
+            user.is_banned = True
+            if commit:
+                user.save()
+        return user

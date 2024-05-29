@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    {% else %}
+        {{ form.reason_banned.errors }}
+        {{ form.confirm_ban.errors }}
+    {% endif %}
+
+
+    <div class="secondary-box" style="text-align: center;">
+        <h1 style="color: white; padding-bottom: 2%;">Ban {{ selected_user.username }}?</h1>
+
+        <form method="POST" action="{% url 'ban_user' selected_user.username %}">
+            {% csrf_token %}
+
+            <!-- Reason Banned Field -->
+            <div>
+                <textarea class="form-control" id="{{ form.reason_banned.id_for_label }}"
+                          name="{{ form.reason_banned.html_name }}" rows="3"
+                          placeholder="Reason for banning this user..."></textarea>
+            </div>
+
+            <!-- Confirm Ban Checkbox Field -->
+            <div class="form-check" style="padding-bottom: 3%">
+                <input class="form-check-input" type="checkbox" id="{{ form.confirm_ban.id_for_label }}"
+                       name="{{ form.confirm_ban.html_name }}" value="true" {% if form.confirm_ban.value %} checked {% endif %}>
+                <label class="form-check-label" for="{{ form.confirm_ban.id_for_label }}" style="color: white">
+                    Are you sure you want to ban {{ selected_user.username }}?
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-secondary btn-lg"
+                    style="align-items: center; background-color: #F59999; width: 16vw; font-size: 32pt; font-weight: bold; font-family: 'Roboto'">
+                BAN!
+            </button>
+        </form>
+
+
+    </div>
+    <br>
+{% endblock %}
