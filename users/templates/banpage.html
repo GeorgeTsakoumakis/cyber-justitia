@@ -4,13 +4,14 @@
 {% block content %}
     {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
-            <li>{{ error }}</li>
+        <div class="text-danger">
+            {{ error }}
+        </div>  
         {% endfor %}
     {% else %}
         {{ form.reason_banned.errors }}
         {{ form.confirm_ban.errors }}
     {% endif %}
-
 
     <div class="secondary-box" style="text-align: center;">
         <h1 style="color: white; padding-bottom: 2%;">Ban {{ selected_user.username }}?</h1>
@@ -39,7 +40,6 @@
                 BAN!
             </button>
         </form>
-
 
     </div>
     <br>

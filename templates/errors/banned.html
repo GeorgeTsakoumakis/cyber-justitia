@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+<title>You have been banned. - Cyber Justitia</title>
+
+{% block content %}
+    <div class="warning-icon">
+        <img src="../../static/error.svg">
+    </div>
+    <div class="warning-icon-text" style="letter-spacing: 1.3rem;">
+        BANNED
+    </div>
+    <p style="color: black; font-size: 1.5vw">You have been banned for the following reason: {{ user.reason_banned }}</p>
+    <p style="color: black; font-size: 1.1vw">If you believe this is a mistake, please contact our administrators and make an appeal.</p>
+    </div>
+    <br>
+{% endblock %}
