@@ -47,6 +47,9 @@ class UserProfilePageTest(StaticLiveServerTestCase):
         assert current_url.startswith(expected_base_url), f"Unexpected URL: {current_url}"
 
     def test_user_profile_page(self):
+        """
+        TFE3: Test profile page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()

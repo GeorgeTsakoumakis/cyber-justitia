@@ -36,6 +36,9 @@ class BanUserPageTest(StaticLiveServerTestCase):
         assert current_url.startswith(expected_base_url), f"Unexpected URL: {current_url}"
 
     def test_ban_user_page(self):
+        """
+        TFE5: Test ban page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()

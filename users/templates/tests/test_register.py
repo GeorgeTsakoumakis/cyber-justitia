@@ -6,6 +6,9 @@ from django.urls import reverse
 class RegisterPageTest(StaticLiveServerTestCase):
 
     def test_register_page(self):
+        """
+        TFE2: Test registration page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()

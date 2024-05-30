@@ -27,6 +27,9 @@ class DashboardPageTest(StaticLiveServerTestCase):
         assert current_url.startswith(expected_base_url), f"Unexpected URL: {current_url}"
 
     def test_dashboard_page(self):
+        """
+        TFE4: Test dashboard page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()

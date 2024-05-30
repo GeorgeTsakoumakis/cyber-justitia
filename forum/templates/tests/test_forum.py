@@ -36,6 +36,9 @@ class ForumPageTest(StaticLiveServerTestCase):
         page.wait_for_load_state('networkidle')
 
     def test_forum_page(self):
+        """
+        TFE6: Test forum page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()

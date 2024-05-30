@@ -16,6 +16,9 @@ class LoginPageTest(StaticLiveServerTestCase):
         )
 
     def test_login_page(self):
+        """
+        TFE1: Test login page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()

@@ -4,6 +4,7 @@ from playwright.sync_api import sync_playwright
 from django.contrib.auth import get_user_model
 from forum.models import Post, Comment
 
+
 class PostDetailPageTest(StaticLiveServerTestCase):
 
     def setUp(self):
@@ -34,6 +35,9 @@ class PostDetailPageTest(StaticLiveServerTestCase):
         page.wait_for_load_state('networkidle')
 
     def test_post_detail_page(self):
+        """
+        TFE7: Test forum post page.
+        """
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
@@ -48,7 +52,6 @@ class PostDetailPageTest(StaticLiveServerTestCase):
             assert page.is_visible(f"text={self.post.title}")
             assert page.is_visible(f"text={self.post.text}")
             assert page.is_visible(f"text={self.comment.text}")
-
 
             page.close()
             browser.close()
