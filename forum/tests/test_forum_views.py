@@ -91,6 +91,22 @@ class ForumViewsTestCase(TestCase):
         self.assertIn('title', form.errors)
         self.assertIn('text', form.errors)
 
+    def test_create_post_with_whitespace(self):
+        """
+        TFV23: Test creating a post with whitespace data.
+        """
+        self.client.login(username='testuser', password='Password123!')
+        response = self.client.post(reverse('create_post'), {
+            'title': '   ',
+            'text': '   ',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'postcreation.html')
+        form = response.context['form']
+        self.assertTrue(form.errors)
+        self.assertIn('title', form.errors)
+        self.assertIn('text', form.errors)
+
     def test_create_post_when_not_logged_in(self):
         """
         TFV7: Test creating a post when not logged in.
