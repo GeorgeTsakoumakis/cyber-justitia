@@ -70,16 +70,38 @@ def create_comment(request, slug):
     # Don't 404, redirect to login
     if not request.user.is_authenticated:
         return redirect("login")
+
+    # Context variables
     post = get_object_or_404(Post, slug=slug)
+    comments = post.get_comments()
+    post_vote_form = PostVoteForm()
+    comment_vote_form = CommentVoteForm()
+
     if request.method == "POST":
         form = CreateCommentForm(request.POST)
         if form.is_valid():
             comment = form.cleaned_data["comment"]
             Comment.objects.create(user=request.user, post=post, text=comment)
             return redirect("post_detail", slug=slug)
+        else:
+            context = {
+                "post": post,
+                "comments": comments,
+                "comment_form": form,
+                "post_vote_form": post_vote_form,
+                "comment_vote_form": comment_vote_form,
+            }
+            return render(request, "forumpost.html", context)
     else:
         form = CreateCommentForm()
-        return render(request, "forumpost.html", {"comment_form": form})
+        context = {
+            "post": post,
+            "comments": comments,
+            "comment_form": form,
+            "post_vote_form": post_vote_form,
+            "comment_vote_form": comment_vote_form,
+        }
+        return render(request, "forumpost.html", context)
 
 
 @login_required

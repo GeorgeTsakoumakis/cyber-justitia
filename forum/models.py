@@ -139,10 +139,10 @@ class Comment(models.Model):
     def clean(self):
         cleaned_data = super().clean()
         if not self.text:
-            raise ValidationError(_("Text field is required."), code="invalid")
+            raise ValidationError(_("Comment field is required."), code="invalid")
         if len(self.text) > 40000:
             raise ValidationError(
-                _("Text cannot exceed 40000 characters."), code="invalid"
+                _("Comment cannot exceed 40000 characters."), code="invalid"
             )
         return cleaned_data
 

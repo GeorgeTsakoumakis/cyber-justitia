@@ -79,6 +79,10 @@ class CreateCommentForm(forms.Form):
         comment = self.cleaned_data["comment"]
         if not comment:
             raise forms.ValidationError(_("Comment field is required."), code="invalid")
+        if not comment.strip():
+            raise forms.ValidationError(
+                _("Comment cannot be empty or whitespace only."), code="invalid"
+            )
         if len(comment) > 40000:
             raise forms.ValidationError(
                 _("Comment cannot exceed 40000 characters."), code="invalid"

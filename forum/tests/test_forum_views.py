@@ -106,24 +106,24 @@ class ForumViewsTestCase(TestCase):
         self.client.login(username='testuser', password='Password123!')
         response = self.client.post(reverse('create_comment', kwargs={'slug': self.post.slug}), {
             'comment': 'This is a new comment.',
-            'comment_form': '1'
         })
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Comment.objects.filter(text='This is a new comment.').exists())
 
     def test_create_comment_with_blank_data(self):
         """
-        TFV9: Test creating a comment with blank data.
+        TFV9: Test creating a comment with blank data. Test should not allow blank comments.
         """
         self.client.login(username='testuser', password='Password123!')
         response = self.client.post(reverse('create_comment', kwargs={'slug': self.post.slug}), {
             'comment': '',
-            'comment_form': '1'
         })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'forumpost.html')
-        self.assertContains(response, 'Comment field is required.')
-        self.assertFalse(Comment.objects.filter(post=self.post, user=self.user, text='').exists())
+        form = response.context['comment_form']
+        self.assertTrue(form.errors)
+        self.assertIn('comment', form.errors)
+        self.assertFalse(Comment.objects.filter(text='').exists())
 
     def test_create_comment_when_not_logged_in(self):
         """
