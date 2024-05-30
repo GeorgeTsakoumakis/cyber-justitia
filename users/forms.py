@@ -1,3 +1,4 @@
+from datetime import timezone
 from django import forms
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.utils.translation import gettext_lazy as _
@@ -224,6 +225,10 @@ class UpdateEmploymentsFrom(forms.ModelForm):
             raise forms.ValidationError(
                 _("Start date field is required."), code="invalid"
             )
+        if start_date > timezone.now().date():
+                raise forms.ValidationError(
+                    _("Start date cannot be set in the future."), code="invalid"
+                )
         return start_date
 
 
@@ -289,6 +294,10 @@ class UpdateEducationForm(forms.ModelForm):
         start_date = self.cleaned_data["start_date"]
         if not start_date:
             raise forms.ValidationError(_("Start date is required"), code="invalid")
+        if start_date > timezone.now().date():
+                raise forms.ValidationError(
+                    _("Start date cannot be set in the future."), code="invalid"
+                )
         return start_date
 
 

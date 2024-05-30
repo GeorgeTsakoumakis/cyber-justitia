@@ -12,7 +12,9 @@
         {% if messages %}
         <ul>
             {% for message in messages %}
-                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+            <div class="custom-text-danger">
+                {{ message }}
+            </div>
             {% endfor %}
         </ul>
     {% endif %}
@@ -34,7 +36,7 @@
                                name="{{ update_details_form.first_name.html_name }}"
                                value="{{ update_details_form.first_name.value }}">
                         {% if update_details_form.first_name.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ update_details_form.first_name.errors }}
                             </div>
                         {% endif %}
@@ -49,7 +51,7 @@
                                name="{{ update_details_form.last_name.html_name }}"
                                value="{{ update_details_form.last_name.value }}">
                         {% if update_details_form.last_name.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ update_details_form.last_name.errors }}
                             </div>
                         {% endif %}
@@ -64,7 +66,7 @@
                                name="{{ update_details_form.email.html_name }}"
                                value="{{ update_details_form.email.value }}">
                         {% if update_details_form.email.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ update_details_form.email.errors }}
                             </div>
                         {% endif %}
@@ -88,7 +90,7 @@
                         <input placeholder="Old Password" type="password" class="form-control"
                                id="{{ change_password_form.old_password.id_for_label }}" name="old_password">
                         {% if change_password_form.old_password.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ change_password_form.old_password.errors }}
                             </div>
                         {% endif %}
@@ -101,7 +103,7 @@
                         <input placeholder="New Password" type="password" class="form-control"
                                id="{{ change_password_form.new_password1.id_for_label }}" name="new_password1">
                         {% if change_password_form.new_password1.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ change_password_form.new_password1.errors }}
                             </div>
                         {% endif %}
@@ -114,7 +116,7 @@
                         <input placeholder="Confirm New Password" type="password" class="form-control"
                                id="{{ change_password_form.new_password2.id_for_label }}" name="new_password2">
                         {% if change_password_form.new_password2.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ change_password_form.new_password2.errors }}
                             </div>
                         {% endif %}
@@ -138,7 +140,7 @@
                               name="description">{% if update_description_form.description.value %}
                         {{ update_description_form.description.value }}{% endif %}</textarea>
                         {% if update_description_form.description.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ update_description_form.description.errors }}
                             </div>
                         {% endif %}
@@ -151,7 +153,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col" style="padding-top: 5%; padding-bottom: 3%">
+        <div class="col" style="padding-top: 5%; padding-bottom: 5%">
             <div class="main-box" style="text-align: center; width: 51vw; padding-bottom: 5%">
                 <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Delete account</h1>
                 <form action="{% url 'dashboard' %}" method="post">
@@ -166,7 +168,7 @@
                     </button>
                     {% if deactivate_account_form.is_bound %}
                         {% if deactivate_account_form.deactivate_profile.errors %}
-                            <div class="text-danger">
+                            <div class="custom-text-danger">
                                 {{ deactivate_account_form.deactivate_profile.errors }}
                             </div>
                         {% endif %}
@@ -177,7 +179,7 @@
     </div>
     {% if user.is_superuser %}
         <div class="row">
-            <div class="col">
+            <div class="col" style="padding-bottom: 5%">
                 <div class="main-box admin-features" style="width: 51vw">
                     <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: 
                     white;">Access administrator features</h1>
@@ -227,7 +229,7 @@
                                        value="{% if update_education_form.school_name.value %}{{ update_education_form.school_name.value }}{% endif %}">
 
                                 {% if update_education_form.school_name.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_education_form.school_name.errors }}
                                     </div>
                                 {% endif %}
@@ -239,7 +241,7 @@
                                        name="{{ update_education_form.degree.html_name }}"
                                        value="{% if update_education_form.degree.value %}{{ update_education_form.degree.value }} {% endif %}">
                                 {% if update_education_form.degree.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_education_form.degree.errors }}
                                     </div>
                                 {% endif %}
@@ -250,7 +252,7 @@
                                        name="{{ update_education_form.start_date.html_name }}"
                                        value="{{ update_education_form.start_date.value|date:'Y-m-d' }}">
                                 {% if update_education_form.start_date.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_education_form.start_date.errors }}
                                     </div>
                                 {% endif %}
@@ -261,7 +263,7 @@
                                        name="{{ update_education_form.end_date.html_name }}"
                                        value="{{ update_education_form.end_date.value|date:'Y-m-d'  }}">
                                 {% if update_education_form.end_date.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_education_form.end_date.errors }}
                                     </div>
                                 {% endif %}
@@ -291,7 +293,7 @@
                                        name="{{ update_employments_form.company.html_name }}"
                                        value="{% if update_employments_form.company.value %} {{ update_employments_form.company.value }} {% endif %}">
                                 {% if update_employments_form.company.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_employments_form.company.errors }}
                                     </div>
                                 {% endif %}
@@ -302,7 +304,7 @@
                                        name="{{ update_employments_form.position.html_name }}"
                                        value="{% if update_employments_form.position.value %} {{ update_employments_form.position.value }} {% endif %}">
                                 {% if update_employments_form.position.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_employments_form.position.errors }}
                                     </div>
                                 {% endif %}
@@ -313,7 +315,7 @@
                                        name="{{ update_employments_form.start_date.html_name }}"
                                        value="{{ update_employments_form.start_date.value|date:'Y-m-d' }}">
                                 {% if update_employments_form.start_date.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_employments_form.start_date.errors }}
                                     </div>
                                 {% endif %}
@@ -324,7 +326,7 @@
                                        name="{{ update_employments_form.end_date.html_name }}"
                                        value="{{ update_employments_form.end_date.value|date:'Y-m-d' }}">
                                 {% if update_employments_form.end_date.errors %}
-                                    <div class="text-danger">
+                                    <div class="custom-text-danger">
                                         {{ update_employments_form.end_date.errors }}
                                     </div>
                                 {% endif %}
