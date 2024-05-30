@@ -247,7 +247,7 @@ class PostVoteModelTests(TestCase):
 
     def test_create_post_downvote(self):
         """
-        TFM25: Test creating a PostVote with valid data.
+        TFM25: Test creating a Post downvote.
         """
         postvote = PostVote.objects.create(
             post=self.post,
@@ -274,6 +274,35 @@ class PostVoteModelTests(TestCase):
         )
         with self.assertRaises(ValidationError):
             duplicate_postvote.full_clean()
+
+    def test_create_postvote_on_multiple_posts(self):
+        """
+        TFM27: Test creating PostVotes on multiple posts.
+        """
+        self.post1 = Post.objects.create(
+            title='Valid Title1',
+            text='Valid text1.',
+            user=self.user
+        )
+        self.post2 = Post.objects.create(
+            title='Valid Title2',
+            text='Valid text2.',
+            user=self.user
+        )
+        postvote1 = PostVote.objects.create(
+            post=self.post1,
+            user=self.user,
+            vote_type="up"
+        )
+        postvote2 = PostVote.objects.create(
+            post=self.post2,
+            user=self.user,
+            vote_type="up"
+        )
+        self.assertEqual(postvote1.user, self.user)
+        self.assertEqual(postvote2.user, self.user)
+        self.assertTrue(postvote1.vote_type)
+        self.assertTrue(postvote2.vote_type)
 
 
 class CommentVoteModelTests(TestCase):
@@ -313,6 +342,37 @@ class CommentVoteModelTests(TestCase):
         self.assertEqual(commentvote.user, self.user)
         self.assertEqual(commentvote.comment, self.comment)
         self.assertTrue(commentvote.vote_type)
+
+    def test_create_commentvote_on_multiple_comments(self):
+        """
+        TFM26: Test creating CommentVotes on multiple comments.
+        """
+        comment1 = Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            text='Valid comment text. 1'
+        )
+        comment2 = Comment.objects.create(
+            post=self.post,
+            user=self.user,
+            text='Valid comment text. 2'
+        )
+        commentvote1 = CommentVote.objects.create(
+            comment=comment1,
+            user=self.user,
+            vote_type="up"
+        )
+        commentvote2 = CommentVote.objects.create(
+            comment=comment2,
+            user=self.user,
+            vote_type="up"
+        )
+        self.assertEqual(commentvote1.user, self.user)
+        self.assertEqual(commentvote2.user, self.user)
+        self.assertEqual(commentvote1.comment, comment1)
+        self.assertEqual(commentvote2.comment, comment2)
+        self.assertTrue(commentvote1.vote_type)
+        self.assertTrue(commentvote2.vote_type)
 
     def test_create_commentvote_without_user(self):
         """
@@ -355,7 +415,7 @@ class CommentVoteModelTests(TestCase):
 
     def test_create_comment_downvote(self):
         """
-        TFM24: Test creating a CommentVote with valid data.
+        TFM24: Test creating a Comment downvote.
         """
         commentvote = CommentVote.objects.create(
             comment=self.comment,
