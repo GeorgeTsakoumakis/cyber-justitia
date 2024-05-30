@@ -245,6 +245,19 @@ class PostVoteModelTests(TestCase):
         with self.assertRaises(ValidationError):
             postvote.full_clean()
 
+    def test_create_post_downvote(self):
+        """
+        TFM25: Test creating a PostVote with valid data.
+        """
+        postvote = PostVote.objects.create(
+            post=self.post,
+            user=self.user,
+            vote_type="down"
+        )
+        self.assertEqual(postvote.user, self.user)
+        self.assertEqual(postvote.post, self.post)
+        self.assertTrue(postvote.vote_type)
+
     def test_create_duplicate_postvote(self):
         """
         TFM18: Test creating a duplicate PostVote.
@@ -340,6 +353,18 @@ class CommentVoteModelTests(TestCase):
         with self.assertRaises(ValidationError):
             duplicate_commentvote.full_clean()
 
+    def test_create_comment_downvote(self):
+        """
+        TFM24: Test creating a CommentVote with valid data.
+        """
+        commentvote = CommentVote.objects.create(
+            comment=self.comment,
+            user=self.user,
+            vote_type="down"
+        )
+        self.assertEqual(commentvote.user, self.user)
+        self.assertEqual(commentvote.comment, self.comment)
+        self.assertTrue(commentvote.vote_type)
 
 if __name__ == '__main__':
     unittest.main()
