@@ -6,8 +6,9 @@ Author: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
 
 import unittest
 from django.test import TestCase
-from users.forms import UpdateDetailsForm, UpdatePasswordForm, UpdateDescriptionForm, DeactivateAccountForm, UpdateFlairForm
-from users.models import CustomUser, ProfessionalUser
+from users.forms import UpdateDetailsForm, UpdatePasswordForm, UpdateDescriptionForm, DeactivateAccountForm, UpdateFlairForm, UpdateEmploymentsForm, UpdateEducationForm
+from users.models import CustomUser, ProfessionalUser, Employments, Education
+from datetime import date, timedelta
 
 
 class UserFormTests(TestCase):
@@ -244,6 +245,143 @@ class UserFormTests(TestCase):
         form = UpdateFlairForm(data=form_data, instance=self.professional_user)
         self.assertFalse(form.is_valid())
         self.assertIn('flair', form.errors)
+
+
+class UpdateEmploymentsFormTest(TestCase):
+    """
+    Test case for the UpdateEmploymentsForm.
+    """
+
+    def setUp(self):
+        """
+        TUF19: Set up initial employment data for use in the tests.
+        """
+        self.employment_data = {
+            'company': 'Test Company',
+            'position': 'Software Engineer',
+            'start_date': date.today() - timedelta(days=365),
+            'end_date': date.today(),
+        }
+
+    def test_valid_form(self):
+        """
+        TUF20: Test form validation with valid data.
+        """
+        form = UpdateEmploymentsForm(data=self.employment_data)
+        self.assertTrue(form.is_valid())
+
+    def test_missing_company(self):
+        """
+        TUF21: Test form validation with missing company field.
+        """
+        self.employment_data['company'] = ''
+        form = UpdateEmploymentsForm(data=self.employment_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['company'], ["Company field is required."])
+
+    def test_missing_position(self):
+        """
+        TUF22: Test form validation with missing position field.
+        """
+        self.employment_data['position'] = ''
+        form = UpdateEmploymentsForm(data=self.employment_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['position'], ["Position field is required."])
+
+    def test_missing_start_date(self):
+        """
+        TUF23: Test form validation with missing start date field.
+        """
+        self.employment_data['start_date'] = ''
+        form = UpdateEmploymentsForm(data=self.employment_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['start_date'], ["Start date field is required."])
+
+    def test_start_date_in_future(self):
+        """
+        TUF24: Test form validation with a start date set in the future.
+        """
+        self.employment_data['start_date'] = date.today() + timedelta(days=1)
+        form = UpdateEmploymentsForm(data=self.employment_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['start_date'], ["Start date cannot be in the future."])
+
+    def test_end_date_before_start_date(self):
+        """
+        TUF25: Test form validation with an end date before the start date.
+        """
+        self.employment_data['end_date'] = self.employment_data['start_date'] - timedelta(days=1)
+        form = UpdateEmploymentsForm(data=self.employment_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['end_date'], ["End date cannot be before the start date."])
+
+class UpdateEducationFormTest(TestCase):
+    """
+    Test case for the UpdateEducationForm.
+    """
+
+    def setUp(self):
+        """
+        TUF26: Set up initial education data for use in the tests.
+        """
+        self.education_data = {
+            'school_name': 'Test University',
+            'degree': 'Bachelor of Science',
+            'start_date': date.today() - timedelta(days=365*4),
+            'end_date': date.today(),
+        }
+
+    def test_valid_form(self):
+        """
+        TUF27: Test form validation with valid data.
+        """
+        form = UpdateEducationForm(data=self.education_data)
+        self.assertTrue(form.is_valid())
+
+    def test_missing_school_name(self):
+        """
+        TUF28: Test form validation with missing school name field.
+        """
+        self.education_data['school_name'] = ''
+        form = UpdateEducationForm(data=self.education_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['school_name'], ["School name field is required."])
+
+    def test_missing_degree(self):
+        """
+        TUF29: Test form validation with missing degree field.
+        """
+        self.education_data['degree'] = ''
+        form = UpdateEducationForm(data=self.education_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['degree'], ["Degree field is required."])
+
+    def test_missing_start_date(self):
+        """
+        TUF30: Test form validation with missing start date field.
+        """
+        self.education_data['start_date'] = ''
+        form = UpdateEducationForm(data=self.education_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['start_date'], ["Start date field is required."])
+
+    def test_start_date_in_future(self):
+        """
+        TUF31: Test form validation with a start date set in the future.
+        """
+        self.education_data['start_date'] = date.today() + timedelta(days=1)
+        form = UpdateEducationForm(data=self.education_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['start_date'], ["Start date cannot be set in the future."])
+
+    def test_end_date_before_start_date(self):
+        """
+        TUF32: Test form validation with an end date before the start date.
+        """
+        self.education_data['end_date'] = self.education_data['start_date'] - timedelta(days=1)
+        form = UpdateEducationForm(data=self.education_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['end_date'], ["End date cannot be before the start date."])
 
 
 if __name__ == '__main__':
