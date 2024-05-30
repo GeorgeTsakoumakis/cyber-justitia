@@ -5,6 +5,8 @@ from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
+import logging
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.views.defaults import page_not_found
 from chatbot.models import Session
@@ -18,6 +20,32 @@ from .forms import (
     UpdateEducationForm,
     UpdateEmploymentsFrom, BanForm,
 )
+
+logger = logging.getLogger('login_attempts')
+
+
+def anonymous_required(redirect_url):
+    """
+    Decorator for views that allow only unauthenticated users to access view.
+    Usage:
+    @anonymous_required(redirect_url='company_info')
+    def homepage(request):
+        return render(request, 'homepage.html')
+
+    :param redirect_url: URL to redirect to if user is authenticated
+    Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
+    """
+
+    def _wrapped(view_func, *args, **kwargs):
+        def check_anonymous(request, *args, **kwargs):
+            view = view_func(request, *args, **kwargs)
+            if request.user.is_authenticated:
+                return redirect(redirect_url)
+            return view
+
+        return check_anonymous
+
+    return _wrapped
 
 
 def index(request):
@@ -76,6 +104,7 @@ def register(request):
             if is_professional:
                 prof = ProfessionalUser(user=user, flair=flair)
                 prof.save()
+                logger.info(f'Successful account created: {username}')
             return redirect("login")
 
     return render(request, "register.html")
@@ -96,9 +125,11 @@ def login(request):
                 "session_id", flat=True
             )
             request.session["session_ids"] = list(session_ids)
+            logger.info(f'Successful login attempt for user: {username}')
             return redirect("chatbot/")
         else:
             messages.info(request, "Invalid credentials")
+            logger.info(f'Failed login attempt for user: {username}')
             return redirect("login")
 
     return render(request, "login.html")
@@ -358,6 +389,8 @@ def logout(request):
 def profile(request, username):
     """Renders the profile page at /profile/username"""
     user = CustomUser.objects.get(username=username)
+    educations = Education.objects.filter(prof_id__user=user)
+    employments = Employments.objects.filter(prof_id__user=user)
     recent_posts = (
         Post.objects.filter(user=user)
         .filter(is_deleted=False)
@@ -372,6 +405,8 @@ def profile(request, username):
         "viewed_user": user,
         "recent_posts": recent_posts,
         "recent_comments": recent_comments,
+        "educations": educations,
+        "employments": employments,
     }
     return render(request, "user_profile.html", context)
 

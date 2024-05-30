@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col">
             <div class="main-box {% if viewed_user.is_professional %}professional{% endif %}{% if viewed_user.is_superuser %}admin{% endif %}"
-                 style="border-radius: 6px 6px 0px 0px; width: 75vw; background-color: #FCD6DD">
+                 style="border-radius: 0.375rem 0.375rem 0rem 0rem; width: 75vw; background-color: #FCD6DD">
                 <p {% if viewed_user.is_professional %}class="professional"{% endif %}
                    {% if viewed_user.is_superuser %}class="admin-text"{% endif %}
                    style="font-size: 3em; color: black;">{{ viewed_user.first_name }} {{ viewed_user.last_name }}</p>
@@ -51,21 +51,81 @@
                 {% endif %}
             </div>
             <div class="main-box {% if viewed_user.is_superuser %}admin-secondary{% endif %}"
-                 style="border-radius: 0px 0px 6px 6px; width: 75vw;">
-                <h3 style="color: black; font-weight: bold; {% if viewed_user.is_superuser %}filter: invert(100%);{% endif %}">
-                    Description</h3>
-                {% if viewed_user.description == None %}
-                    <p style="color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">There is no
-                        description.</p>
-                {% else %}
-                    <p style="color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">{{ viewed_user.description }}</p>
+                 style="border-radius: 0rem 0rem 0.5rem 0.5rem; width: 75vw; display: flex;">
+                <div style="flex: 1; padding-right: 1.25rem;">
+                    <h3 style="color: black; font-weight: bold; {% if viewed_user.is_superuser %}filter: invert(100%);{% endif %}">
+                        Description
+                    </h3>
+                    {% if viewed_user.description == None %}
+                        <p style="color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">There is no
+                            description.
+                        </p>
+                    {% else %}
+                        <p style="color: {% if viewed_user.is_superuser %}white; {% else %} #3D3D3D;{% endif %}">{{ viewed_user.description }}</p>
+                    {% endif %}
+                </div>
+                <!-- Qualifications Section -->
+                {% if viewed_user.is_professional %}
+                    <div style="flex: 1; border-radius: 0.5rem; font-family: Arial, sans-serif;">
+                        <h3 style="color: #333; font-weight: bold; padding-bottom: 0.125rem; display: flex; align-items: center;">
+                            <img src="{% static 'clipboard.svg' %}" alt="Qualification Icon" style="width: 1.5rem; height: 1.5rem; margin-right: 0.625rem;">Qualifications
+                        </h3>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for qualification in user.qualifications %}
+                                <li style="margin-bottom: 0.625rem; display: flex; align-items: center;">
+                                    <img src="{% static 'clipboard.svg' %}" alt="Qualification Icon" style="width: 1.5rem; height: 1.5rem; margin-right: 0.625rem;">
+                                    <span style="color: #333; font-size: 1rem;">{{ qualification }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% if employments %}
+                            <ul style="list-style-type: none; padding: 0;">
+                                {% for employment in employments %}
+                                    <li style="margin-bottom: 0.625rem; display: flex; align-items: center;">
+                                        <img src="{% static 'case.svg' %}" alt="Employment Icon" style="width: 1.5rem; height: 1.5rem; margin-right: 0.625rem;">
+                                        <div>
+                                            <p style="color: #333; font-size: 1rem; margin: 0;">
+                                                <strong>{{ employment.position }}</strong> at {{ employment.company }} 
+                                                ({{ employment.start_date }} - 
+                                                {% if employment.end_date %}
+                                                    {{ employment.end_date }}
+                                                {% else %}
+                                                    Present
+                                                {% endif %}
+                                                )
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p style="color: #695455; font-size: 1rem; margin-top: 1.25rem; font-family: 'Roboto Mono';">No employment credentials.</p>
+                        {% endif %}
+                        {% if educations %}
+                            <ul style="list-style-type: none; padding: 0;">
+                                {% for education in educations %}
+                                    <li style="display: flex; align-items: center;">
+                                        <img src="{% static 'academic-cap.svg' %}" alt="Education Icon" style="width: 1.5rem; height: 1.5rem; margin-right: 0.625rem;">
+                                        <div>
+                                            <p style="color: #333; font-size: 1rem; margin: 0;">
+                                                <strong>{{ education.degree }}</strong> at {{ education.school_name }} 
+                                                ({{ education.start_date }} - 
+                                                {% if education.end_date %}
+                                                    {{ education.end_date }}
+                                                {% else %}
+                                                    Present
+                                                {% endif %}
+                                                )
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p style="color: #695455; font-size: 1rem; margin-top: 1.25rem; font-family: 'Roboto Mono';">No education credentials.</p>
+                        {% endif %}
+                    </div>
                 {% endif %}
-
-                <!-- TODO: Implement and display credentials for professionals -->
-                {#            {% if user.is_professional %}#}
-                {#                <h3 style="color: black; font-weight: bold;">Qualifications</h3>#}
-                {#                    <p style="color: black;">{{ user.qualifications }}</p>#}
-                {#            {% endif %}#}
             </div>
         </div>
     </div>
@@ -107,7 +167,7 @@
                 </h3>
                 <div style="max-width: 90%; {% if viewed_user.is_superuser %}filter: invert(100%); background-color: #94608D;{% endif %}" class="line-sep"></div>
                 {% for comment in recent_comments %}
-                <div style="{% if viewed_user.is_superuser %}background-color: #94608D;{% endif %} position: relative; border: 0.1rem solid rgb(151, 132, 144); border-radius: 5px; padding: 0; margin-bottom: 0.5rem;">
+                <div style="{% if viewed_user.is_superuser %}background-color: #94608D;{% endif %} position: relative; border: 0.1rem solid rgb(151, 132, 144); border-radius: 0.313rem; padding: 0; margin-bottom: 0.5rem;">
                     {% if user.is_authenticated and user == comment.user or user.is_superuser %}
                         <a href="{% url 'delete_comment' comment.post.slug comment.comment_id %}" class="delete-post" style="position: absolute; top: 0; right: 0; padding: 0.5rem; {% if viewed_user.is_superuser %}filter: invert(1);{% endif %}">
                             <img src="{% static 'backspace.svg' %}" alt="backspace" class="backspace" style="width: 1.5rem; height: 1.5rem;">

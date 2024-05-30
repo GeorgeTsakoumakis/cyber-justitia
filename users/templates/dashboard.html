@@ -203,6 +203,7 @@
                         
                         {% for field, errors in update_flair_form.errors.items %}
                             {% for error in errors %}
+                            <div class="text-dangerr"></div>
                                 <p>{{ error }}</p>
                             {% endfor %}
                         {% endfor %}
@@ -215,7 +216,6 @@
                 </div>
             </div>
         </div>
-        <!-- TODO: Still need to implement interactive qualifications list -->
         <div class="row">
             <div class="col" style="padding-top: 5%; padding-bottom: 5%">
                 <div class="main-box credentials" style="width: 51vw;">
