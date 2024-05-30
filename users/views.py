@@ -23,7 +23,7 @@ from .forms import (
     UpdateDescriptionForm,
     UpdateFlairForm,
     UpdateEducationForm,
-    UpdateEmploymentsFrom, BanForm,
+    UpdateEmploymentsForm, BanForm,
 )
 
 logger = logging.getLogger('login_attempts')
@@ -162,7 +162,7 @@ def dashboard(request):
             employments = None
 
         update_education_form = UpdateEducationForm(instance=education)
-        update_employments_form = UpdateEmploymentsFrom(instance=employments)
+        update_employments_form = UpdateEmploymentsForm(instance=employments)
 
     # Initialize forms with the current user's data
     update_details_form = UpdateDetailsForm(instance=request.user)
@@ -409,10 +409,10 @@ def update_employments(request):
             # Try to get an existing Employment instance
             employment = Employments.objects.get(prof_id=professional_user)
             # If an instance exists, create a form with the POST data and the existing instance
-            form = UpdateEmploymentsFrom(request.POST, instance=employment)
+            form = UpdateEmploymentsForm(request.POST, instance=employment)
         except ObjectDoesNotExist:
             # If no instance exists, create a new form with the POST data
-            form = UpdateEmploymentsFrom(request.POST)
+            form = UpdateEmploymentsForm(request.POST)
         if form.is_valid():
             # Save the form data to the instance
             employment = form.save(commit=False)
