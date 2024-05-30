@@ -12,7 +12,9 @@
     {% if messages %}
         <ul>
             {% for message in messages %}
-                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+            <div class="custom-text-danger">
+                {{ message }}
+            </div>
             {% endfor %}
         </ul>
     {% endif %}

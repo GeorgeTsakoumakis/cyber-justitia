@@ -15,7 +15,9 @@
     {% if messages %}
         <ul>
             {% for message in messages %}
-                <li>{{ message }}</li>
+            <div class="custom-text-danger">
+                {{ message }}
+            </div>
             {% endfor %}
         </ul>
     {% endif %}

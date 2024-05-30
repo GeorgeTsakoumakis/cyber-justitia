@@ -175,3 +175,16 @@ p, li, span {
 .footer .text-center {
   color: black;
 }
+
+.custom-text-danger {
+  color: purple;
+  font-size: 1.25rem;
+  font-weight: bold;
+  font-family: 'Roboto Mono';
+  margin-left: -5%;
+  margin-bottom: -10%;
+}
+
+.custom-text-danger:before {
+  content: '⚠️ ';
+}
