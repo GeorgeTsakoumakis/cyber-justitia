@@ -40,7 +40,7 @@ p, h2, h3 {
 }
 
 .backspace:hover {
-    filter: brightness(25%);
+    filter: brightness(80%);
 }
 
 .delete-post {

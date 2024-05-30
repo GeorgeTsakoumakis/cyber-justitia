@@ -26,6 +26,13 @@
                 <p {% if viewed_user.is_professional %}class="professional"{% endif %}
                    {% if viewed_user.is_superuser %}class="admin-text"{% endif %}
                    style="font-size: 3em; color: black;">{{ viewed_user.first_name }} {{ viewed_user.last_name }}</p>
+                {% if user.is_superuser and viewed_user != user %}
+                <div style="position: absolute; top: 0; right: 0; padding: 0.5rem">
+                    <a href="{% url 'ban_user' viewed_user.username %}" class="delete-post" style="position: absolute; top: 0; right: 0; padding: 0.5rem;">
+                        <img src="{% static 'banhammer.svg' %}" alt="backspace" class="backspace" style="width: 1.5rem; height: 1.5rem;">
+                    </a>
+                </div>
+                {% endif %}
                 <div class="email-container">
                     <span><img style="padding-bottom: 1%" {% if viewed_user.is_superuser %}
                                src="{% static 'mail.svg' %}" {% else %} src="{% static 'mail_dark.svg' %}" {% endif %}></span>
