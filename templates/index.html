@@ -5,6 +5,13 @@
 
 {% block content %}
     <div class="row" style="position: relative; padding-bottom: 3%; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.25));">
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+            {% endfor %}
+        </ul>
+        {% endif %}
         <img src="{% static 'ryan-booth-X4rD2aEVll8-unsplash.png' %}" style="height: auto; border-radius: 2%; width: 100%;">
         <h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); color: white; text-align: center; z-index: 11; font-size: 3vw;">Seeking quick legal advice for a low cost?</h1>
         <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, 50%); color: white; text-align: center; z-index: 11; font-size: 1vw;"><strong>Cyber Justitia </strong>is here to help! Our chatbot can help you get started on seeking legal help, <i>pro bono.</i></h3>

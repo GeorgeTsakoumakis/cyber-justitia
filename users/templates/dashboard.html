@@ -9,6 +9,15 @@
 
 {% block content %}
     <div class="row">
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li> <!-- customisable style - just add class name -->
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+    <div class="row">
         <div class="col-6">
             <div class="main-box"
                  style="text-align: center; background-color: #FCD6DD; width: 25vw; padding-bottom: 5%">
