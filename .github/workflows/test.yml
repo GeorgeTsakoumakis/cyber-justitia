@@ -16,6 +16,7 @@ jobs:
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       DEBUG: ${{ secrets.DEBUG }}
+      GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
 #      DB_NAME: ${{ secrets.DB_NAME }}
 #      DB_USER: ${{ secrets.DB_USER }}
 #      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
