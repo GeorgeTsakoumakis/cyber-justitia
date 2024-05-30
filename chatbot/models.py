@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 
 class Session(models.Model):
@@ -47,3 +48,18 @@ class Message(models.Model):
         default=Role.USER,
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.role.capitalize()}: {self.text}"
+
+    def clean(self):
+        if self.role == self.Role.SYSTEM:
+            raise ValidationError("System messages cannot be created directly.")
+        if self.text.strip() == "":
+            raise ValidationError("Message text cannot be empty or whitespace only.")
+        if len(self.text) > 1024:
+            raise ValidationError("Message text cannot exceed 1024 characters.")
+        if self.role not in [choice[0] for choice in self.Role.choices]:
+            raise ValidationError("Invalid message role.")
+        if not self.session:
+            raise ValidationError("Message must be associated with a session.")
