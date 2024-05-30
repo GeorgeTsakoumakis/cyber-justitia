@@ -24,6 +24,10 @@ jobs:
 #      DB_PORT: ${{ secrets.DB_PORT }}
       GITHUB_TEST: "True"
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     strategy:
       fail-fast: false
       matrix:
@@ -47,11 +51,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
         
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+      - name: Authenticate with Google Cloud
+        uses: 'google-github-actions/auth@v2'
         with:
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Run tests
         run: |
