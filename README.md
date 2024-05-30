@@ -18,7 +18,7 @@ Names are listed in alphabetical order by last name.
 
 ### Project Description
 
-Cyber Justitia is a web application designed to provide free and informal legal advice to users through its two main services: the AI chatbot, which can be used to ask legal questions and receive information suited to the users' needs, and the forums, allowing users to post their legal enquiries publicly and have real legal professionals respond with general advice. Inspired by the U.N. Sustainable Development Goal #16: Peace, Justice and Strong Institutions, Cyber Justitia was designed to provide users the means to communicate their legal troubles and get started on sorting them out, pro bono. Cyber Justitia is **not** designed to replace proper legal counsel, instead it gives users way to seek options and enquire on some of the more verbose aspects of law. Designed in Django.
+Cyber Justitia is a web application designed to provide free and informal legal advice to users through its two main services: the AI chatbot, which can be used to ask legal questions and receive information suited to the users' needs, and the forums, allowing users to post their legal enquiries publicly and have real legal professionals respond with general advice. Inspired by the U.N. Sustainable Development Goal #10 (Reduced Inequalities), Cyber Justitia was designed to provide users the means to communicate their legal troubles and get started on sorting them out, pro bono. Cyber Justitia is **not** designed to replace proper legal counsel, instead it gives users way to seek options and enquire on some of the more verbose aspects of law. Designed in Django.
 
 [Repository can be found here.](https://github.com/newcastleuniversity-computing/CSC2033_Team25_23-24)
 
