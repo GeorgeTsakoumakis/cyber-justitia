@@ -477,8 +477,9 @@ class EducationModelTest(TestCase):
         )
         with self.assertRaises(ValidationError) as context:
             education.full_clean()
-        self.assertIn('start_date', context.exception.message_dict)
-        self.assertEqual(context.exception.message_dict['start_date'], ['Start date cannot be in the future.'])
+        # Error is in __all__ field, non-field error raised with ValidationError
+        self.assertIn('__all__', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['__all__'], ['Start date cannot be in the future.'])
 
     def test_end_date_can_be_blank(self):
         """
@@ -622,8 +623,9 @@ class EmploymentModelTest(TestCase):
         )
         with self.assertRaises(ValidationError) as context:
             employment.full_clean()
-        self.assertIn('start_date', context.exception.message_dict)
-        self.assertEqual(context.exception.message_dict['start_date'], ['Start date cannot be in the future.'])
+        # Error is in __all__ field, non-field error raised with ValidationError
+        self.assertIn('__all__', context.exception.message_dict)
+        self.assertEqual(context.exception.message_dict['__all__'], ['Start date cannot be in the future.'])
 
     def test_end_date_can_be_blank(self):
         """

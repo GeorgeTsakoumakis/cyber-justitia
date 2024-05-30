@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -43,14 +43,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
-
-    def clean(self):
-        # Updated clean function because default Django doesn't recognize whitespace as blank
-        super().clean()
-        if not self.first_name.strip():
-            raise ValidationError({'first_name': "First name cannot be blank or whitespace only."})
-        if not self.last_name.strip():
-            raise ValidationError({'last_name': "Last name cannot be blank or whitespace only."})
 
     @property
     def is_professional(self):
@@ -101,31 +93,23 @@ class Employments(models.Model):
     start_date = models.DateField(_("start date"), null=False)
     end_date = models.DateField(_("end date"), null=True, blank=True)
 
-    def clean_company(self):
-        company = self.cleaned_data["company"]
-        if not company:
-            raise ValidationError(_("Company field is required."), code="invalid")
-        if len(company) > 100:
-            raise ValidationError(_("Company is too long."), code="invalid")
-        return company
-
-    def clean_position(self):
-        position = self.cleaned_data["position"]
-        if not position:
+    def clean(self):
+        super().clean()
+        if not self.company:
+            raise ValidationError(_("Company name field is required."), code="invalid")
+        if len(self.company) > 100:
+            raise ValidationError(_("Company name is too long."), code="invalid")
+        if not self.position:
             raise ValidationError(_("Position field is required."), code="invalid")
-        if len(position) > 100:
-            raise ValidationError(_("Position is too long."), code="invalid")
-        return position
-
-    def clean_start_date(self):
-        start_date = self.cleaned_data["start_date"]
-        if not start_date:
+        if len(self.position) > 100:
+            raise ValidationError(_("Position name is too long."), code="invalid")
+        if not self.start_date:
             raise ValidationError(_("Start date field is required."), code="invalid")
-        if start_date > datetime.date.today():
-            raise ValidationError(
-                _("Start date cannot be in the future."), code="invalid"
-            )
-        return start_date
+        if self.start_date > date.today():
+            raise ValidationError(_("Start date cannot be in the future."), code="invalid")
+        if self.end_date and self.end_date < self.start_date:
+            raise ValidationError(_("End date cannot be before the start date."), code="invalid")
+        return self
 
 
 class Education(models.Model):
@@ -143,28 +127,25 @@ class Education(models.Model):
     start_date = models.DateField(_("start date"), null=False)
     end_date = models.DateField(_("end date"), null=True, blank=True)
 
-    def clean_school_name(self):
-        school_name = self.cleaned_data["school_name"]
-        if not school_name:
+    def clean(self):
+        super().clean()
+
+        if not self.school_name:
             raise ValidationError(_("School name field is required."), code="invalid")
-        if len(school_name) > 100:
+        if len(self.school_name) > 100:
             raise ValidationError(_("School name is too long."), code="invalid")
-        return school_name
 
-    def clean_degree(self):
-        degree = self.cleaned_data["degree"]
-        if not degree:
+        if not self.degree:
             raise ValidationError(_("Degree field is required."), code="invalid")
-        if len(degree) > 100:
-            raise ValidationError(_("Degree is too long."), code="invalid")
-        return degree
+        if len(self.degree) > 100:
+            raise ValidationError(_("Degree name is too long."), code="invalid")
 
-    def clean_start_date(self):
-        start_date = self.cleaned_data["start_date"]
-        if not start_date:
+        if not self.start_date:
             raise ValidationError(_("Start date field is required."), code="invalid")
-        if start_date > datetime.date.today():
-            raise ValidationError(
-                _("Start date cannot be in the future."), code="invalid"
-            )
-        return start_date
+        if self.start_date > date.today():
+            raise ValidationError(_("Start date cannot be in the future."), code="invalid")
+
+        if self.end_date and self.end_date < self.start_date:
+            raise ValidationError(_("End date cannot be before the start date."), code="invalid")
+
+        return self
