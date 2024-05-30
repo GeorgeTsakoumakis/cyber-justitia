@@ -186,7 +186,7 @@ def deactivate_account(request):
     with a success message.
     """
     if request.method == "POST":
-        # creates a form instance and populates it with data from the request
+        # Creates a form instance and populates it with data from the request
         form = DeactivateAccountForm(request.POST, instance=request.user)
         if form.is_valid():
             # Check if the 'deactivate_profile' checkbox was checked in the form
