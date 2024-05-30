@@ -32,9 +32,6 @@ def forums(request):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.get_comments()
-    # print comment votes
-    for comment in comments:
-        print(comment.votes)
     # Comment creation form
     comment_form = CreateCommentForm()
     post_vote_form = PostVoteForm()
@@ -130,13 +127,9 @@ def vote_comment(request, slug, comment_id):
         if vote_form.is_valid():
             vote_type = vote_form.cleaned_data["vote_type"]
             if vote_type == CommentVote.VoteType.UPVOTE:
-                print("Before ", comment.votes)
                 comment.upvote(request.user)
-                print("After ", comment.votes)
             elif vote_type == CommentVote.VoteType.DOWNVOTE:
-                print("Before ", comment.votes)
                 comment.downvote(request.user)
-                print("After ", comment.votes)
         else:
             # 400 Bad Request
             return render(request, "errors/400.html", status=400)
