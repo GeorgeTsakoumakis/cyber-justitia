@@ -63,3 +63,7 @@ class Message(models.Model):
             raise ValidationError("Invalid message role.")
         if not self.session:
             raise ValidationError("Message must be associated with a session.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(Message, self).save(*args, **kwargs)
