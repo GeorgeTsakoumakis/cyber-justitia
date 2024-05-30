@@ -210,7 +210,7 @@ class Vote(models.Model):
         DOWNVOTE = "down", _("Downvote")
 
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, unique=True
+        CustomUser, on_delete=models.CASCADE, unique=False
     )  # One vote per user
     vote_type = models.CharField(
         max_length=4, choices=VoteType.choices, default=VoteType.UPVOTE
