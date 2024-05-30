@@ -14,6 +14,7 @@ urlpatterns = [
     path("update_description/", views.update_description, name="update_description"),
     path("update_flair/", views.update_flair, name="update_flair"),
     path("update_education/", views.update_education, name="update_education"),
+    path("deactivate_account/", views.deactivate_account, name="deactivate_account"),
     path("update_employments/", views.update_employments, name="update_employments"),
     path("ban/<str:username>/", views.ban_user, name="ban_user"),
     path("banned/", views.banned, name="banned"),

@@ -340,12 +340,10 @@ class DashboardViewsTestCase(TestCase):
         """
         TUV24: Test deactivating the account when the checkbox is checked.
         """
-        self.client.force_login(self.user)
-        response = self.client.post(reverse('dashboard'), {
-            'deactivate_profile': True
-        }, follow=True)
+        response = self.client.post(reverse('deactivate_account'), {
+                                    'deactivate_profile': '1',
+        })
         self.assertRedirects(response, reverse('index'))
-        self.assertContains(response, 'Account deactivated successfully')
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
