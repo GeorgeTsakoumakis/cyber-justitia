@@ -191,10 +191,13 @@ def deactivate_account(request):
         if form.is_valid():
             # Check if the 'deactivate_profile' checkbox was checked in the form
             if form.cleaned_data["deactivate_profile"]:
+                # Set the user's is_active attribute to False
                 request.user.is_active = False
                 request.user.save()
                 messages.success(request, "Account deactivated successfully")
                 return redirect("index")
+            else:
+                messages.info(request, "Please check the box to deactivate your account")
         else:
             return render(request, "dashboard.html", {"deactivate_account_form": form})
     return redirect("dashboard")
