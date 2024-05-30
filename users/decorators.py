@@ -40,8 +40,9 @@ def ban_forbidden(redirect_url="/banned/"):
     def decorator(view_func):
         @wraps(view_func)
         def wrap(request, *args, **kwargs):
-            if request.user.is_banned:
-                return redirect(redirect_url)
+            if request.user.is_authenticated:
+                if request.user.is_banned:
+                    return redirect(redirect_url)
             return view_func(request, *args, **kwargs)
         return wrap
     return decorator
