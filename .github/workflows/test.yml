@@ -56,7 +56,13 @@ jobs:
         with:
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-
+      
+      - name: Test GCP Authentication
+        run: |
+          gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+          gcloud config set project ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+          gcloud projects describe ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+        
       - name: Run tests
         run: |
           python manage.py test
