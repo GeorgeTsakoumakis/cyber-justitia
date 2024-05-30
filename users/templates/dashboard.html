@@ -153,7 +153,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col" style="padding-top: 5%; padding-bottom: 3%">
+        <div class="col" style="padding-top: 5%; padding-bottom: 5%">
             <div class="main-box" style="text-align: center; width: 51vw; padding-bottom: 5%">
                 <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Delete account</h1>
                 <form action="{% url 'dashboard' %}" method="post">
@@ -179,7 +179,7 @@
     </div>
     {% if user.is_superuser %}
         <div class="row">
-            <div class="col">
+            <div class="col" style="padding-bottom: 5%">
                 <div class="main-box admin-features" style="width: 51vw">
                     <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: 
                     white;">Access administrator features</h1>
