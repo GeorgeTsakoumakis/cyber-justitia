@@ -319,13 +319,19 @@ class ProfessionalUserModelTest(TestCase):
         """
         TUM22: Test creating a professional user with a valid reason_banned.
         """
-        user = CustomUser.objects.create(
-            user=self.user,
-            flair="Experienced Attorney",
-            reason_banned="Violation of terms"
+        user = CustomUser.objects.create_user(
+            username='banneduser',
+            first_name='Banned',
+            last_name='User',
+            email='user@ban.com',
+            password='Password123!',
+            reason_banned="Spamming"
         )
-        self.assertIsInstance(user, CustomUser)
-        self.assertEqual(user.reason_banned, "Violation of terms")
+        professional_user = ProfessionalUser.objects.create(
+            user=user,
+            flair="Experienced Attorney"
+        )
+        self.assertEqual(professional_user.user.reason_banned, "Spamming")
 
     def test_blank_reason_banned(self):
         """
