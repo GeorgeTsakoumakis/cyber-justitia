@@ -337,12 +337,19 @@ class ProfessionalUserModelTest(TestCase):
         """
         TUM23: Test that a blank reason_banned is allowed.
         """
-        professional_user = ProfessionalUser.objects.create(
-            user=self.user,
-            flair="Experienced Attorney",
-            reason_banned=""
+        user = CustomUser.objects.create_user(
+            username='banneduser',
+            first_name='Banned',
+            last_name='User',
+            email='user@user.com',
+            reason_banned="",
+            password='Password123!'
         )
-        self.assertEqual(professional_user.reason_banned, "")
+        professional_user = ProfessionalUser.objects.create(
+            user=user,
+            flair="Experienced Attorney"
+        )
+        self.assertEqual(professional_user.user.reason_banned, "")
 
 
 class EducationModelTest(TestCase):
