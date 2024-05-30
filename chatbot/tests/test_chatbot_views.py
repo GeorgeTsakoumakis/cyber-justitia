@@ -3,7 +3,7 @@ import unittest
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from chatbot.models import Session
+from chatbot.models import Session, Message
 import json
 
 CustomUser = get_user_model()
@@ -85,7 +85,15 @@ class ChatbotViewsTestCase(TestCase):
         }
         response = self.client.post(reverse('process_chat_message'), json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
+        # Check if the role of the second last message is 'user'
+        message = Message.objects.filter(session=self.session).order_by('-created_at')[1]
+        self.assertEqual(message.role, 'user')
+        # Check if the chatbot responded
         self.assertIn('response', response.json())
+        message = Message.objects.filter(session=self.session).latest('created_at')
+        self.assertEqual(message.role, 'bot')
+        # Check if the chatbot responded with the correct message (contains 'Hello' or 'Greetings' or 'Hi')
+        self.assertTrue(any(word in message.text for word in ['Hello', 'Greetings', 'Hi']))
 
     def test_process_chat_message_when_not_authenticated(self):
         """

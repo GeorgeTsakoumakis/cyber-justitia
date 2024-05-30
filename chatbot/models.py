@@ -53,8 +53,6 @@ class Message(models.Model):
         return f"{self.role.capitalize()}: {self.text}"
 
     def clean(self):
-        if self.role == self.Role.SYSTEM:
-            raise ValidationError("System messages cannot be created directly.")
         if self.text.strip() == "":
             raise ValidationError("Message text cannot be empty or whitespace only.")
         if len(self.text) > 1024:
