@@ -174,7 +174,6 @@ def dashboard(request):
 
     return render(request, "dashboard.html", context)
 
-
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def deactivate_account(request):
@@ -408,6 +407,30 @@ def ban_user(request, username):
 def banned(request):
     """Renders the banned page"""
     return render(request, "errors/banned.html")
+
+
+@login_required
+def delete_education(request):
+    professional_user = ProfessionalUser.objects.get(user=request.user)
+    try:
+        education = Education.objects.get(prof_id=professional_user)
+        education.delete()
+        messages.success(request, "Education credentials deleted successfully")
+    except Education.DoesNotExist:
+        messages.error(request, "No education credentials found")
+    return redirect("dashboard")
+
+
+@login_required
+def delete_employments(request):
+    professional_user = ProfessionalUser.objects.get(user=request.user)
+    try:
+        employments = Employments.objects.get(prof_id=professional_user)
+        employments.delete()
+        messages.success(request, "Employment credentials deleted successfully")
+    except Employments.DoesNotExist:
+        messages.error(request, "No employment credentials found")
+    return redirect("dashboard")
 
 
 def codeofconduct(request):

@@ -5,20 +5,21 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'users/css/dashboard.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin></script>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        {% if messages %}
+    
+    {% if messages %}
         <ul>
             {% for message in messages %}
-            <div class="custom-text-danger">
-                {{ message }}
+            <div class="text-danger">
+                {{ message }} 
             </div>
             {% endfor %}
         </ul>
     {% endif %}
-    </div>
+
     <div class="row">
         <div class="col-6">
             <div class="main-box"
@@ -36,7 +37,7 @@
                                name="{{ update_details_form.first_name.html_name }}"
                                value="{{ update_details_form.first_name.value }}">
                         {% if update_details_form.first_name.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ update_details_form.first_name.errors }}
                             </div>
                         {% endif %}
@@ -51,7 +52,7 @@
                                name="{{ update_details_form.last_name.html_name }}"
                                value="{{ update_details_form.last_name.value }}">
                         {% if update_details_form.last_name.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ update_details_form.last_name.errors }}
                             </div>
                         {% endif %}
@@ -66,7 +67,7 @@
                                name="{{ update_details_form.email.html_name }}"
                                value="{{ update_details_form.email.value }}">
                         {% if update_details_form.email.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ update_details_form.email.errors }}
                             </div>
                         {% endif %}
@@ -90,7 +91,7 @@
                         <input placeholder="Old Password" type="password" class="form-control"
                                id="{{ change_password_form.old_password.id_for_label }}" name="old_password">
                         {% if change_password_form.old_password.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ change_password_form.old_password.errors }}
                             </div>
                         {% endif %}
@@ -103,7 +104,7 @@
                         <input placeholder="New Password" type="password" class="form-control"
                                id="{{ change_password_form.new_password1.id_for_label }}" name="new_password1">
                         {% if change_password_form.new_password1.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ change_password_form.new_password1.errors }}
                             </div>
                         {% endif %}
@@ -116,7 +117,7 @@
                         <input placeholder="Confirm New Password" type="password" class="form-control"
                                id="{{ change_password_form.new_password2.id_for_label }}" name="new_password2">
                         {% if change_password_form.new_password2.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ change_password_form.new_password2.errors }}
                             </div>
                         {% endif %}
@@ -137,10 +138,10 @@
                     <div class="input-group input-group-lg mb-3">
                     <textarea placeholder="Description" class="form-control"
                               id="{{ update_description_form.description.id_for_label }}"
-                              name="description">{% if update_description_form.description.value %}
-                        {{ update_description_form.description.value }}{% endif %}</textarea>
+                              name="description">{{ user.description }}
+                    </textarea>
                         {% if update_description_form.description.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ update_description_form.description.errors }}
                             </div>
                         {% endif %}
@@ -153,7 +154,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col" style="padding-top: 5%; padding-bottom: 5%">
+        <div class="col" style="padding-top: 5%; padding-bottom: 3%">
             <div class="main-box" style="text-align: center; width: 51vw; padding-bottom: 5%">
                 <h1 style="font-family: 'Roboto Mono'; font-size: 24px;">Delete account</h1>
                 <form action="{% url 'dashboard' %}" method="post">
@@ -168,7 +169,7 @@
                     </button>
                     {% if deactivate_account_form.is_bound %}
                         {% if deactivate_account_form.deactivate_profile.errors %}
-                            <div class="custom-text-danger">
+                            <div class="text-danger">
                                 {{ deactivate_account_form.deactivate_profile.errors }}
                             </div>
                         {% endif %}
@@ -179,7 +180,7 @@
     </div>
     {% if user.is_superuser %}
         <div class="row">
-            <div class="col" style="padding-bottom: 5%">
+            <div class="col">
                 <div class="main-box admin-features" style="width: 51vw">
                     <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: 
                     white;">Access administrator features</h1>
@@ -199,7 +200,7 @@
                         {% csrf_token %}
                         <input name="flair" type="text" class="form-control" placeholder="Enter flair"
                                value="{{ request.user.professionaluser.flair }}">
-
+                        
                         {% for field, errors in update_flair_form.errors.items %}
                             {% for error in errors %}
                                 <p>{{ error }}</p>
@@ -219,17 +220,18 @@
             <div class="col" style="padding-top: 5%; padding-bottom: 5%">
                 <div class="main-box credentials" style="width: 51vw;">
                     <h1 style="font-family: 'Roboto Mono'; font-size: 24px; color: white;">Credentials</h1>
-                    <div class="form-container mt-4">
+                    <div class="form-container mt-2">
                         <form action="{% url 'dashboard' %}" method="post">
                             {% csrf_token %}
                             <div class="form-group">
+                            <h2 style="font-family: 'Roboto Mono'; font-size: 18px; color: white;">Education</h2>
                                 <input placeholder="School Name" type="text" class="form-control mb-2"
                                        id="{{ update_education_form.school_name.id_for_label }}"
                                        name="{{ update_education_form.school_name.html_name }}"
                                        value="{% if update_education_form.school_name.value %}{{ update_education_form.school_name.value }}{% endif %}">
 
                                 {% if update_education_form.school_name.errors %}
-                                    <div class="custom-text-danger">
+                                    <div class="text-danger">
                                         {{ update_education_form.school_name.errors }}
                                     </div>
                                 {% endif %}
@@ -241,7 +243,7 @@
                                        name="{{ update_education_form.degree.html_name }}"
                                        value="{% if update_education_form.degree.value %}{{ update_education_form.degree.value }} {% endif %}">
                                 {% if update_education_form.degree.errors %}
-                                    <div class="custom-text-danger">
+                                    <div class="text-danger">
                                         {{ update_education_form.degree.errors }}
                                     </div>
                                 {% endif %}
@@ -252,94 +254,113 @@
                                        name="{{ update_education_form.start_date.html_name }}"
                                        value="{{ update_education_form.start_date.value|date:'Y-m-d' }}">
                                 {% if update_education_form.start_date.errors %}
-                                    <div class="custom-text-danger">
+                                    <div class="text-danger">
                                         {{ update_education_form.start_date.errors }}
                                     </div>
                                 {% endif %}
                             </div>
                             <div class="form-group">
                                 <input placeholder="End Date" type="date" class="form-control mb-2"
-                                       id="{{ update_education_form.end_date.id_for_label }}"
+                                       id="endeducation"
                                        name="{{ update_education_form.end_date.html_name }}"
                                        value="{{ update_education_form.end_date.value|date:'Y-m-d'  }}">
                                 {% if update_education_form.end_date.errors %}
-                                    <div class="custom-text-danger">
+                                    <div class="text-danger">
                                         {{ update_education_form.end_date.errors }}
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="position_inprogress"
-                                       name="position_inprogress" onchange="toggleEndedWorkInput()">
-                                <label style="color: white" class="form-check-label" for="position_inprogress">In
-                                    Progress</label>
-                            </div>
-                            <button name="update_education" type="submit" class="btn btn-primary">Save changes</button>
+                               <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="school_inprogress"
+                                           name="education_inprogress" onclick="toggleEndedSchoolInput()">
+                                    <label style="color: white" class="form-check-label" for="education_inprogress">In
+                                        Progress</label>
+                                </div>
+                        <div style="padding: 2%; display: flex; gap: 10px;">
+                        <form action="{% url 'update_education' %}" method="post">
+                            {% csrf_token %}
+                            <button name="update_education" type="submit" class="btn btn-primary">Save</button>
                         </form>
+                    
+                        <form action="{% url 'delete_education' %}" method="post">
+                            {% csrf_token %}
+                            <input type="checkbox" class="delete-edu-checkbox" name="delete-edu-credentials" value="True"
+                                   {% if delete_education_credentials_form.delete_edu_credentials.value %}checked{% endif %}>
+                            <button name="delete-edu-credentials" id="delete-edu-button" type="submit" class="btn btn-primary"
+                                    style="align-items: center;" disabled>DELETE!</button>
+                        </form>
+                    </div>
+                    
                         <form action="{% url 'dashboard' %}" method="post">
                             {% csrf_token %}
-{#                            <div class="list-group">#}
-{#                                {% for qualifications in professionals %}#}
-{#                                    <div class="list-group-item d-flex justify-content-between align-items-center">#}
-{#                                        <a href="#" class="list-group-item-action">{{ qualification }}</a>#}
-{#                                        <button id="deletequali" type="button" class="btn-close"#}
-{#                                                aria-label="deletequalification"></button>#}
-{#                                    </div>#}
-{#                                {% endfor %}#}
-{#                            </div>#}
                                <div class="form-group">
+                                <h2 style="font-family: 'Roboto Mono'; font-size: 18px; color: white;">Employment</h2>
                                 <input placeholder="Company Name" type="text" class="form-control mb-2"
                                        id="{{ update_employments_form.company.id_for_label }}"
                                        name="{{ update_employments_form.company.html_name }}"
                                        value="{% if update_employments_form.company.value %} {{ update_employments_form.company.value }} {% endif %}">
-                                {% if update_employments_form.company.errors %}
-                                    <div class="custom-text-danger">
-                                        {{ update_employments_form.company.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <input placeholder="Position" type="text" class="form-control mb-2"
-                                       id="{{ update_employments_form.position.id_for_label }}"
-                                       name="{{ update_employments_form.position.html_name }}"
-                                       value="{% if update_employments_form.position.value %} {{ update_employments_form.position.value }} {% endif %}">
-                                {% if update_employments_form.position.errors %}
-                                    <div class="custom-text-danger">
-                                        {{ update_employments_form.position.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <input placeholder="Start Date" type="date" class="form-control mb-2"
-                                       id="{{ update_employments_form.start_date.id_for_label }}"
-                                       name="{{ update_employments_form.start_date.html_name }}"
-                                       value="{{ update_employments_form.start_date.value|date:'Y-m-d' }}">
-                                {% if update_employments_form.start_date.errors %}
-                                    <div class="custom-text-danger">
-                                        {{ update_employments_form.start_date.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <input placeholder="End Date" type="date" class="form-control mb-2"
-                                       id="{{ update_employments_form.end_date.id_for_label }}"
-                                       name="{{ update_employments_form.end_date.html_name }}"
-                                       value="{{ update_employments_form.end_date.value|date:'Y-m-d' }}">
-                                {% if update_employments_form.end_date.errors %}
-                                    <div class="custom-text-danger">
-                                        {{ update_employments_form.end_date.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
+                                   {% if update_employments_form.company.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.company.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="Position" type="text" class="form-control mb-2"
+                                           id="{{ update_employments_form.position.id_for_label }}"
+                                           name="{{ update_employments_form.position.html_name }}"
+                                           value="{% if update_employments_form.position.value %} {{ update_employments_form.position.value }} {% endif %}">
+                                    {% if update_employments_form.position.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.position.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="Start Date" type="date" class="form-control mb-2"
+                                           id="{{ update_employments_form.start_date.id_for_label }}"
+                                           name="{{ update_employments_form.start_date.html_name }}"
+                                           value="{{ update_employments_form.start_date.value|date:'Y-m-d' }}">
+                                     {% if update_employments_form.start_date.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.start_date.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="End Date" type="date" class="form-control mb-2"
+                                           id="endemployment"
+                                           name="{{ update_employments_form.end_date.html_name }}"
+                                           value="{{ update_employments_form.end_date.value|date:'Y-m-d' }}">
+                                    {% if update_employments_form.end_date.errors %}
+                                        <div class="text-danger">
+                                            {{ update_employments_form.end_date.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="position_inprogress"
-                                       name="position_inprogress" onchange="toggleEndedWorkInput()">
+                                       name="position_inprogress" onclick="toggleEndedWorkInput()">
                                 <label style="color: white" class="form-check-label" for="position_inprogress">In
                                     Progress</label>
                             </div>
-                            <button name="update_employments" type="submit" class="btn btn-primary">Save changes
-                            </button>
+                        <div style="padding: 2%">
+                            
+                        <div style="padding: 2%; display: flex; gap: 10px;">
+                        <form action="{% url 'update_employments' %}" method="post">
+                            {% csrf_token %}
+                            <button name="update_employments" type="submit" class="btn btn-primary">Save</button>
                         </form>
+                        
+
+                            <form action="{% url 'delete_employment' %}" method="post">
+                                {% csrf_token %}
+                            <input type="checkbox" class="delete-pof-checkbox" name="delete-prf-credentials" value="True"
+                                   {% if delete_professional_credentials_form.delete_prf_credentials.value %}checked{% endif %}>
+                            <button name="delete-prf-credentials" id="delete-pof-button" type="submit" class="btn btn-primary"
+                                    style="align-items: center;" disabled>DELETE!</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -348,46 +369,35 @@
     </div>
     </body>
 
-    <!-- TODO: the in progress toggling doesn't work!!!! -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const deleteCheckboxes = document.querySelectorAll('.delete-checkbox');
-            const deleteButton = document.getElementById('deletebutton');
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteCheckboxes = document.querySelectorAll('.delete-checkbox, .delete-edu-checkbox, .delete-pof-checkbox');
+        const deleteButtons = document.querySelectorAll('#deletebutton, #delete-edu-button, #delete-pof-button');
 
-            deleteCheckboxes.forEach(function (checkbox) {
-                checkbox.addEventListener('change', function () {
-                    let enableButton = false;
-                    deleteCheckboxes.forEach(function (cb) {
-                        if (cb.checked) {
-                            enableButton = true;
-                        }
-                    });
-                    deleteButton.disabled = !enableButton;
-                });
+        deleteCheckboxes.forEach(function (checkbox, index) {
+            checkbox.addEventListener('change', function () {
+                deleteButtons[index].disabled = !checkbox.checked;
             });
         });
+    });
 
-        function toggleEndedSchoolInput() {
-            var checkbox = document.getElementById("school_inprogress");
-            var endedInput = document.getElementById("endedschool");
+    function toggleEndedSchoolInput() {
+        var checkbox = document.getElementById("school_inprogress");
+        var endedInput = document.getElementById("endeducation");
 
-            if (checkbox.checked) {
-                endedInput.style.display = "none";
-            } else {
-                endedInput.style.display = "block";
-            }
-        };
+        if (checkbox) {
+            endedInput.disabled = checkbox.checked;
+        }
+    }
 
-        function toggleEndedWorkInput() {
-            var checkbox = document.getElementById("position_inprogress");
-            var endedInput = document.getElementById("endedwork");
+    function toggleEndedWorkInput() {
+        var checkbox = document.getElementById("position_inprogress");
+        var endedInput = document.getElementById("endemployment");
 
-            if (checkbox.checked) {
-                endedInput.style.display = "none";
-            } else {
-                endedInput.style.display = "block";
-            }
-        };
-    </script>
+        if (checkbox) {
+            endedInput.disabled = checkbox.checked;
+        }
+    }
+</script>
 
 {% endblock %}

@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import timezone, date
 from django import forms
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.utils.translation import gettext_lazy as _
@@ -222,14 +222,18 @@ class UpdateEmploymentsFrom(forms.ModelForm):
     def clean_start_date(self):
         start_date = self.cleaned_data["start_date"]
         if not start_date:
-            raise forms.ValidationError(
-                _("Start date field is required."), code="invalid"
-            )
-        if start_date > timezone.now().date():
-                raise forms.ValidationError(
-                    _("Start date cannot be set in the future."), code="invalid"
-                )
+            raise forms.ValidationError(_("Start date field is required."), code="invalid")
+        if start_date > date.today():
+            raise forms.ValidationError(_("Start date cannot be in the future."), code="invalid")
         return start_date
+
+    def clean_end_date(self):
+        end_date = self.cleaned_data["end_date"]
+        if end_date and end_date < self.cleaned_data["start_date"]:
+            raise forms.ValidationError(
+                _("End date cannot be before the start date."), code="invalid"
+            )
+        return end_date
 
 
 class UpdateEducationForm(forms.ModelForm):
@@ -294,11 +298,19 @@ class UpdateEducationForm(forms.ModelForm):
         start_date = self.cleaned_data["start_date"]
         if not start_date:
             raise forms.ValidationError(_("Start date is required"), code="invalid")
-        if start_date > timezone.now().date():
+        if start_date > date.today():
                 raise forms.ValidationError(
                     _("Start date cannot be set in the future."), code="invalid"
                 )
         return start_date
+
+    def clean_end_date(self):
+        end_date = self.cleaned_data["end_date"]
+        if end_date and end_date < self.cleaned_data["start_date"]:
+            raise forms.ValidationError(
+                _("End date cannot be before the start date."), code="invalid"
+            )
+        return end_date
 
 
 class BanForm(forms.ModelForm):

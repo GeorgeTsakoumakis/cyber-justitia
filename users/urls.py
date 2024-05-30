@@ -18,6 +18,9 @@ urlpatterns = [
     path("update_employments/", views.update_employments, name="update_employments"),
     path("ban/<str:username>/", views.ban_user, name="ban_user"),
     path("banned/", views.banned, name="banned"),
+    path('delete_education/', views.delete_education, name='delete_education'),
+    path('delete_employment/', views.delete_employments, name='delete_employment'),
+
     path(
         "400/", test_error_handlers.TestCustomErrorHandlers.custom_400_view, name="400"
     ),
