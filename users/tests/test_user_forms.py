@@ -456,7 +456,5 @@ class BanFormTest(TestCase):
         self.assertTrue(user.is_banned)
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
