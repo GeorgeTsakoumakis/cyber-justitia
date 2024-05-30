@@ -93,7 +93,7 @@ class Post(models.Model):
     def upvote(self, user):
         with transaction.atomic():
             post_vote, created = PostVote.objects.select_for_update().get_or_create(
-                user=user, post=self
+                user=user, post=self, vote_type=PostVote.VoteType.UPVOTE
             )
             if not created and post_vote.vote_type != PostVote.VoteType.UPVOTE:
                 post_vote.vote_type = PostVote.VoteType.UPVOTE
@@ -102,7 +102,7 @@ class Post(models.Model):
     def downvote(self, user):
         with transaction.atomic():
             post_vote, created = PostVote.objects.select_for_update().get_or_create(
-                user=user, post=self
+                user=user, post=self, vote_type=PostVote.VoteType.DOWNVOTE
             )
             if not created and post_vote.vote_type != PostVote.VoteType.DOWNVOTE:
                 post_vote.vote_type = PostVote.VoteType.DOWNVOTE
@@ -172,7 +172,7 @@ class Comment(models.Model):
                 comment_vote,
                 created,
             ) = CommentVote.objects.select_for_update().get_or_create(
-                user=user, comment=self
+                user=user, comment=self, vote_type=CommentVote.VoteType.UPVOTE
             )
             if not created and comment_vote.vote_type != CommentVote.VoteType.UPVOTE:
                 comment_vote.vote_type = CommentVote.VoteType.UPVOTE
@@ -184,7 +184,7 @@ class Comment(models.Model):
                 comment_vote,
                 created,
             ) = CommentVote.objects.select_for_update().get_or_create(
-                user=user, comment=self
+                user=user, comment=self, vote_type=CommentVote.VoteType.DOWNVOTE
             )
             if not created and comment_vote.vote_type != CommentVote.VoteType.DOWNVOTE:
                 comment_vote.vote_type = CommentVote.VoteType.DOWNVOTE

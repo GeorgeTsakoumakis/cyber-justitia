@@ -277,6 +277,5 @@ class ForumViewsTestCase(TestCase):
         self.assertTemplateUsed(response, 'errors/400.html')
 
 
-
 if __name__ == '__main__':
     unittest.main()
