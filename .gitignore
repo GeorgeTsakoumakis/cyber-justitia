@@ -4,7 +4,6 @@
 **/.env
 **/__pycache__/
 **/db.sqlite3
-**/migrations/*.py
 !**/migrations/__init__.py
 **/.coverage
 **/htmlcov/
