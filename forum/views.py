@@ -4,8 +4,10 @@ from .models import Post, Comment, PostVote, CommentVote
 from .utils import update_views
 from .forms import CreatePostForm, CreateCommentForm, PostVoteForm, CommentVoteForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from users.decorators import ban_forbidden
 
 
+@ban_forbidden(redirect_url="/banned/")
 def forums(request):
     vote_form = PostVoteForm()
     posts = Post.objects.filter(is_deleted=False).order_by("-created_at")
@@ -26,6 +28,7 @@ def forums(request):
     return render(request, "forum.html", context)
 
 
+@ban_forbidden(redirect_url="/banned/")
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.get_comments()
@@ -48,6 +51,7 @@ def post_detail(request, slug):
     return render(request, "forumpost.html", context)
 
 
+@ban_forbidden(redirect_url="/banned/")
 def create_post(request):
     if not request.user.is_authenticated:
         return redirect("login")
@@ -64,6 +68,7 @@ def create_post(request):
     return render(request, "postcreation.html", {"form": form})
 
 
+@ban_forbidden(redirect_url="/banned/")
 def create_comment(request, slug):
     # Don't 404, redirect to login
     if not request.user.is_authenticated:
@@ -81,6 +86,7 @@ def create_comment(request, slug):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def delete_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.user == post.user or request.user.is_staff:
@@ -89,6 +95,7 @@ def delete_post(request, slug):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def delete_comment(request, slug, comment_id):
     comment = get_object_or_404(Comment, comment_id=comment_id)
     if request.user == comment.user or request.user.is_staff:
@@ -97,6 +104,7 @@ def delete_comment(request, slug, comment_id):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def vote_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.method == "POST":
@@ -114,6 +122,7 @@ def vote_post(request, slug):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def vote_comment(request, slug, comment_id):
     comment = get_object_or_404(Comment, comment_id=comment_id)
     if request.method == "POST":
@@ -135,6 +144,7 @@ def vote_comment(request, slug, comment_id):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def search(request):
     query = request.GET.get('q')
 

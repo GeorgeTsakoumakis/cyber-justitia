@@ -1,12 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
+from .decorators import ban_forbidden, anonymous_required
 from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse
-
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.views.defaults import page_not_found
 from chatbot.models import Session
@@ -20,30 +18,6 @@ from .forms import (
     UpdateEducationForm,
     UpdateEmploymentsFrom, BanForm,
 )
-
-
-def anonymous_required(redirect_url):
-    """
-    Decorator for views that allow only unauthenticated users to access view.
-    Usage:
-    @anonymous_required(redirect_url='company_info')
-    def homepage(request):
-        return render(request, 'homepage.html')
-
-    :param redirect_url: URL to redirect to if user is authenticated
-    Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
-    """
-
-    def _wrapped(view_func, *args, **kwargs):
-        def check_anonymous(request, *args, **kwargs):
-            view = view_func(request, *args, **kwargs)
-            if request.user.is_authenticated:
-                return redirect(redirect_url)
-            return view
-
-        return check_anonymous
-
-    return _wrapped
 
 
 def index(request):
@@ -131,6 +105,7 @@ def login(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def dashboard(request):
     """
     Handles all POST requests from the dashboard page.
@@ -200,7 +175,8 @@ def dashboard(request):
     return render(request, "dashboard.html", context)
 
 
-@login_required()
+@login_required
+@ban_forbidden(redirect_url="/banned/")
 def deactivate_account(request):
     """
     Deactivates the user's account.
@@ -225,6 +201,7 @@ def deactivate_account(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def change_password(request):
     """
     Handles the change password form submission.
@@ -246,6 +223,7 @@ def change_password(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def update_details(request):
     """
     Handles the update details form submission.
@@ -265,6 +243,7 @@ def update_details(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def update_description(request):
     """
     Handles the update description form submission.
@@ -283,6 +262,7 @@ def update_description(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def update_flair(request):
     """
     Handles the update flair form submission.
@@ -304,6 +284,7 @@ def update_flair(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def update_education(request):
     """
     Handles the update education form submission.
@@ -333,6 +314,7 @@ def update_education(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def update_employments(request):
     """
     Handles the update employments form submission.
@@ -370,6 +352,7 @@ def logout(request):
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def profile(request, username):
     """Renders the profile page at /profile/username"""
     user = CustomUser.objects.get(username=username)
@@ -416,6 +399,12 @@ def ban_user(request, username):
     else:
         # Return 403 Forbidden
         return render(request, "errors/403.html", status=403)
+
+
+@login_required
+def banned(request):
+    """Renders the banned page"""
+    return render(request, "errors/banned.html")
 
 
 def codeofconduct(request):

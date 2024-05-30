@@ -8,9 +8,11 @@ from django.contrib.auth.decorators import login_required
 import json
 from vertexai.generative_models import Content, GenerativeModel, Part
 import vertexai
+from users.decorators import ban_forbidden
 
 
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def chatbot_session(request, session_id):
     # Check if the user is authenticated
     if request.user.is_authenticated:
@@ -172,6 +174,7 @@ def process_chat_message(request):
 
 @require_POST
 @login_required
+@ban_forbidden(redirect_url="/banned/")
 def create_session(request):
     # Check if the user is authenticated
     if request.user.is_authenticated:
