@@ -6,7 +6,8 @@ Author: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
 
 import unittest
 from django.test import TestCase
-from users.forms import UpdateDetailsForm, UpdatePasswordForm, UpdateDescriptionForm, DeactivateAccountForm, UpdateFlairForm, UpdateEmploymentsForm, UpdateEducationForm
+from users.forms import (UpdateDetailsForm, UpdatePasswordForm, UpdateDescriptionForm, DeactivateAccountForm,
+                         UpdateFlairForm, UpdateEmploymentsForm, UpdateEducationForm, BanForm)
 from users.models import CustomUser, ProfessionalUser, Employments, Education
 from datetime import date, timedelta
 
@@ -315,6 +316,7 @@ class UpdateEmploymentsFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['end_date'], ["End date cannot be before the start date."])
 
+
 class UpdateEducationFormTest(TestCase):
     """
     Test case for the UpdateEducationForm.
@@ -382,6 +384,78 @@ class UpdateEducationFormTest(TestCase):
         form = UpdateEducationForm(data=self.education_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['end_date'], ["End date cannot be before the start date."])
+
+
+class BanFormTest(TestCase):
+    """
+    Test case for the BanForm.
+    """
+
+    def setUp(self):
+        """
+        TUF33: Set up a test user for use in the tests.
+        """
+        self.user = CustomUser.objects.create_user(
+            username='testuser',
+            password='Password123!',
+            email='testuser@example.com',
+            first_name='Test',
+            last_name='User'
+        )
+
+    def test_valid_ban_form(self):
+        """
+        TUF34: Test form validation with valid data.
+        """
+        form = BanForm(data={'reason_banned': 'Violation of terms', 'confirm_ban': True}, instance=self.user)
+        self.assertTrue(form.is_valid())
+
+    def test_missing_reason_banned(self):
+        """
+        TUF35: Test form validation with missing reason for banning.
+        """
+        form = BanForm(data={'confirm_ban': True}, instance=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['reason_banned'], ["You must provide a reason for banning the user."])
+
+    def test_missing_confirm_ban(self):
+        """
+        TUF36: Test form validation with missing confirmation for ban.
+        """
+        form = BanForm(data={'reason_banned': 'Violation of terms'}, instance=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['confirm_ban'], ["You must confirm you want to ban the user."])
+
+    def test_already_banned_user(self):
+        """
+        TUF37: Test form validation for already banned user.
+        """
+        self.user.is_banned = True
+        self.user.save()
+        form = BanForm(data={'reason_banned': 'Violation of terms', 'confirm_ban': True}, instance=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.non_field_errors(), ['This user is already banned.'])
+
+    def test_ban_admin_user(self):
+        """
+        TUF38: Test form validation for banning an admin user.
+        """
+        self.user.is_superuser = True
+        self.user.save()
+        form = BanForm(data={'reason_banned': 'Violation of terms', 'confirm_ban': True}, instance=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.non_field_errors(), ['You can\'t ban an admin.'])
+
+    def test_save_banned_user(self):
+        """
+        TUF39: Test saving a banned user.
+        """
+        form = BanForm(data={'reason_banned': 'Violation of terms', 'confirm_ban': True}, instance=self.user)
+        self.assertTrue(form.is_valid())
+        user = form.save()
+        self.assertTrue(user.is_banned)
+
+
 
 
 if __name__ == '__main__':
