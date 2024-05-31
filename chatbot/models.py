@@ -1,3 +1,9 @@
+"""
+This module contains the models for the chatbot app.
+
+Author: Georgios Tsakoumakis, Ionut-Valeriu Facaeru
+"""
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -19,6 +25,10 @@ class Session(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
 
     def __str__(self):
+        """
+        String representation of the session.
+        :return: str - session representation in the format "username_session_id"
+        """
         return self.user.username + "_" + str(self.session_id)
 
 
@@ -34,6 +44,9 @@ class Message(models.Model):
         db_table = "messages"
 
     class Role(models.TextChoices):
+        """
+        Enum class for the role of the message.
+        """
         BOT = "bot", _("Bot")
         USER = "user", _("User")
         SYSTEM = "system", _("System")
@@ -50,9 +63,19 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        """
+        String representation of the message.
+        :return: str - message representation in the format "role: text"
+        """
         return f"{self.role.capitalize()}: {self.text}"
 
     def clean(self):
+        """
+        Custom validation for the message model.
+        :raises ValidationError: if the message text is empty or whitespace only, exceeds 1024 characters,
+            the role is invalid, or the message is not associated with a session.
+        :return: None
+        """
         if self.text.strip() == "":
             raise ValidationError("Message text cannot be empty or whitespace only.")
         if len(self.text) > 1024:
@@ -63,5 +86,9 @@ class Message(models.Model):
             raise ValidationError("Message must be associated with a session.")
 
     def save(self, *args, **kwargs):
+        """
+        Custom save method for the message model.
+        :return: None
+        """
         self.full_clean()
         super(Message, self).save(*args, **kwargs)

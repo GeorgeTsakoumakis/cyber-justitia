@@ -1,5 +1,11 @@
-import os
+"""
+This module defines the views for the chatbot application.
+The views include the chatbot home page, chatbot session page, and the chatbot message processing view.
 
+Author: Georgios Tsakoumakis
+"""
+
+import os
 from django.shortcuts import render, redirect
 from chatbot.models import Session, Message
 from django.http import JsonResponse
@@ -14,6 +20,12 @@ from users.decorators import ban_forbidden
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def chatbot_session(request, session_id):
+    """
+    This view renders the chatbot interface for a specific session. Applies to authenticated users only.
+    :param request: Request object
+    :param session_id: Session ID
+    :return: Chatbot interface for the session
+    """
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Retrieve session IDs associated with the logged-in user
@@ -48,6 +60,11 @@ def chatbot_session(request, session_id):
 
 
 def chatbot_home(request):
+    """
+    This view renders the chatbot home page. If the user is authenticated, it redirects to the last session.
+    :param request: Request object
+    :return: Chatbot home page or the last session if the user is authenticated
+    """
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Retrieve session IDs associated with the logged-in user
@@ -81,6 +98,11 @@ def chatbot_home(request):
 
 
 def process_chat_message(request):
+    """
+    This view processes the user's message and generates a response from the chatbot.
+    :param request: Request object
+    :return: Chatbot response in JSON format
+    """
     if request.method == "POST":
         # Retrieve the user's message from the request body
         data = json.loads(request.body)
@@ -176,6 +198,11 @@ def process_chat_message(request):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def create_session(request):
+    """
+    This view creates a new session for the logged-in user.
+    :param request: Request object
+    :return: New session for the logged-in user
+    """
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Retrieve session IDs associated with the logged-in user

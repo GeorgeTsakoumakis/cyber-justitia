@@ -1,5 +1,10 @@
-import unittest
+"""
+Test cases for chatbot-related views.
 
+Author: Ionut-Valeriu Facaeru
+"""
+
+import unittest
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
