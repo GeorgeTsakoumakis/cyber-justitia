@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
                     "flair",
                     "is_professional",
                     "is_banned",
-                    "phone",
+                    "reason_banned",
                 )
             },
         ),
