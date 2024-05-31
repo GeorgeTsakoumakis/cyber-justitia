@@ -77,6 +77,17 @@ class ProfessionalUser(models.Model):
         help_text="Short text that best describes your professional skills",
     )
 
+    def clean(self):
+        super().clean()
+        if not self.flair:
+            raise ValidationError(_("Flair field is required."), code="invalid")
+        if len(self.flair) > 100:
+            raise ValidationError(_("Flair is too long."), code="invalid")
+        return self
+
+    def __str__(self):
+        return self.user.username
+
 
 class Employments(models.Model):
     class Meta:
@@ -110,6 +121,9 @@ class Employments(models.Model):
         if self.end_date and self.end_date < self.start_date:
             raise ValidationError(_("End date cannot be before the start date."), code="invalid")
         return self
+
+    def __str__(self):
+        return self.company + " - " + self.position
 
 
 class Education(models.Model):
@@ -149,3 +163,6 @@ class Education(models.Model):
             raise ValidationError(_("End date cannot be before the start date."), code="invalid")
 
         return self
+
+    def __str__(self):
+        return self.school_name + " - " + self.degree
