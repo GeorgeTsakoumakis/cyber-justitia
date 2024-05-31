@@ -265,7 +265,7 @@ class UpdateFlairForm(forms.ModelForm):
         return flair
 
 
-class UpdateEmploymentsFrom(forms.ModelForm):
+class UpdateEmploymentsForm(forms.ModelForm):
     """
     Form for updating the user's employment credentials.
     """
