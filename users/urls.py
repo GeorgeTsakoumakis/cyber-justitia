@@ -1,3 +1,9 @@
+"""
+This module contains the URL patterns for the users app.
+
+Authors: Georgios Tsakoumakis, Jonathan Muse, Ziad El Krekshi, Ayesha Suleman
+"""
+
 from django.urls import path
 from . import views
 from .tests import test_error_handlers

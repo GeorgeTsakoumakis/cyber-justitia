@@ -1,5 +1,10 @@
-from functools import wraps
+"""
+Custom decorators for user authentication and authorization
 
+Author: Georgios Tsakoumakis
+"""
+
+from functools import wraps
 from django.shortcuts import redirect
 
 
@@ -46,5 +51,3 @@ def ban_forbidden(redirect_url="/banned/"):
             return view_func(request, *args, **kwargs)
         return wrap
     return decorator
-
-

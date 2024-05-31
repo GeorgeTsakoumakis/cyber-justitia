@@ -1,3 +1,9 @@
+"""
+This module contains the views for the users app.
+
+Authors: Georgios Tsakoumakis, Jonathan Muse, Ziad El Krekshi, Ayesha Suleman
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .decorators import ban_forbidden, anonymous_required
@@ -5,7 +11,6 @@ from django.contrib.auth.models import auth
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse
 import logging
 from .models import CustomUser, ProfessionalUser, Education, Employments
 from django.views.defaults import page_not_found
@@ -24,37 +29,22 @@ from .forms import (
 logger = logging.getLogger('login_attempts')
 
 
-def anonymous_required(redirect_url):
-    """
-    Decorator for views that allow only unauthenticated users to access view.
-    Usage:
-    @anonymous_required(redirect_url='company_info')
-    def homepage(request):
-        return render(request, 'homepage.html')
-
-    :param redirect_url: URL to redirect to if user is authenticated
-    Adapted from https://gist.github.com/m4rc1e/b28cfc9d24c3c2c47f21f2b89cffda86
-    """
-
-    def _wrapped(view_func, *args, **kwargs):
-        def check_anonymous(request, *args, **kwargs):
-            view = view_func(request, *args, **kwargs)
-            if request.user.is_authenticated:
-                return redirect(redirect_url)
-            return view
-
-        return check_anonymous
-
-    return _wrapped
-
-
 def index(request):
-    """Renders the index page"""
+    """
+    Renders the index page at /.
+    :param request: Request object
+    :return: Rendered index page
+    """
     return render(request, "index.html")
 
 
 @anonymous_required(redirect_url="chatbot/")
 def register(request):
+    """
+    Handles the registration form.
+    :param request: Request object
+    :return: Redirect to login page if registration is successful, otherwise render the registration page
+    """
     if request.method == "POST":
         first_name = request.POST["first_name"]
         last_name = request.POST["last_name"]
@@ -70,7 +60,7 @@ def register(request):
 
         try:
             validate_password(password)
-        except Exception as e:
+        except Exception:
             messages.info(request, "Password not strong enough")
             return redirect("register")
 
@@ -112,7 +102,11 @@ def register(request):
 
 @anonymous_required(redirect_url="chatbot/")
 def login(request):
-    """Handles the login form"""
+    """
+    Handles the login form.
+    :param request: Request object
+    :return: Redirect to chatbot page if login is successful, otherwise render the login page
+    """
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -143,10 +137,19 @@ def dashboard(request):
 
     Depending on the action in the POST request, different functions are called
     to handle the respective form submissions (update details, change password,
-    deactivate account, update description)."""
+    deactivate account, update description).
+
+    If the request method is GET, the dashboard page is rendered with the user's
+    details and forms for updating the user's details, password, description, and flair.
+
+    :param request: Request object
+    :return: Rendered dashboard page
+    """
 
     # Initialize forms with the current user's data
     user = CustomUser.objects.get(username=request.user.username)
+
+    # Check if the user is a professional user and get their education and employments
     if user.is_professional:
         professional_user = ProfessionalUser.objects.get(user=request.user)
         try:
@@ -161,12 +164,14 @@ def dashboard(request):
         update_education_form = UpdateEducationForm(instance=education)
         update_employments_form = UpdateEmploymentsFrom(instance=employments)
 
+    # Initialize forms with the current user's data
     update_details_form = UpdateDetailsForm(instance=request.user)
     update_password_form = UpdatePasswordForm(instance=request.user)
     deactivate_account_form = DeactivateAccountForm(instance=request.user)
     update_description_form = UpdateDescriptionForm(instance=request.user)
     update_flair_form = UpdateFlairForm(instance=request.user)
 
+    # Handle POST requests from the dashboard page based on the action in the request
     if request.method == "POST":
         if "update_details" in request.POST:
             return update_details(request)
@@ -205,6 +210,7 @@ def dashboard(request):
 
     return render(request, "dashboard.html", context)
 
+
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def deactivate_account(request):
@@ -214,6 +220,12 @@ def deactivate_account(request):
     If the form is valid and the 'deactivate_profile' checkbox is checked,
     the user's account is set to inactive, and the user is redirected to the index page
     with a success message.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the index page with a success message if the account is deactivated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         # Creates a form instance and populates it with data from the request
@@ -241,6 +253,12 @@ def change_password(request):
 
     If the form is valid, the user's password is updated, the user is kept logged in,
     and a success message is displayed. The user is then redirected to the dashboard.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the dashboard page with a success message if the password is updated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         form = UpdatePasswordForm(request.POST, instance=request.user)
@@ -263,6 +281,12 @@ def update_details(request):
 
     If the form is valid, the user's details are updated, and a success message is displayed.
     The user is then redirected to the dashboard.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the dashboard page with a success message if the details are updated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         form = UpdateDetailsForm(request.POST, instance=request.user)
@@ -283,6 +307,12 @@ def update_description(request):
 
     If the form is valid, the user's description is updated, and a success message is displayed.
     The user is then redirected to the dashboard.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the dashboard page with a success message if the description is updated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         form = UpdateDescriptionForm(request.POST, instance=request.user)
@@ -302,6 +332,12 @@ def update_flair(request):
 
     If the form is valid, the user's flair is updated, and a success message is displayed.
     The user is then redirected to the dashboard.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the dashboard page with a success message if the flair is updated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         # Get the professional user profile if it exists, otherwise creates it
@@ -324,6 +360,12 @@ def update_education(request):
 
     If the form is valid, the user's education is updated, and a success message is displayed.
     The user is then redirected to the dashboard.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the dashboard page with a success message if the education is updated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         professional_user = ProfessionalUser.objects.get(user=request.user)
@@ -354,6 +396,12 @@ def update_employments(request):
 
     If the form is valid, the user's employments are updated, and a success message is displayed.
     The user is then redirected to the dashboard.
+
+    If the form is not valid, the user is redirected to the dashboard page.
+
+    :param request: Request object
+    :return: Redirect to the dashboard page with a success message if the employments are updated successfully,
+                otherwise redirect to the dashboard page
     """
     if request.method == "POST":
         professional_user = ProfessionalUser.objects.get(user=request.user)
@@ -378,7 +426,11 @@ def update_employments(request):
 
 @login_required
 def logout(request):
-    """Logs out the user"""
+    """
+    Logs the user out and redirects them to the index page.
+    :param request: Request object
+    :return: Redirect to the index page
+    """
     request.session.pop("session_ids", None)
     auth.logout(request)
     return redirect("/")
@@ -387,7 +439,13 @@ def logout(request):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def profile(request, username):
-    """Renders the profile page at /profile/username"""
+    """
+    Renders the user profile page for the specified user.
+    The user's recent posts and comments are displayed on the page.
+    :param request: Request object
+    :param username: Username of the user whose profile is being viewed
+    :return: Rendered user profile page
+    """
     user = CustomUser.objects.get(username=username)
     educations = Education.objects.filter(prof_id__user=user)
     employments = Employments.objects.filter(prof_id__user=user)
@@ -440,12 +498,21 @@ def ban_user(request, username):
 
 @login_required
 def banned(request):
-    """Renders the banned page"""
+    """
+    Renders the banned page.
+    :param request: Request object
+    :return: Rendered banned page
+    """
     return render(request, "errors/banned.html")
 
 
 @login_required
 def delete_education(request):
+    """
+    Deletes the education credentials of the user.
+    :param request: Request object
+    :return: Redirect to the dashboard page
+    """
     professional_user = ProfessionalUser.objects.get(user=request.user)
     try:
         education = Education.objects.get(prof_id=professional_user)
@@ -458,6 +525,11 @@ def delete_education(request):
 
 @login_required
 def delete_employments(request):
+    """
+    Deletes the employment credentials of the user.
+    :param request: Request object
+    :return: Redirect to the dashboard page
+    """
     professional_user = ProfessionalUser.objects.get(user=request.user)
     try:
         employments = Employments.objects.get(prof_id=professional_user)
@@ -469,30 +541,55 @@ def delete_employments(request):
 
 
 def codeofconduct(request):
-    """Renders the code of conduct page"""
+    """
+    Renders the code of conduct page.
+    :param request: Request object
+    :return: Rendered code of conduct page
+    """
     return render(request, "codeofconduct.html")
 
 
 def handler400(request, *args, **argv):
-    """Custom error handlers bad request"""
+    """
+    Custom error handler bad request
+    :param request: Request object
+    :return: Rendered 400 error page
+    """
     return render(request, "errors/400.html", status=400)
 
 
 def handler403(request, *args, **argv):
-    """Custom error handlers forbidden"""
+    """
+    Custom error handler forbidden
+    :param request: Request object
+    :return: Rendered 403 error page
+    """
     return render(request, "errors/403.html", status=403)
 
 
 def handler404(request, exception):
-    """Custom error handlers not found"""
+    """
+    Custom error handler page not found
+    :param request: Request object
+    :param exception: Exception object
+    :return: Rendered 404 error page
+    """
     return page_not_found(request, exception, template_name="errors/404.html")
 
 
 def handler500(request, *args, **argv):
-    """Custom error handlers server error"""
+    """
+    Custom error handler internal server error
+    :param request: Request object
+    :return: Rendered 500 error page
+    """
     return render(request, "errors/500.html", status=500)
 
 
 def handler503(request, *args, **argv):
-    """Custom error handlers service unavailable"""
+    """
+    Custom error handler service unavailable
+    :param request: Request object
+    :return: Rendered 503 error page
+    """
     return render(request, "errors/503.html", status=503)

@@ -1,3 +1,8 @@
+"""
+Models for the users app
+Authors: Georgios Tsakoumakis, Jonathan Muse, Ionut-Valeriu Facaeru
+"""
+
 from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,6 +11,13 @@ from django.utils.translation import gettext as _
 
 
 class CustomUser(AbstractUser):
+    """
+    Custom user model that extends the default Django user model
+    Additional fields:
+    - description: A short description about the user
+    - is_banned: A boolean field that indicates if the user is banned
+    - reason_banned: A short description about the reason for banning the user
+    """
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
@@ -34,7 +46,11 @@ class CustomUser(AbstractUser):
     )
 
     def clean(self):
-        # Updated clean function because default Django doesn't recognize whitespace as blank
+        """
+        Custom clean method to validate the user model
+        :raises ValidationError: If the first name or last name is empty or whitespace only
+        :return: None
+        """
         super().clean()
         if not self.first_name.strip():
             raise ValidationError({'first_name': "First name cannot be blank or whitespace only."})
@@ -42,27 +58,42 @@ class CustomUser(AbstractUser):
             raise ValidationError({'last_name': "Last name cannot be blank or whitespace only."})
 
     def __str__(self):
+        """
+        String representation of the user model
+        :return: str - username
+        """
         return self.username
 
     @property
     def is_professional(self):
         """
         Check if the user is a professional user
-        :return:  bool
+        :return: bool
         """
         # Query the ProfessionalUser model to check if the user is a professional
         exists = ProfessionalUser.objects.filter(user=self).exists()
         return exists
 
-    # If user exists in professional user model, return its flair
     @property
     def flair(self):
+        """
+        Get the flair of the professional user
+        :return: str - flair
+        """
+        # If user exists in professional user model, return its flair
         if self.is_professional:
             return ProfessionalUser.objects.get(user=self).flair
         return None
 
 
 class ProfessionalUser(models.Model):
+    """
+    Model to store information about professional users in conjunction with the CustomUser model
+    Additional fields:
+    - prof_id: Primary key field for professionals
+    - user: One-to-one field to the CustomUser model
+    - flair: A short text that best describes the professional qualifications of the user
+    """
     class Meta:
         verbose_name = "Professional User"
         verbose_name_plural = "Professional Users"
@@ -74,10 +105,15 @@ class ProfessionalUser(models.Model):
         _("professional flair"),
         max_length=100,
         null=False,
-        help_text="Short text that best describes your professional skills",
+        help_text="Short text that best describes your professional qualifications",
     )
 
     def clean(self):
+        """
+        Custom clean method to validate the professional user model
+        :raises ValidationError: If the flair is empty or longer than 100 characters
+        :return: None
+        """
         super().clean()
         if not self.flair:
             raise ValidationError(_("Flair field is required."), code="invalid")
@@ -86,10 +122,24 @@ class ProfessionalUser(models.Model):
         return self
 
     def __str__(self):
+        """
+        String representation of the professional user model
+        :return: str - username
+        """
         return self.user.username
 
 
 class Employments(models.Model):
+    """
+    Model to store information about employment credentials of professional users
+    Fields:
+    - employment_id: Primary key field for employments
+    - prof_id: Foreign key to the ProfessionalUser model (one-to-many relationship)
+    - company: Name of the company where the user was employed
+    - position: Position held by the user in the company
+    - start_date: Start date of the employment
+    - end_date: End date of the employment (optional)
+    """
     class Meta:
         db_table = "employments"
         verbose_name = "Employment"
@@ -105,6 +155,12 @@ class Employments(models.Model):
     end_date = models.DateField(_("end date"), null=True, blank=True)
 
     def clean(self):
+        """
+        Custom clean method to validate the employment model
+        :raises ValidationError: If the company, position or start date is empty or longer than 100 characters
+        :raises ValidationError: If the start date is in the future or the end date is before the start date
+        :return: None
+        """
         super().clean()
         if not self.company:
             raise ValidationError(_("Company name field is required."), code="invalid")
@@ -123,10 +179,24 @@ class Employments(models.Model):
         return self
 
     def __str__(self):
+        """
+        String representation of the employment model
+        :return: str - company name and position
+        """
         return self.company + " - " + self.position
 
 
 class Education(models.Model):
+    """
+    Model to store information about education credentials of professional users
+    Fields:
+    - education_id: Primary key field for educations
+    - prof_id: Foreign key to the ProfessionalUser model (one-to-many relationship)
+    - school_name: Name of the institution where the user studied
+    - degree: Degree obtained by the user
+    - start_date: Start date of the education
+    - end_date: End date of the education (optional)
+    """
     class Meta:
         db_table = "educations"
         verbose_name = "Education"
@@ -142,6 +212,12 @@ class Education(models.Model):
     end_date = models.DateField(_("end date"), null=True, blank=True)
 
     def clean(self):
+        """
+        Custom clean method to validate the education model
+        :raises ValidationError: If the school name, degree or start date is empty or longer than 100 characters
+        :raises ValidationError: If the start date is in the future or the end date is before the start date
+        :return: None
+        """
         super().clean()
 
         if not self.school_name:
@@ -165,4 +241,8 @@ class Education(models.Model):
         return self
 
     def __str__(self):
+        """
+        String representation of the education model
+        :return: str - school name and degree
+        """
         return self.school_name + " - " + self.degree
