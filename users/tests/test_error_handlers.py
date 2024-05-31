@@ -1,3 +1,9 @@
+"""
+Test module for custom error handlers.
+
+Author: Georgios Tsakoumakis, Ionut-Valeriu Facaeru
+"""
+
 from django.shortcuts import render
 from django.test import SimpleTestCase
 

@@ -1,5 +1,10 @@
-import unittest
+"""
+Test cases for the CustomUser, ProfessionalUser, Education, and Employments models.
 
+Authors: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
+"""
+
+import unittest
 from django.contrib.auth.password_validation import validate_password
 from django.test import TestCase
 from django.contrib.auth import get_user_model

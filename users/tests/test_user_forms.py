@@ -1,5 +1,10 @@
-import unittest
+"""
+Test cases for user-related forms.
 
+Author: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
+"""
+
+import unittest
 from django.test import TestCase
 from users.forms import UpdateDetailsForm, UpdatePasswordForm, UpdateDescriptionForm, DeactivateAccountForm, UpdateFlairForm
 from users.models import CustomUser, ProfessionalUser
