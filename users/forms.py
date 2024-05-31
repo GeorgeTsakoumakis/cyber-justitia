@@ -446,8 +446,9 @@ class UpdateEducationForm(forms.ModelForm):
         :raises: forms.ValidationError if the end date is before the start date
         :return: end_date
         """
-        end_date = self.cleaned_data["end_date"]
-        if end_date and end_date < self.cleaned_data["start_date"]:
+        end_date = self.cleaned_data.get("end_date")
+        start_date = self.cleaned_data.get("start_date")
+        if start_date and end_date and end_date < start_date:
             raise forms.ValidationError(
                 _("End date cannot be before the start date."), code="invalid"
             )
