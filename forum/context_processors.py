@@ -1,15 +1,15 @@
 from forum.models import Post
 
 
-def searchFunction(request):
+def search_function(request):
     search_context = {}
     posts = Post.objects.all()
     if "search" in request.GET:
         query = request.GET.get("q")
-        #Filter starts here
+        # Filter starts here
         search_box = request.GET.get("search-box")
         objects = posts.filter(text__icontains=query) | posts.filter(title__icontains=query)
-        #ends here
+        # ends here
         search_context = {
             "objects": objects,
             "query": query,
