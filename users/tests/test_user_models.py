@@ -1,7 +1,7 @@
 """
 Test cases for the CustomUser, ProfessionalUser, Education, and Employments models.
 
-Authors: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
+Author: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
 """
 
 import unittest

@@ -1,7 +1,7 @@
 """
 Test cases for user views.
 
-Authors: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
+Author: Ionut-Valeriu Facaeru, Georgios Tsakoumakis
 """
 
 import unittest

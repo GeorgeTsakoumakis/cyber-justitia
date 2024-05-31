@@ -3,7 +3,7 @@ Forms for the users app. These forms are used to update user details, change pas
 update employments, update education, ban a user, and update user description. The forms are used in the views to
 validate the data before saving it to the database.
 
-Authors: Jonathan Muse, Georgios Tsakoumakis
+Author: Jonathan Muse, Georgios Tsakoumakis
 """
 
 from datetime import date

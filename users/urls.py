@@ -1,7 +1,7 @@
 """
 This module contains the URL patterns for the users app.
 
-Authors: Georgios Tsakoumakis, Jonathan Muse, Ziad El Krekshi, Ayesha Suleman
+Author: Georgios Tsakoumakis, Jonathan Muse, Ziad El Krekshi, Ayesha Suleman
 """
 
 from django.urls import path

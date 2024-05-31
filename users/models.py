@@ -1,6 +1,6 @@
 """
 Models for the users app
-Authors: Georgios Tsakoumakis, Jonathan Muse, Ionut-Valeriu Facaeru
+Author: Georgios Tsakoumakis, Jonathan Muse, Ionut-Valeriu Facaeru
 """
 
 from datetime import date
