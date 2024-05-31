@@ -9,4 +9,4 @@
 **/htmlcov/
 /credentials
 /static/hitcount/*
-/login_attempts.log
+**/login_attempts.log
