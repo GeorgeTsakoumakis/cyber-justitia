@@ -1,3 +1,9 @@
+"""
+This module contains the views for the forum app.
+
+Author: Georgios Tsakoumakis, Jonathan Muse, Ziad El Krekshi
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment, PostVote, CommentVote
@@ -9,6 +15,12 @@ from users.decorators import ban_forbidden
 
 @ban_forbidden(redirect_url="/banned/")
 def forums(request):
+    """
+    This view is responsible for rendering the forum page.
+    It displays all the posts in the forum.
+    :param request: Request object
+    :return: Rendered forum page
+    """
     vote_form = PostVoteForm()
     posts = Post.objects.filter(is_deleted=False).order_by("-created_at")
     paginator = Paginator(posts, 5)  # Show 5 posts per page
@@ -30,6 +42,13 @@ def forums(request):
 
 @ban_forbidden(redirect_url="/banned/")
 def post_detail(request, slug):
+    """
+    This view is responsible for rendering the post detail page.
+    It displays the post and all the comments associated with it.
+    :param request: Request object
+    :param slug: Slug of the post
+    :return: Rendered post detail page
+    """
     post = get_object_or_404(Post, slug=slug)
     comments = post.get_comments()
     # Comment creation form
@@ -50,6 +69,12 @@ def post_detail(request, slug):
 
 @ban_forbidden(redirect_url="/banned/")
 def create_post(request):
+    """
+    This view is responsible for rendering the post creation page.
+    It allows users to create a new post.
+    :param request: Request object
+    :return: Rendered post creation page
+    """
     if not request.user.is_authenticated:
         return redirect("login")
     if request.method == "POST":
@@ -67,6 +92,13 @@ def create_post(request):
 
 @ban_forbidden(redirect_url="/banned/")
 def create_comment(request, slug):
+    """
+    This view is responsible for rendering the comment creation page.
+    It allows users to create a new comment on a post.
+    :param request: Request object
+    :param slug: Slug of the post
+    :return: Rendered comment creation page
+    """
     # Don't 404, redirect to login
     if not request.user.is_authenticated:
         return redirect("login")
@@ -107,6 +139,12 @@ def create_comment(request, slug):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def delete_post(request, slug):
+    """
+    This view is responsible for deleting a post.
+    :param request: Request object
+    :param slug: Slug of the post
+    :return: Redirect to the forum page
+    """
     post = get_object_or_404(Post, slug=slug)
     if request.user == post.user or request.user.is_staff:
         post.delete()
@@ -116,6 +154,13 @@ def delete_post(request, slug):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def delete_comment(request, slug, comment_id):
+    """
+    This view is responsible for deleting a comment.
+    :param request: Request object
+    :param slug: Slug of the post the comment belongs to
+    :param comment_id: ID of the comment
+    :return: Redirect to the post detail page
+    """
     comment = get_object_or_404(Comment, comment_id=comment_id)
     if request.user == comment.user or request.user.is_staff:
         comment.delete()
@@ -125,6 +170,12 @@ def delete_comment(request, slug, comment_id):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def vote_post(request, slug):
+    """
+    This view is responsible for voting on a post.
+    :param request: Request object
+    :param slug: Slug of the post
+    :return: Redirect to the post detail page
+    """
     post = get_object_or_404(Post, slug=slug)
     if request.method == "POST":
         vote_form = PostVoteForm(request.POST)
@@ -143,6 +194,13 @@ def vote_post(request, slug):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def vote_comment(request, slug, comment_id):
+    """
+    This view is responsible for voting on a comment.
+    :param request: Request object
+    :param slug: Slug of the post the comment belongs to
+    :param comment_id: ID of the comment
+    :return: Redirect to the post detail page
+    """
     comment = get_object_or_404(Comment, comment_id=comment_id)
     if request.method == "POST":
         vote_form = CommentVoteForm(request.POST)
@@ -161,6 +219,11 @@ def vote_comment(request, slug, comment_id):
 @login_required
 @ban_forbidden(redirect_url="/banned/")
 def search(request):
+    """
+    This view is responsible for searching posts. It filters posts based on the query provided.
+    :param request: Request object
+    :return: Rendered search page
+    """
     query = request.GET.get('q')
 
     # Check if a query was provided

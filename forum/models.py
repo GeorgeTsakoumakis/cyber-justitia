@@ -1,3 +1,14 @@
+"""
+This module contains the models for the forum app. The models are as follows:
+1. Post: Represents a post in the forum. It has a title, text, user, created_at, and is_deleted fields.
+2. Comment: Represents a comment on a post. It has a post, user, text, created_at, and is_deleted fields.
+3. Vote: Abstract model representing a vote. It has a user and vote_type field.
+4. PostVote: Represents a vote on a post. It has a post field.
+5. CommentVote: Represents a vote on a comment. It has a comment field.
+
+Author: Georgios Tsakoumakis, Ionut-Valeriu Facaeru
+"""
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -12,6 +23,18 @@ CustomUser = get_user_model()
 
 
 class Post(models.Model):
+    """
+    Post model representing a post in the forum.
+    Fields:
+    - post_id: Primary key of the post
+    - title: Title of the post
+    - slug: Slug of the post, generated from the title
+    - text: Text of the post
+    - user: User who created the post (foreign key to CustomUser)
+    - created_at: Date and time the post was created
+    - is_deleted: Boolean field indicating if the post is deleted
+    - hit_count_generic: Generic relation to the HitCount model for tracking post views
+    """
     class Meta:
         verbose_name = "Post"
         verbose_name_plural = "Posts"
@@ -32,6 +55,10 @@ class Post(models.Model):
 
     @property
     def votes(self):
+        """
+        Calculate the total votes of the post
+        :return: int representing the total votes
+        """
         return self.get_upvotes() - self.get_downvotes()
 
     def save(self, *args, **kwargs):
@@ -51,6 +78,12 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):
+        """
+        Mark the post as deleted and save it. The title and text are replaced with [deleted]
+        :param using: Database alias
+        :param keep_parents: Whether to delete the parent objects
+        :return: Post object
+        """
         self.text = "[deleted]"
         self.title = "[deleted]"
         self.is_deleted = True
@@ -58,9 +91,17 @@ class Post(models.Model):
         return self
 
     def __str__(self):
+        """
+        String representation of the post
+        :return: Title of the post
+        """
         return self.title
 
     def get_url(self):
+        """
+        Get the URL of the post
+        :return: URL of the post
+        """
         return reverse("post_detail", kwargs={"slug": self.slug})
 
     def get_comments(self):
@@ -75,6 +116,13 @@ class Post(models.Model):
         )
 
     def clean(self):
+        """
+        Perform validation checks on the post before saving
+        :raises ValidationError: If the title or text fields are empty or exceed the maximum length
+        :raises ValidationError: If the title exceeds the maximum length
+        :raises ValidationError: If the text exceeds the maximum length
+        :return: cleaned_data
+        """
         cleaned_data = super().clean()
         if not self.title:
             raise ValidationError(_("Title field is required."), code="invalid")
@@ -91,6 +139,11 @@ class Post(models.Model):
         return cleaned_data
 
     def upvote(self, user):
+        """
+        Upvote the post by the user. If the user has already upvoted the post, update the vote type.
+        :param user: User object
+        :return: None
+        """
         with transaction.atomic():
             post_vote, created = PostVote.objects.select_for_update().get_or_create(
                 user=user, post=self, vote_type=PostVote.VoteType.UPVOTE
@@ -100,6 +153,11 @@ class Post(models.Model):
                 post_vote.save()
 
     def downvote(self, user):
+        """
+        Downvote the post by the user. If the user has already downvoted the post, update the vote type.
+        :param user: User object
+        :return: None
+        """
         with transaction.atomic():
             post_vote, created = PostVote.objects.select_for_update().get_or_create(
                 user=user, post=self, vote_type=PostVote.VoteType.DOWNVOTE
@@ -109,17 +167,35 @@ class Post(models.Model):
                 post_vote.save()
 
     def get_upvotes(self):
+        """
+        Get the number of upvotes for the post
+        :return: int representing the number of upvotes
+        """
         return PostVote.objects.filter(
             post=self, vote_type=PostVote.VoteType.UPVOTE
         ).count()
 
     def get_downvotes(self):
+        """
+        Get the number of downvotes for the post
+        :return: int representing the number of downvotes
+        """
         return PostVote.objects.filter(
             post=self, vote_type=PostVote.VoteType.DOWNVOTE
         ).count()
 
 
 class Comment(models.Model):
+    """
+    Comment model representing a comment on a post.
+    Fields:
+    - comment_id: Primary key of the comment
+    - post: Post the comment belongs to (foreign key to Post)
+    - user: User who created the comment (foreign key to CustomUser)
+    - text: Text of the comment
+    - created_at: Date and time the comment was created
+    - is_deleted: Boolean field indicating if the comment is deleted
+    """
     class Meta:
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
@@ -134,9 +210,18 @@ class Comment(models.Model):
 
     @property
     def votes(self):
+        """
+        Calculate the total votes of the comment
+        :return: int representing the total votes
+        """
         return self.get_upvotes() - self.get_downvotes()
 
     def clean(self):
+        """
+        Perform validation checks on the comment before saving
+        :raises ValidationError: If the text field is empty or exceeds the maximum length
+        :return: cleaned_data
+        """
         cleaned_data = super().clean()
         if not self.text:
             raise ValidationError(_("Comment field is required."), code="invalid")
@@ -156,7 +241,7 @@ class Comment(models.Model):
     def delete(self, using=None, keep_parents=False):
         """
         Mark the comment as deleted and save it. The text is replaced with [deleted]
-        :return:  Comment object
+        :return: Comment object
         """
         self.text = "[deleted]"
         self.is_deleted = True
@@ -164,9 +249,18 @@ class Comment(models.Model):
         return self
 
     def __str__(self):
+        """
+        String representation of the comment
+        :return: First 50 characters of the comment text
+        """
         return self.text[:50]
 
     def upvote(self, user):
+        """
+        Upvote the comment by the user. If the user has already upvoted the comment, update the vote type.
+        :param user: User object
+        :return: None
+        """
         with transaction.atomic():
             (
                 comment_vote,
@@ -179,6 +273,11 @@ class Comment(models.Model):
                 comment_vote.save()
 
     def downvote(self, user):
+        """
+        Downvote the comment by the user. If the user has already downvoted the comment, update the vote type.
+        :param user: User object
+        :return: None
+        """
         with transaction.atomic():
             (
                 comment_vote,
@@ -191,21 +290,38 @@ class Comment(models.Model):
                 comment_vote.save()
 
     def get_upvotes(self):
+        """
+        Get the number of upvotes for the comment
+        :return: int representing the number of upvotes
+        """
         return CommentVote.objects.filter(
             comment=self, vote_type=CommentVote.VoteType.UPVOTE
         ).count()
 
     def get_downvotes(self):
+        """
+        Get the number of downvotes for the comment
+        :return: int representing the number of downvotes
+        """
         return CommentVote.objects.filter(
             comment=self, vote_type=CommentVote.VoteType.DOWNVOTE
         ).count()
 
 
 class Vote(models.Model):
+    """
+    Abstract model representing a vote.
+    Fields:
+    - user: User who voted (foreign key to CustomUser)
+    - vote_type: Type of the vote (upvote or downvote)
+    """
     class Meta:
         abstract = True
 
     class VoteType(models.TextChoices):
+        """
+        Enum representing the type of vote
+        """
         UPVOTE = "up", _("Upvote")
         DOWNVOTE = "down", _("Downvote")
 
@@ -217,9 +333,18 @@ class Vote(models.Model):
     )
 
     def __str__(self):
+        """
+        String representation of the vote
+        :return: String indicating the user and the vote type
+        """
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
+        """
+        Perform validation checks on the vote before saving
+        :raises ValidationError: If the user or vote_type fields are empty
+        :return: cleaned_data
+        """
         cleaned_data = super().clean()
         if not self.user_id:
             raise ValidationError(_("User field is required."), code="invalid")
@@ -236,6 +361,11 @@ class Vote(models.Model):
 
 
 class PostVote(Vote):
+    """
+    PostVote model representing a vote on a post. Inherits from the Vote model.
+    Fields:
+    - post: Post the vote belongs to (foreign key to Post)
+    """
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     # Compose primary key from user and post, one vote per user per post
@@ -246,18 +376,26 @@ class PostVote(Vote):
         db_table = "post_votes"
 
     def __str__(self):
+        """
+        String representation of the vote
+        :return: String indicating the user and the vote type
+        """
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
+        """
+        Perform validation checks on the vote before saving
+        :raises ValidationError: If the user or post fields are empty
+        :raises ValidationError: If a vote with the same user and post already exists
+        :return: cleaned_data
+        """
+        cleaned_data = super().clean()
         if not self.user_id:
             raise ValidationError(_("User field is required."), code="invalid")
         if not self.post_id:
             raise ValidationError(_("Post field is required."), code="invalid")
         if PostVote.objects.filter(user=self.user, post=self.post).exists() and not self.pk:
             raise ValidationError("Post Vote with this User already exists.")
-        cleaned_data = super().clean()
-        if not self.post_id:
-            raise ValidationError(_("Post field is required."), code="invalid")
         return cleaned_data
 
     def save(self, *args, **kwargs):
@@ -269,6 +407,11 @@ class PostVote(Vote):
 
 
 class CommentVote(Vote):
+    """
+    CommentVote model representing a vote on a comment. Inherits from the Vote model.
+    Fields:
+    - comment: Comment the vote belongs to (foreign key to Comment)
+    """
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
     # Compose primary key from user and comment, one vote per user per comment
@@ -279,15 +422,26 @@ class CommentVote(Vote):
         db_table = "comment_votes"
 
     def __str__(self):
+        """
+        String representation of the vote
+        :return: String indicating the user and the vote type
+        """
         return f"{self.user} voted up" if self.vote_type else f"{self.user} voted down"
 
     def clean(self):
+        """
+        Perform validation checks on the vote before saving
+        :raises ValidationError: If the user or comment fields are empty
+        :return: cleaned_data
+        """
+        cleaned_data = super().clean()
         if not self.user_id:
             raise ValidationError(_("User field is required."), code="invalid")
         if not self.comment_id:
             raise ValidationError(_("Comment field is required."), code="invalid")
         if CommentVote.objects.filter(user=self.user, comment=self.comment).exists() and not self.pk:
             raise ValidationError("Comment Vote with this User already exists.")
+        return cleaned_data
 
     def save(self, *args, **kwargs):
         """

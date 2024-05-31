@@ -1,3 +1,9 @@
+"""
+This module contains custom template tags for the forum app.
+
+Author: Georgios Tsakoumakis
+"""
+
 from django import template
 
 register = template.Library()

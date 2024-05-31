@@ -1,5 +1,10 @@
-import unittest
+"""
+Test cases for forum-related forms.
 
+Author: Ionut-Valeriu Facaeru
+"""
+
+import unittest
 from django.test import TestCase
 from forum.forms import CreatePostForm, CreateCommentForm
 

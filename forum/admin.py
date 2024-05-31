@@ -1,3 +1,9 @@
+"""
+Registering the models in the admin panel.
+
+Author: Georgios Tsakoumakis
+"""
+
 from django.contrib import admin
 from .models import Post, Comment, PostVote, CommentVote
 

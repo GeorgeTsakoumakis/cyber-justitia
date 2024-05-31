@@ -1,3 +1,9 @@
+"""
+Search function for the forum
+
+Author: Jonathan Muse, Georgios Tsakoumakis
+"""
+
 from forum.models import Post
 
 

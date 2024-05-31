@@ -1,3 +1,9 @@
+"""
+This file contains the URL patterns for the forum app.
+
+Author: Georgios Tsakoumakis
+"""
+
 from django.urls import path
 from . import views
 

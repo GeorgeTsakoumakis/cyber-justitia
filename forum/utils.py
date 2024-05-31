@@ -1,3 +1,9 @@
+"""
+Utility functions for the forum app.
+
+Author: Georgios Tsakoumakis
+"""
+
 from hitcount.utils import get_hitcount_model
 from hitcount.views import HitCountMixin
 

@@ -1,5 +1,10 @@
-import unittest
+"""
+Test cases for the forum models.
 
+Author: Ionut-Valeriu Facaeru
+"""
+
+import unittest
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError

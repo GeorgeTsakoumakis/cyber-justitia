@@ -1,3 +1,9 @@
+"""
+This file is used to configure the app name.
+
+Author: Georgios Tsakoumakis
+"""
+
 from django.apps import AppConfig
 
 
