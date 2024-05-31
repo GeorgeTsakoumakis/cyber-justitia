@@ -9,7 +9,7 @@
 
 - [Yanhao Bao](https://github.com/YanhaoBao)
 - [Ziad El Krekshi](https://github.com/neuziad)
-- [Ionut-Valeriu Facaeru](https://github.com/IanFacaeru)
+- [Ionut-Valeriu Facaeru](https://github.com/IanFacaeru) / [Alternate account](https://github.com/PiscotOficial)
 - [Jonathan Muse](https://github.com/Musey21)
 - [Ayesha Suleman](https://github.com/xayeshasulx)
 - [Georgios Tsakoumakis](https://github.com/gtsakoumakis2004)
