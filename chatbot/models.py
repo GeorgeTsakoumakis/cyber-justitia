@@ -78,7 +78,7 @@ class Message(models.Model):
         """
         if self.text.strip() == "":
             raise ValidationError("Message text cannot be empty or whitespace only.")
-        if len(self.text) > 1024:
+        if len(self.text) > 1024 and self.role == Message.Role.USER:
             raise ValidationError("Message text cannot exceed 1024 characters.")
         if self.role not in [choice[0] for choice in self.Role.choices]:
             raise ValidationError("Invalid message role.")
